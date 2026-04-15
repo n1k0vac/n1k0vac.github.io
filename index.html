@@ -13,36 +13,29 @@
             overflow-x: hidden;
         }
         
-        /* Prevent body scroll only when in mindmap tab */
+        /* Prevent body scroll only when in mindmap tab to let canvas scroll natively */
         body.mindmap-active {
             overflow: hidden; 
         }
 
-        /* --- Mindmap Styles --- */
+        /* --- Mindmap Styles (Native Scroll Optimized for Mobile) --- */
         .canvas-container {
             width: 100vw;
             height: calc(100vh - 4rem);
-            cursor: grab;
+            overflow: auto; /* Bật cuộn tự nhiên */
+            -webkit-overflow-scrolling: touch; /* Cuộn mượt trên iOS/Mobile */
             position: relative;
-            overflow: hidden;
-        }
-
-        .canvas-container:active {
-            cursor: grabbing;
         }
 
         .mindmap-wrapper {
-            position: absolute;
-            transform-origin: 0 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 3rem;
-            padding: 5rem;
-            left: 50%;
-            top: 10%;
-            transform: translateX(-50%);
-            transition: transform 0.1s ease-out;
+            padding: 3rem;
+            width: max-content; /* Đảm bảo khung luôn mở rộng theo nội dung để có thể cuộn ngang */
+            min-width: 100%; /* Căn giữa nếu màn hình rộng hơn sơ đồ */
+            margin: 0 auto;
         }
 
         .connector {
@@ -71,6 +64,12 @@
             border-color: #3b82f6; 
         }
 
+        /* Ẩn thanh cuộn mặc định cho đẹp mắt hơn trên Desktop (Tùy chọn) */
+        .canvas-container::-webkit-scrollbar { height: 8px; width: 8px; }
+        .canvas-container::-webkit-scrollbar-track { background: #f1f1f1; }
+        .canvas-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .canvas-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -87,24 +86,24 @@
         }
     </style>
 </head>
-<body class="text-gray-800 font-sans antialiased mindmap-active">
+<body class="text-gray-800 font-sans antialiased mindmap-active" onload="centerMindmap()">
 
     <!-- Header / Navigation Tabs -->
     <div class="fixed top-0 left-0 right-0 bg-white shadow-md z-50 h-16 flex justify-between items-center px-4 md:px-6">
         <div class="flex items-center gap-3">
-            <div class="bg-blue-600 text-white p-2 rounded-lg hidden md:block">
+            <div class="bg-blue-600 text-white p-2 rounded-lg hidden sm:block">
                 <i class="fa-solid fa-graduation-cap"></i>
             </div>
-            <h1 class="text-lg md:text-xl font-bold text-gray-800">Hệ thống Ôn tập Marketing</h1>
+            <h1 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 truncate">Ôn tập Marketing</h1>
         </div>
         
         <!-- Tab Switcher -->
-        <div class="flex bg-gray-100 p-1 rounded-lg">
-            <button onclick="switchTab('mindmap')" id="tab-mindmap" class="px-4 py-1.5 text-sm font-semibold rounded-md bg-white shadow text-blue-600 transition-all">
-                <i class="fa-solid fa-project-diagram mr-2"></i>Sơ đồ tư duy
+        <div class="flex bg-gray-100 p-1 rounded-lg shrink-0">
+            <button onclick="switchTab('mindmap')" id="tab-mindmap" class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md bg-white shadow text-blue-600 transition-all flex items-center">
+                <i class="fa-solid fa-project-diagram sm:mr-2"></i><span class="hidden sm:inline">Sơ đồ tư duy</span>
             </button>
-            <button onclick="switchTab('quiz')" id="tab-quiz" class="px-4 py-1.5 text-sm font-semibold rounded-md text-gray-500 hover:text-gray-700 transition-all">
-                <i class="fa-solid fa-list-check mr-2"></i>Bài tập trắc nghiệm
+            <button onclick="switchTab('quiz')" id="tab-quiz" class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center">
+                <i class="fa-solid fa-list-check sm:mr-2"></i><span class="hidden sm:inline">Trắc nghiệm</span>
             </button>
         </div>
     </div>
@@ -113,26 +112,19 @@
     <!-- TAB 1: SƠ ĐỒ TƯ DUY -->
     <!-- ========================================== -->
     <div id="mindmapTab" class="mt-16 block">
-        <!-- Controls overlay -->
-        <div class="absolute top-20 right-6 z-40 flex gap-2 text-gray-600 bg-white p-1 rounded-lg shadow border">
-            <button onclick="resetZoom()" class="p-2 hover:bg-gray-100 rounded transition" title="Đặt lại góc nhìn">
-                <i class="fa-solid fa-compress"></i>
-            </button>
-            <button onclick="zoomIn()" class="p-2 hover:bg-gray-100 rounded transition" title="Phóng to">
-                <i class="fa-solid fa-magnifying-glass-plus"></i>
-            </button>
-            <button onclick="zoomOut()" class="p-2 hover:bg-gray-100 rounded transition" title="Thu nhỏ">
-                <i class="fa-solid fa-magnifying-glass-minus"></i>
-            </button>
-        </div>
-
-        <!-- Main Canvas -->
+        <!-- Main Canvas (Scrollable) -->
         <div id="canvas" class="canvas-container">
-            <div id="mindmap" class="mindmap-wrapper w-max pb-32">
+            <div id="mindmap" class="mindmap-wrapper pb-32">
+                
+                <!-- Hướng dẫn cuộn trên điện thoại -->
+                <div class="text-center text-gray-400 text-sm animate-pulse md:hidden mb-[-2rem]">
+                    <i class="fa-solid fa-arrows-up-down-left-right mr-1"></i> Vuốt để di chuyển sơ đồ
+                </div>
+
                 <!-- ROOT: Chương 1 -->
                 <div class="flex flex-col items-center">
                     <div class="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-semibold mb-2 shadow-sm">Nền tảng</div>
-                    <div class="bg-white rounded-xl shadow-lg p-6 w-80 text-center node-card cursor-pointer" onclick="openDetail(1)">
+                    <div class="bg-white rounded-xl shadow-lg p-6 w-72 md:w-80 text-center node-card cursor-pointer" onclick="openDetail(1)">
                         <i class="fa-solid fa-globe text-4xl text-indigo-500 mb-3"></i>
                         <h2 class="text-xl font-bold text-gray-800">Chương 1</h2>
                         <p class="text-md font-semibold text-gray-600 mt-1">Tổng quan Marketing</p>
@@ -144,10 +136,10 @@
 
                 <!-- STAGE 1: Nghiên cứu -->
                 <div class="flex flex-col items-center w-full">
-                    <div class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm">Bước 1: Nghiên cứu & Thấu hiểu</div>
+                    <div class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm text-center">Bước 1: Nghiên cứu & Thấu hiểu</div>
                     
-                    <div class="flex justify-center gap-8 relative">
-                        <div class="bg-white rounded-xl shadow-lg p-5 w-64 node-card cursor-pointer" onclick="openDetail(2)">
+                    <div class="flex justify-center gap-6 md:gap-8 relative">
+                        <div class="bg-white rounded-xl shadow-lg p-5 w-60 md:w-64 node-card cursor-pointer shrink-0" onclick="openDetail(2)">
                             <div class="flex items-center gap-3 border-b pb-3 mb-3">
                                 <div class="bg-blue-100 text-blue-600 p-2 rounded-lg"><i class="fa-solid fa-seedling"></i></div>
                                 <div>
@@ -158,7 +150,7 @@
                             <p class="text-xs text-gray-500">Phân tích môi trường Vĩ mô & Vi mô tác động đến doanh nghiệp.</p>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-lg p-5 w-64 node-card cursor-pointer" onclick="openDetail(3)">
+                        <div class="bg-white rounded-xl shadow-lg p-5 w-60 md:w-64 node-card cursor-pointer shrink-0" onclick="openDetail(3)">
                             <div class="flex items-center gap-3 border-b pb-3 mb-3">
                                 <div class="bg-blue-100 text-blue-600 p-2 rounded-lg"><i class="fa-solid fa-users-viewfinder"></i></div>
                                 <div>
@@ -169,7 +161,7 @@
                             <p class="text-xs text-gray-500">Hộp đen ý thức, quá trình ra quyết định và yếu tố ảnh hưởng.</p>
                         </div>
 
-                        <div class="bg-white rounded-xl shadow-lg p-5 w-64 node-card cursor-pointer" onclick="openDetail(4)">
+                        <div class="bg-white rounded-xl shadow-lg p-5 w-60 md:w-64 node-card cursor-pointer shrink-0" onclick="openDetail(4)">
                             <div class="flex items-center gap-3 border-b pb-3 mb-3">
                                 <div class="bg-blue-100 text-blue-600 p-2 rounded-lg"><i class="fa-solid fa-chart-pie"></i></div>
                                 <div>
@@ -186,17 +178,17 @@
 
                 <!-- STAGE 2: Chiến lược -->
                 <div class="flex flex-col items-center w-full">
-                    <div class="bg-emerald-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm">Bước 2: Thiết kế chiến lược hướng khách hàng</div>
+                    <div class="bg-emerald-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm text-center">Bước 2: Thiết kế chiến lược hướng khách hàng</div>
                     
-                    <div class="bg-white rounded-xl shadow-lg p-6 w-[30rem] node-card cursor-pointer text-center" onclick="openDetail(5)">
+                    <div class="bg-white rounded-xl shadow-lg p-6 w-80 md:w-[30rem] node-card cursor-pointer text-center shrink-0" onclick="openDetail(5)">
                         <div class="flex justify-center mb-3">
                             <div class="bg-emerald-100 text-emerald-600 p-3 rounded-full text-xl"><i class="fa-solid fa-bullseye"></i></div>
                         </div>
                         <h2 class="text-lg font-bold text-gray-800">Chương 5: Chiến lược thị trường (STP)</h2>
-                        <div class="flex justify-between mt-4 text-sm font-medium text-gray-600">
-                            <div class="bg-gray-50 px-3 py-2 rounded border flex-1 mx-1">S - Phân khúc</div>
-                            <div class="bg-gray-50 px-3 py-2 rounded border flex-1 mx-1">T - Mục tiêu</div>
-                            <div class="bg-gray-50 px-3 py-2 rounded border flex-1 mx-1">P - Định vị</div>
+                        <div class="flex justify-between mt-4 text-xs md:text-sm font-medium text-gray-600 gap-2">
+                            <div class="bg-gray-50 px-2 md:px-3 py-2 rounded border flex-1">S - Phân khúc</div>
+                            <div class="bg-gray-50 px-2 md:px-3 py-2 rounded border flex-1">T - Mục tiêu</div>
+                            <div class="bg-gray-50 px-2 md:px-3 py-2 rounded border flex-1">P - Định vị</div>
                         </div>
                     </div>
                 </div>
@@ -205,38 +197,38 @@
 
                 <!-- STAGE 3: Marketing Mix -->
                 <div class="flex flex-col items-center w-full">
-                    <div class="bg-rose-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm">Bước 3: Xây dựng chương trình Marketing (4P)</div>
+                    <div class="bg-rose-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm text-center">Bước 3: Xây dựng chương trình Marketing (4P)</div>
                     
-                    <div class="flex justify-center gap-6 relative">
-                        <div class="bg-white rounded-xl shadow-lg p-5 w-60 node-card cursor-pointer border-t-4 border-rose-400" onclick="openDetail(6)">
+                    <div class="flex justify-center gap-4 md:gap-6 relative">
+                        <div class="bg-white rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-rose-400 shrink-0" onclick="openDetail(6)">
                             <div class="flex flex-col items-center text-center">
-                                <i class="fa-solid fa-box-open text-3xl text-rose-500 mb-2"></i>
+                                <i class="fa-solid fa-box-open text-2xl md:text-3xl text-rose-500 mb-2"></i>
                                 <h2 class="font-bold text-gray-800">Chương 6</h2>
-                                <p class="text-sm text-gray-600 font-bold mb-2">Sản phẩm (Product)</p>
+                                <p class="text-xs md:text-sm text-gray-600 font-bold mb-2">Sản phẩm (Product)</p>
                                 <p class="text-xs text-gray-500">Cấp độ, chu kỳ sống, SP mới.</p>
                             </div>
                         </div>
-                        <div class="bg-white rounded-xl shadow-lg p-5 w-60 node-card cursor-pointer border-t-4 border-rose-400" onclick="openDetail(7)">
+                        <div class="bg-white rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-rose-400 shrink-0" onclick="openDetail(7)">
                             <div class="flex flex-col items-center text-center">
-                                <i class="fa-solid fa-tags text-3xl text-rose-500 mb-2"></i>
+                                <i class="fa-solid fa-tags text-2xl md:text-3xl text-rose-500 mb-2"></i>
                                 <h2 class="font-bold text-gray-800">Chương 7</h2>
-                                <p class="text-sm text-gray-600 font-bold mb-2">Định giá (Price)</p>
+                                <p class="text-xs md:text-sm text-gray-600 font-bold mb-2">Định giá (Price)</p>
                                 <p class="text-xs text-gray-500">Chiến lược giá, phương pháp.</p>
                             </div>
                         </div>
-                        <div class="bg-white rounded-xl shadow-lg p-5 w-60 node-card cursor-pointer border-t-4 border-rose-400" onclick="openDetail(8)">
+                        <div class="bg-white rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-rose-400 shrink-0" onclick="openDetail(8)">
                             <div class="flex flex-col items-center text-center">
-                                <i class="fa-solid fa-truck-fast text-3xl text-rose-500 mb-2"></i>
+                                <i class="fa-solid fa-truck-fast text-2xl md:text-3xl text-rose-500 mb-2"></i>
                                 <h2 class="font-bold text-gray-800">Chương 8</h2>
-                                <p class="text-sm text-gray-600 font-bold mb-2">Phân phối (Place)</p>
+                                <p class="text-xs md:text-sm text-gray-600 font-bold mb-2">Phân phối (Place)</p>
                                 <p class="text-xs text-gray-500">Cấu trúc kênh, trung gian.</p>
                             </div>
                         </div>
-                        <div class="bg-white rounded-xl shadow-lg p-5 w-60 node-card cursor-pointer border-t-4 border-rose-400" onclick="openDetail(9)">
+                        <div class="bg-white rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-rose-400 shrink-0" onclick="openDetail(9)">
                             <div class="flex flex-col items-center text-center">
-                                <i class="fa-solid fa-bullhorn text-3xl text-rose-500 mb-2"></i>
+                                <i class="fa-solid fa-bullhorn text-2xl md:text-3xl text-rose-500 mb-2"></i>
                                 <h2 class="font-bold text-gray-800">Chương 9</h2>
-                                <p class="text-sm text-gray-600 font-bold mb-2">Xúc tiến (Promotion)</p>
+                                <p class="text-xs md:text-sm text-gray-600 font-bold mb-2">Xúc tiến (Promotion)</p>
                                 <p class="text-xs text-gray-500">Quảng cáo, PR, Bán hàng...</p>
                             </div>
                         </div>
@@ -265,78 +257,80 @@
     <!-- ========================================== -->
     <!-- TAB 2: BÀI TẬP TRẮC NGHIỆM -->
     <!-- ========================================== -->
-    <div id="quizTab" class="hidden mt-16 p-6 max-w-5xl mx-auto min-h-screen">
+    <div id="quizTab" class="hidden mt-16 p-4 md:p-6 max-w-5xl mx-auto min-h-screen">
         
         <!-- Menu Mode Selection -->
         <div id="quizMenu" class="block">
-            <div class="text-center mb-10 mt-8">
-                <h2 class="text-3xl font-bold text-gray-800 mb-4">Luyện Tập Trắc Nghiệm</h2>
-                <p class="text-gray-600 max-w-2xl mx-auto">Chọn chế độ luyện tập phù hợp với mục tiêu của bạn. Dữ liệu được trích xuất từ ngân hàng đề thi môn Marketing Căn bản.</p>
+            <div class="text-center mb-8 md:mb-10 mt-6 md:mt-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Luyện Tập Trắc Nghiệm</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto text-sm md:text-base">Chọn chế độ luyện tập phù hợp với mục tiêu của bạn. Dữ liệu được trích xuất đầy đủ từ ngân hàng đề thi môn Marketing Căn bản.</p>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-6">
+            <div class="grid md:grid-cols-2 gap-4 md:gap-6">
                 <!-- Mode 1: Theo chương -->
-                <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 hover:shadow-lg transition cursor-pointer group" onclick="showChapterSelection()">
-                    <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-blue-600 group-hover:text-white transition">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-200 hover:shadow-lg transition cursor-pointer group" onclick="showChapterSelection()">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-blue-100 text-blue-600 rounded-2xl flex items-center justify-center text-2xl md:text-3xl mb-4 md:mb-6 group-hover:bg-blue-600 group-hover:text-white transition">
                         <i class="fa-solid fa-book-open"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Ôn tập theo chương</h3>
-                    <p class="text-gray-500 text-sm">Củng cố kiến thức từng phần. Chọn một chương cụ thể từ 1 đến 9 để làm toàn bộ bài tập liên quan.</p>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Ôn tập theo chương</h3>
+                    <p class="text-gray-500 text-xs md:text-sm">Củng cố kiến thức từng phần. Chọn một chương cụ thể từ 1 đến 9 để làm toàn bộ bài tập liên quan.</p>
                 </div>
 
                 <!-- Mode 2: Thi thử -->
-                <div class="bg-white rounded-2xl p-8 shadow-sm border border-gray-200 hover:shadow-lg transition cursor-pointer group" onclick="startMockExam()">
-                    <div class="w-16 h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:bg-orange-600 group-hover:text-white transition">
+                <div class="bg-white rounded-2xl p-6 md:p-8 shadow-sm border border-gray-200 hover:shadow-lg transition cursor-pointer group" onclick="startMockExam()">
+                    <div class="w-14 h-14 md:w-16 md:h-16 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center text-2xl md:text-3xl mb-4 md:mb-6 group-hover:bg-orange-600 group-hover:text-white transition">
                         <i class="fa-solid fa-stopwatch"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800 mb-2">Thi thử tổng hợp (Mix)</h3>
-                    <p class="text-gray-500 text-sm">Mô phỏng đề thi thật. Hệ thống sẽ xáo trộn ngẫu nhiên tối đa 40 câu hỏi từ tất cả các chương.</p>
+                    <h3 class="text-lg md:text-xl font-bold text-gray-800 mb-2">Thi thử tổng hợp (Mix)</h3>
+                    <p class="text-gray-500 text-xs md:text-sm">Mô phỏng đề thi thật. Hệ thống sẽ xáo trộn ngẫu nhiên tối đa 40 câu hỏi từ tất cả các chương.</p>
                 </div>
             </div>
         </div>
 
         <!-- Chapter Selection (Hidden initially) -->
         <div id="chapterSelection" class="hidden">
-            <button onclick="backToMenu()" class="mb-6 text-gray-500 hover:text-blue-600 font-medium flex items-center gap-2">
+            <button onclick="backToMenu()" class="mb-4 md:mb-6 text-gray-500 hover:text-blue-600 font-medium flex items-center gap-2">
                 <i class="fa-solid fa-arrow-left"></i> Quay lại
             </button>
-            <h3 class="text-2xl font-bold text-gray-800 mb-6">Chọn chương cần ôn tập</h3>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4" id="chapterButtonsContainer">
+            <h3 class="text-xl md:text-2xl font-bold text-gray-800 mb-4 md:mb-6">Chọn chương cần ôn tập</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" id="chapterButtonsContainer">
                 <!-- Buttons injected via JS -->
             </div>
         </div>
 
         <!-- Quiz Execution Area (Hidden initially) -->
         <div id="quizExecution" class="hidden">
-            <div class="flex justify-between items-end mb-6 border-b pb-4">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-end mb-6 border-b pb-4 gap-4">
                 <div>
                     <button onclick="backToMenu()" class="mb-2 text-gray-500 hover:text-blue-600 font-medium flex items-center gap-2 text-sm">
                         <i class="fa-solid fa-arrow-left"></i> Thoát bài thi
                     </button>
-                    <h3 id="quizTitle" class="text-2xl font-bold text-gray-800"></h3>
-                    <p id="quizSubtitle" class="text-gray-500 text-sm mt-1"></p>
+                    <h3 id="quizTitle" class="text-xl md:text-2xl font-bold text-gray-800"></h3>
+                    <p id="quizSubtitle" class="text-gray-500 text-xs md:text-sm mt-1"></p>
                 </div>
-                <div class="text-right">
-                    <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-bold">
+                <div class="sm:text-right">
+                    <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-lg font-bold text-sm inline-block">
                         <span id="questionCount">0</span> Câu hỏi
                     </div>
                 </div>
             </div>
 
             <!-- Form câu hỏi -->
-            <form id="quizForm" class="space-y-8 mb-8" onsubmit="event.preventDefault(); submitQuiz();">
+            <form id="quizForm" class="space-y-6 md:space-y-8 mb-8" onsubmit="event.preventDefault(); submitQuiz();">
                 <div id="questionsContainer" class="space-y-6">
                     <!-- Questions injected via JS -->
                 </div>
 
-                <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 sticky bottom-4 z-10">
-                    <div id="resultSummary" class="text-lg font-bold text-gray-800 hidden"></div>
-                    <button type="submit" id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold shadow-md transition w-full md:w-auto">
-                        <i class="fa-solid fa-paper-plane mr-2"></i>Nộp bài chấm điểm
-                    </button>
-                    <button type="button" id="retryBtn" onclick="retryCurrentQuiz()" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 px-8 py-3 rounded-xl font-bold transition w-full md:w-auto">
-                        <i class="fa-solid fa-rotate-right mr-2"></i>Làm lại bài này
-                    </button>
+                <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4 sticky bottom-4 z-10">
+                    <div id="resultSummary" class="text-base md:text-lg font-bold text-gray-800 hidden text-center md:text-left"></div>
+                    <div class="w-full md:w-auto flex flex-col sm:flex-row gap-2 md:gap-4">
+                        <button type="submit" id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-3 rounded-xl font-bold shadow-md transition w-full md:w-auto text-sm md:text-base">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>Nộp bài chấm điểm
+                        </button>
+                        <button type="button" id="retryBtn" onclick="retryCurrentQuiz()" class="hidden bg-gray-200 hover:bg-gray-300 text-gray-800 px-6 md:px-8 py-3 rounded-xl font-bold transition w-full md:w-auto text-sm md:text-base">
+                            <i class="fa-solid fa-rotate-right mr-2"></i>Làm lại bài này
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
@@ -413,7 +407,7 @@
             4: [
                 { q: "Trong các yếu tố sau đây, yếu tố nào không phải là tác nhân môi trường có thể ảnh hưởng đến hành vi mua của người tiêu dùng?", options: ["Kinh tế", "Văn hoá", "Chính trị", "Khuyến mại"], correct: 3 },
                 { q: "Gia đình, bạn bè, hàng xóm, đồng nghiệp... là ví dụ về các nhóm:", options: ["Thứ cấp", "Sơ cấp", "Tham khảo trực tiếp", "Cả Sơ cấp và Tham khảo trực tiếp"], correct: 3 },
-                { q: "Một khách hàng đã có ý định mua chiếc xe máy A nhưng lại nhận được thôngত্তি tin từ một người bạn của mình là dịch vụ bảo dưỡng của hãng không được tốt lắm. Thông tin trên là:", options: ["Một loại nhiễu trong thông điệp", "Một yếu tố cản trở quyết định mua hàng", "Một yếu tố cân nhắc trước khi sử dụng", "Thông tin thứ cấp"], correct: 1 },
+                { q: "Một khách hàng đã có ý định mua chiếc xe máy A nhưng lại nhận được thông tin từ một người bạn của mình là dịch vụ bảo dưỡng của hãng không được tốt lắm. Thông tin trên là:", options: ["Một loại nhiễu trong thông điệp", "Một yếu tố cản trở quyết định mua hàng", "Một yếu tố cân nhắc trước khi sử dụng", "Thông tin thứ cấp"], correct: 1 },
                 { q: "Khi một cá nhân cố gắng điều chỉnh các thông tin thu nhận được theo suy nghĩ của anh ta thì quá trình nhận thức đó là:", options: ["Bảo lưu có chọn lọc", "Tri giác có chọn lọc", "Bóp méo có chọn lọc", "Lĩnh hội có chọn lọc"], correct: 2 },
                 { q: "Khái niệm “động cơ” được hiểu là:", options: ["Hành vi mang tính định hướng", "Nhu cầu có khả năng thanh toán", "Nhu cầu đã trở nên bức thiết buộc con người phải hành động để thỏa mãn nhu cầu đó", "Tác nhân kích thích của môi trường"], correct: 2 },
                 { q: "Một khách hàng có thể không hài lòng với sản phẩm mà họ đã mua và dùng; trạng thái cao nhất của sự không hài lòng được biểu hiện bằng trạng thái nào sau đây?", options: ["Không mua lại tất cả các sản phẩm khác của doanh nghiệp đó", "Tẩy chay và truyền tin không tốt về sản phẩm đó", "Phàn nàn với Ban lãnh đạo doanh nghiệp", "Viết thư hoặc gọi điện theo đường dây nóng cho doanh nghiệp"], correct: 1 },
@@ -717,16 +711,26 @@
             ]
         };
 
+        // JS cho giao diện Sơ đồ tư duy (Native Scroll)
+        function centerMindmap() {
+            const canvas = document.getElementById('canvas');
+            const mindmap = document.getElementById('mindmap');
+            // Căn giữa theo chiều ngang nếu màn hình nhỏ hơn sơ đồ
+            if(mindmap.offsetWidth > canvas.clientWidth) {
+                canvas.scrollLeft = (mindmap.offsetWidth - canvas.clientWidth) / 2;
+            }
+        }
+
         /* --- 3. UI LOGIC (TABS & MINDMAP) --- */
         function switchTab(tabId) {
             // Update buttons
             document.getElementById('tab-mindmap').className = tabId === 'mindmap' 
-                ? 'px-4 py-1.5 text-sm font-semibold rounded-md bg-white shadow text-blue-600 transition-all'
-                : 'px-4 py-1.5 text-sm font-semibold rounded-md text-gray-500 hover:text-gray-700 transition-all';
+                ? 'px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md bg-white shadow text-blue-600 transition-all flex items-center'
+                : 'px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center';
             
             document.getElementById('tab-quiz').className = tabId === 'quiz' 
-                ? 'px-4 py-1.5 text-sm font-semibold rounded-md bg-white shadow text-blue-600 transition-all'
-                : 'px-4 py-1.5 text-sm font-semibold rounded-md text-gray-500 hover:text-gray-700 transition-all';
+                ? 'px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md bg-white shadow text-blue-600 transition-all flex items-center'
+                : 'px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md text-gray-500 hover:text-gray-700 transition-all flex items-center';
 
             // Update content visibility
             document.getElementById('mindmapTab').style.display = tabId === 'mindmap' ? 'block' : 'none';
@@ -735,6 +739,7 @@
             // Update body scroll behavior
             if (tabId === 'mindmap') {
                 document.body.classList.add('mindmap-active');
+                centerMindmap();
             } else {
                 document.body.classList.remove('mindmap-active');
             }
@@ -791,52 +796,6 @@
             switchTab('quiz');
             loadChapterQuiz(chapId);
         }
-
-        // Pan and Zoom Logic
-        const canvas = document.getElementById('canvas');
-        const mindmap = document.getElementById('mindmap');
-        let scale = window.innerWidth < 768 ? 0.6 : 1;
-        let isDragging = false;
-        let startX, startY;
-        let currentX = 0, currentY = 0; 
-        
-        mindmap.style.transform = `translate(calc(-50% + ${currentX}px), ${currentY}px) scale(${scale})`;
-
-        canvas.addEventListener('mousedown', (e) => {
-            if(e.target.closest('.node-card') || e.target.closest('button')) return;
-            isDragging = true;
-            startX = e.clientX - currentX;
-            startY = e.clientY - currentY;
-            mindmap.style.transition = 'none';
-        });
-
-        canvas.addEventListener('mousemove', (e) => {
-            if (!isDragging) return;
-            e.preventDefault();
-            currentX = e.clientX - startX;
-            currentY = e.clientY - startY;
-            updateTransform();
-        });
-
-        window.addEventListener('mouseup', () => {
-            isDragging = false;
-            mindmap.style.transition = 'transform 0.1s ease-out';
-        });
-
-        canvas.addEventListener('wheel', (e) => {
-            if(document.body.classList.contains('mindmap-active')) {
-                e.preventDefault();
-                const delta = e.deltaY * -0.001;
-                scale = Math.min(Math.max(0.4, scale + delta), 2);
-                updateTransform();
-            }
-        }, { passive: false });
-
-        function updateTransform() { mindmap.style.transform = `translate(calc(-50% + ${currentX}px), ${currentY}px) scale(${scale})`; }
-        function zoomIn() { scale = Math.min(scale + 0.2, 2); updateTransform(); }
-        function zoomOut() { scale = Math.max(scale - 0.2, 0.4); updateTransform(); }
-        function resetZoom() { scale = window.innerWidth < 768 ? 0.6 : 1; currentX = 0; currentY = 0; updateTransform(); }
-
 
         /* --- 4. QUIZ LOGIC --- */
         let currentQuizData = [];
@@ -913,8 +872,8 @@
 
             currentQuizData.forEach((q, idx) => {
                 html += `
-                    <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200" id="qblock-${idx}">
-                        <div class="font-bold text-gray-800 mb-4 text-lg">
+                    <div class="bg-white p-4 md:p-6 rounded-xl shadow-sm border border-gray-200" id="qblock-${idx}">
+                        <div class="font-bold text-gray-800 mb-4 text-base md:text-lg">
                             <span class="text-blue-600 mr-1">Câu ${idx + 1}:</span> ${q.q}
                         </div>
                         <div class="space-y-3">
@@ -924,11 +883,11 @@
                     html += `
                         <label class="relative flex items-center cursor-pointer group">
                             <input type="radio" name="q${idx}" value="${optIdx}" class="peer sr-only radio-custom">
-                            <div class="w-full p-4 rounded-lg border-2 border-gray-100 flex items-center gap-3 transition-all hover:bg-gray-50">
+                            <div class="w-full p-3 md:p-4 rounded-lg border-2 border-gray-100 flex items-center gap-3 transition-all hover:bg-gray-50">
                                 <div class="w-5 h-5 rounded-full border-2 border-gray-300 flex-shrink-0 flex items-center justify-center radio-circle transition-colors">
                                     <div class="w-2.5 h-2.5 bg-blue-600 rounded-full scale-0 transition-transform duration-200 ease-out after:content-['']"></div>
                                 </div>
-                                <span class="text-gray-700">${opt}</span>
+                                <span class="text-sm md:text-base text-gray-700">${opt}</span>
                             </div>
                         </label>
                     `;
@@ -936,7 +895,7 @@
 
                 html += `
                         </div>
-                        <div id="feedback-${idx}" class="mt-4 hidden p-4 rounded-lg text-sm font-semibold"></div>
+                        <div id="feedback-${idx}" class="mt-4 hidden p-3 md:p-4 rounded-lg text-sm font-semibold"></div>
                     </div>
                 `;
             });
@@ -986,7 +945,7 @@
             // Update UI bottom bar
             const percent = Math.round((score / currentQuizData.length) * 100);
             const summary = document.getElementById('resultSummary');
-            summary.innerHTML = `Điểm của bạn: <span class="${percent >= 50 ? 'text-green-600' : 'text-red-600'} text-2xl">${score}/${currentQuizData.length}</span> (${percent}%)`;
+            summary.innerHTML = `Điểm của bạn: <span class="${percent >= 50 ? 'text-green-600' : 'text-red-600'} text-xl md:text-2xl">${score}/${currentQuizData.length}</span> (${percent}%)`;
             summary.classList.remove('hidden');
             
             document.getElementById('submitBtn').classList.add('hidden');
