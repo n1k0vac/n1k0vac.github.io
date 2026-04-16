@@ -84,16 +84,12 @@
         .radio-custom:checked + div .radio-circle::after {
             transform: scale(1);
         }
-        /* Chế độ tối */
-body.dark-mode { background-color: #121212 !important; color: #e0e0e0 !important; }
-body.dark-mode .card, body.dark-mode .quiz-container { background-color: #1e1e1e; border-color: #333; }
-body.dark-mode button { background-color: #333; color: white; }
-
-/* Nút Night Mode nổi trên màn hình */
+    /* Nút Night Mode nổi trên màn hình */
 #dark-mode-toggle {
-    position: fixed; top: 10px; right: 10px; z-index: 1000;
+    position: fixed; bottom: 20px; left: 20px; z-index: 1000;
     padding: 8px 12px; border-radius: 20px; cursor: pointer;
     border: 1px solid #ccc; background: #eee;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* Thêm tí đổ bóng cho nó bồng bềnh */
 }
     </style>
 </head>
