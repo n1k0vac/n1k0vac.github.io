@@ -467,17 +467,127 @@
 
         /* --- 1. DATA: MINDMAP CHAPTERS --- */
         const chapterData = {
-            1: { chapter: "Chương 1", title: "Tổng quan Marketing", color: "bg-indigo-600", icon: "fa-globe", summary: "Nền tảng cơ bản nhất về Marketing.", points: ["Khái niệm cốt lõi: Nhu cầu, Mong muốn, Yêu cầu.", "Các triết lý quản trị MKT.", "Quy trình Marketing 5 bước."] },
-            2: { chapter: "Chương 2", title: "Môi trường Marketing", color: "bg-blue-600", icon: "fa-seedling", summary: "Yếu tố bên trong/ngoài ảnh hưởng đến DN.", points: ["Môi trường Vi mô.", "Môi trường Vĩ mô.", "Nhận diện cơ hội, thách thức."] },
-            3: { chapter: "Chương 3", title: "Hành vi khách hàng", color: "bg-blue-600", icon: "fa-users-viewfinder", summary: "Hộp đen ý thức của người mua.", points: ["Mô hình hành vi.", "Yếu tố ảnh hưởng (Văn hóa, XH, Cá nhân, Tâm lý).", "Quá trình ra quyết định mua."] },
-            4: { chapter: "Chương 4", title: "Nghiên cứu Marketing", color: "bg-blue-600", icon: "fa-chart-pie", summary: "Thu thập, phân tích dữ liệu MKT.", points: ["Hệ thống thông tin.", "Quy trình nghiên cứu 4 bước.", "Dữ liệu sơ cấp, thứ cấp."] },
-            5: { chapter: "Chương 5", title: "Phân khúc & Định vị (STP)", color: "bg-emerald-600", icon: "fa-bullseye", summary: "Quyết định phục vụ ai và như thế nào.", points: ["Phân khúc (Segmentation).", "Mục tiêu (Targeting).", "Định vị (Positioning)."] },
-            6: { chapter: "Chương 6", title: "Sản phẩm (Product)", color: "bg-rose-600", icon: "fa-box-open", summary: "Tạo ra giá trị cho thị trường.", points: ["Cấu thành SP (Lõi, Cụ thể, Gia tăng).", "Chu kỳ sống SP (PLC).", "Phát triển SP mới."] },
-            7: { chapter: "Chương 7", title: "Định giá (Price)", color: "bg-rose-600", icon: "fa-tags", summary: "Yếu tố duy nhất tạo doanh thu.", points: ["Yếu tố ảnh hưởng giá.", "Phương pháp định giá.", "Chiến lược giá SP mới (Hớt váng/Thâm nhập)."] },
-            8: { chapter: "Chương 8", title: "Phân phối (Place)", color: "bg-rose-600", icon: "fa-truck-fast", summary: "Đưa SP đến tay người tiêu dùng.", points: ["Cấu trúc kênh.", "Các trung gian.", "Quản lý kênh phân phối."] },
-            9: { chapter: "Chương 9", title: "Xúc tiến (Promotion)", color: "bg-rose-600", icon: "fa-bullhorn", summary: "Truyền thông giá trị SP.", points: ["Quảng cáo.", "PR.", "Khuyến mãi.", "Bán hàng cá nhân", "Direct MKT."] }
-        };
-
+    const chapterData = {
+    1: { 
+        chapter: "Chương 1", 
+        title: "Tổng quan Marketing", 
+        color: "bg-indigo-600", 
+        icon: "fa-globe", 
+        summary: "Nền tảng cơ bản nhất về Marketing và các triết lý quản trị.", 
+        points: [
+            "Khái niệm: Nhu cầu, Mong muốn, Yêu cầu, Trao đổi và Giao dịch.",
+            "Đối tượng nghiên cứu: Hàng hóa, dịch vụ, ý tưởng, con người, địa điểm...",
+            "5 triết lý quản trị: Sản xuất, Sản phẩm, Bán hàng, Marketing, Marketing xã hội.",
+            "Quy trình Marketing 5 bước (R-STP-MM-I-C).",
+            "Sự khác biệt giữa định hướng Bán hàng và định hướng Marketing."
+        ] 
+    },
+    2: { 
+        chapter: "Chương 2", 
+        title: "Môi trường Marketing", 
+        color: "bg-blue-600", 
+        icon: "fa-seedling", 
+        summary: "Các yếu tố ảnh hưởng đến hoạt động Marketing của doanh nghiệp.", 
+        points: [
+            "Môi trường vi mô: Công ty, nhà cung ứng, trung gian, khách hàng, đối thủ, công chúng.",
+            "Môi trường vĩ mô (PESTEL): Chính trị, Kinh tế, Văn hóa, Công nghệ, Tự nhiên, Pháp luật.",
+            "Ma trận SWOT: Điểm mạnh, Điểm yếu, Cơ hội và Thách thức.",
+            "Cách doanh nghiệp phản ứng với sự thay đổi của môi trường."
+        ] 
+    },
+    3: { 
+        chapter: "Chương 3", 
+        title: "Hành vi khách hàng", 
+        color: "bg-emerald-600", 
+        icon: "fa-users", 
+        summary: "Giải mã tâm lý và quá trình quyết định mua của người tiêu dùng.", 
+        points: [
+            "Mô hình ý thức người tiêu dùng (Hộp đen ý thức).",
+            "4 nhóm yếu tố ảnh hưởng: Văn hóa, Xã hội, Cá nhân, Tâm lý.",
+            "5 bước quy trình quyết định mua: Nhận biết -> Tìm kiếm -> Đánh giá -> Mua -> Sau mua.",
+            "Các kiểu hành vi mua: Phức tạp, Thỏa hiệp, Thói quen, Tìm kiếm sự đa dạng."
+        ] 
+    },
+    4: { 
+        chapter: "Chương 4", 
+        title: "Nghiên cứu Marketing", 
+        color: "bg-amber-600", 
+        icon: "fa-magnifying-glass", 
+        summary: "Hệ thống thông tin và phương pháp thu thập dữ liệu thị trường.", 
+        points: [
+            "Hệ thống thông tin Marketing (MIS).",
+            "Phân biệt dữ liệu sơ cấp và dữ liệu thứ cấp.",
+            "4 phương pháp thu thập: Quan sát, Thực nghiệm, Điều tra, Thảo luận nhóm.",
+            "Quy trình nghiên cứu: Xác định vấn đề -> Lập kế hoạch -> Thu thập -> Phân tích -> Báo cáo."
+        ] 
+    },
+    5: { 
+        chapter: "Chương 5", 
+        title: "STP (Phân khúc & Định vị)", 
+        color: "bg-rose-600", 
+        icon: "fa-target-shot", 
+        summary: "Chiến lược lựa chọn thị trường mục tiêu và tạo sự khác biệt.", 
+        points: [
+            "Phân đoạn thị trường: Địa lý, Nhân khẩu học, Tâm lý học, Hành vi.",
+            "Lựa chọn thị trường mục tiêu: Tập trung, Chuyên môn hóa, Bao phủ.",
+            "Định vị sản phẩm: Tạo vị thế cạnh tranh trong tâm trí khách hàng.",
+            "Xây dựng điểm khác biệt (USP) so với đối thủ."
+        ] 
+    },
+    6: { 
+        chapter: "Chương 6", 
+        title: "Chiến lược Sản phẩm", 
+        color: "bg-purple-600", 
+        icon: "fa-box", 
+        summary: "Quản trị danh mục sản phẩm, thương hiệu và vòng đời sản phẩm.", 
+        points: [
+            "5 cấp độ cấu thành sản phẩm (Cốt lõi, Cụ thể, Gia tăng...).",
+            "Phân loại hàng hóa: Tiện dụng, Mua có lựa chọn, Đặc biệt, Thụ động.",
+            "Quyết định về nhãn hiệu, bao bì và dịch vụ hỗ trợ.",
+            "Chu kỳ sống sản phẩm (PLC): Giới thiệu, Tăng trưởng, Bão hòa, Suy thoái."
+        ] 
+    },
+    7: { 
+        chapter: "Chương 7", 
+        title: "Chiến lược Giá", 
+        color: "bg-orange-600", 
+        icon: "fa-tags", 
+        summary: "Các phương pháp định giá và điều chỉnh giá trong kinh doanh.", 
+        points: [
+            "Các nhân tố ảnh hưởng: Chi phí, nhu cầu thị trường, đối thủ cạnh tranh.",
+            "3 phương pháp định giá cơ bản (Dựa trên chi phí, người mua, cạnh tranh).",
+            "Chiến lược giá sản phẩm mới: Hớt váng sữa (Skimming) vs Thâm nhập (Penetration).",
+            "Chiến thuật điều chỉnh giá: Chiết khấu, tâm lý, phân biệt, khuyến mại."
+        ] 
+    },
+    8: { 
+        chapter: "Chương 8", 
+        title: "Chiến lược Phân phối", 
+        color: "bg-cyan-600", 
+        icon: "fa-truck-fast", 
+        summary: "Quản trị kênh phân phối và dòng vận chuyển hàng hóa.", 
+        points: [
+            "Bản chất và chức năng của kênh phân phối.",
+            "Cấu trúc kênh: Kênh trực tiếp và kênh gián tiếp (nhiều cấp).",
+            "Hệ thống Marketing dọc (VMS) và Marketing ngang.",
+            "Xung đột kênh: Xung đột chiều ngang và chiều dọc.",
+            "Quyết định Logistics: Kho bãi, vận chuyển, dự trữ."
+        ] 
+    },
+    9: { 
+        chapter: "Chương 9", 
+        title: "Chiến lược Xúc tiến", 
+        color: "bg-red-600", 
+        icon: "fa-bullhorn", 
+        summary: "Truyền thông Marketing tích hợp (IMC) và hỗn hợp chiêu thị.", 
+        points: [
+            "5 công cụ: Quảng cáo, Khuyến mại, PR, Bán hàng cá nhân, Marketing trực tiếp.",
+            "Mô hình truyền thông: Mã hóa, Giải mã, Nhiễu, Phản hồi.",
+            "Chiến lược Đẩy (Push) và chiến lược Kéo (Pull).",
+            "Thiết lập ngân sách và thông điệp truyền thông hiệu quả."
+        ] 
+    }
+};
         /* --- 2. DATA: QUESTION BANK (ULAW SYLLABUS - REVISED) --- */
         const questionBank = {
             1: [
