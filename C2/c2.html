@@ -1,1 +1,949 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 2: Môi trường Marketing</title>
+    
+    <!-- Font Be Vietnam Pro và Lora -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Lora:ital,wght@0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS (CDN) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Be Vietnam Pro"', 'sans-serif'],
+                        serif: ['"Lora"', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
 
+    <style>
+        body {
+            background-color: #F4F6F8;
+            color: #333D4B;
+        }
+        
+        .golden-keyword {
+            background: linear-gradient(120deg, #FDE047 0%, #FEF08A 100%);
+            color: #713F12;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        .highlight-box {
+            box-shadow: inset 4px 0 0 0 currentColor;
+        }
+
+        .keyword-term {
+            display: inline-block;
+            font-weight: 600;
+            padding: 2px 8px;
+            margin: 0 4px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-bottom: 3px solid #BFDBFE;
+            background-color: #EFF6FF;
+            color: #1E3A8A;
+        }
+
+        .keyword-term:hover, .keyword-term.active {
+            background-color: #2563EB;
+            color: white;
+            border-bottom-color: #1E3A8A;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-8 px-4 md:px-0 font-sans">
+
+    <div class="max-w-5xl mx-auto bg-white shadow-[0_10px_40px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden border border-slate-100 relative">
+        
+        <!-- HERO BANNER -->
+        <div class="relative h-[350px] bg-[#1E3A8A] overflow-hidden flex flex-col justify-center items-center text-center p-8">
+            <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=1200" alt="Môi trường Marketing" class="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-overlay" />
+            <div class="absolute inset-0 bg-gradient-to-t from-[#1E3A8A]/95 to-[#1E3A8A]/40"></div>
+            
+            <div class="relative z-10 w-full max-w-3xl flex flex-col items-center">
+                <i class="fa-solid fa-book-open text-white/80 text-5xl mb-4"></i>
+                <h1 class="text-white font-serif text-[2.5rem] md:text-[3rem] font-bold mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] leading-tight">
+                    Chương 2: Môi trường Marketing
+                </h1>
+                <div class="bg-white/20 backdrop-blur-[5px] text-white px-6 py-2 rounded-full font-medium text-lg border border-white/30">
+                    Bản Tổng Hợp Cặn Kẽ: Từ Căn Bản Đến Chuyên Sâu
+                </div>
+            </div>
+        </div>
+
+        <!-- ULAW Banner -->
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 flex items-start md:items-center gap-4 shadow-inner">
+            <i class="fa-solid fa-graduation-cap text-amber-300 text-4xl shrink-0"></i>
+            <div>
+                <p class="font-bold text-base md:text-lg">Tài liệu tham khảo chuyên sâu (Bản cập nhật)</p>
+                <p class="text-sm text-blue-100 opacity-90 mt-1">Được tổng hợp và bổ sung các kiến thức "chống liệt" và "đánh trắc nghiệm" dựa trên bài giảng của cô Bành Trần Tường Vân (ULAW).</p>
+            </div>
+        </div>
+
+        <div class="p-8 md:p-14 space-y-16 text-lg leading-relaxed text-slate-800">
+            
+            <!-- Section I -->
+            <section>
+                <h2 class="text-[1.8rem] font-bold text-[#1E3A8A] border-b-2 border-slate-200 pb-4 mb-8 flex items-center gap-3">
+                    <i class="fa-solid fa-magnifying-glass text-[#3B82F6]"></i>
+                    I. VỊ TRÍ VÀ MỤC TIÊU
+                </h2>
+                <div class="space-y-6 text-[1rem]">
+                    <p>Khái niệm cốt lõi: <strong>Môi trường Marketing</strong> là tập hợp tất cả các nhân tố (có thể kiểm soát và không thể kiểm soát) tác động trực tiếp hoặc gián tiếp đến khả năng phục vụ khách hàng. Nó nằm ở Bước 1 trong <span class="keyword-term" data-term="Quy trình Marketing">Quy trình Marketing</span>.</p>
+                    
+                    <!-- Process Diagram -->
+                    <div class="my-8 relative bg-[#F8FAFC] py-10 px-4 md:px-8 rounded-2xl border border-slate-200 shadow-sm z-0">
+                        <div class="absolute top-[4.5rem] left-[15%] right-[15%] h-1.5 bg-[#DBEAFE] -z-10 hidden md:block rounded-full"></div>
+                        <div class="flex flex-col md:flex-row items-start justify-around gap-8 md:gap-4">
+                            <div class="flex flex-col items-center text-center max-w-[200px] group">
+                                <div class="h-16 flex items-center justify-center mb-4">
+                                    <div class="w-16 h-16 rounded-full bg-white text-[#3B82F6] flex items-center justify-center font-bold shadow-md border-4 border-[#EFF6FF] transition-all duration-300 group-hover:scale-110 group-hover:border-[#3B82F6] group-hover:bg-[#EFF6FF] text-2xl">
+                                        <i class="fa-solid fa-magnifying-glass"></i>
+                                    </div>
+                                </div>
+                                <div class="font-bold text-[1.05rem] text-[#1E3A8A] leading-snug mb-2">Bước 1: Phân tích môi trường</div>
+                                <div class="text-[0.85rem] text-slate-500 font-medium">Nghiên cứu thị trường & Môi trường</div>
+                            </div>
+                            
+                            <div class="flex flex-col items-center text-center max-w-[200px] opacity-50 group hover:opacity-100 transition-opacity">
+                                <div class="h-16 flex items-center justify-center mb-4">
+                                    <div class="w-14 h-14 rounded-full bg-white text-slate-400 flex items-center justify-center border-4 border-slate-100 transition-all duration-300 group-hover:scale-110 group-hover:border-slate-300 text-xl">
+                                        <i class="fa-solid fa-layer-group"></i>
+                                    </div>
+                                </div>
+                                <div class="font-bold text-sm text-slate-700 mb-2">Bước 2: Chiến lược</div>
+                                <div class="text-[0.85rem] text-slate-500">S-T-P</div>
+                            </div>
+                            
+                            <div class="flex flex-col items-center text-center max-w-[200px] opacity-50 group hover:opacity-100 transition-opacity">
+                                <div class="h-16 flex items-center justify-center mb-4">
+                                    <div class="w-14 h-14 rounded-full bg-white text-slate-400 flex items-center justify-center border-4 border-slate-100 transition-all duration-300 group-hover:scale-110 group-hover:border-slate-300 text-xl">
+                                        <i class="fa-solid fa-bullhorn"></i>
+                                    </div>
+                                </div>
+                                <div class="font-bold text-sm text-slate-700 mb-2">Bước 3: Thực thi</div>
+                                <div class="text-[0.85rem] text-slate-500">Marketing Mix</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#F8FAFC] border-l-4 border-[#3B82F6] p-6 rounded-r-lg flex flex-col md:flex-row gap-6 items-center">
+                        <div class="md:w-1/3 border-b md:border-b-0 md:border-r border-slate-300 pb-4 md:pb-0 pr-0 md:pr-6 text-center md:text-left">
+                            <span class="bg-[#DC2626] text-white px-2 py-1 rounded text-xs font-bold tracking-wider uppercase">Case Study Kinh Điển</span>
+                            <h4 class="text-[#1E3A8A] font-bold text-2xl mt-3">Blockbuster</h4>
+                        </div>
+                        <div class="md:w-2/3 text-[0.95rem] text-[#475569] leading-relaxed">
+                            Năm 2004 dẫn đầu thế giới về cho thuê băng đĩa. Năm 2010 nộp đơn phá sản. <br/><br/>
+                            <strong class="text-[#111827]">Lý do cốt lõi:</strong> Ngủ quên trên chiến thắng, không thích ứng được với sự thay đổi của môi trường <strong>công nghệ</strong> (Sự trỗi dậy của Netflix và Streaming).
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section II -->
+            <section>
+                <h2 class="text-[1.8rem] font-bold text-[#1E3A8A] border-b-2 border-slate-200 pb-4 mb-8 flex items-center gap-3">
+                    <i class="fa-solid fa-globe text-[#3B82F6]"></i>
+                    II. MÔI TRƯỜNG VĨ MÔ (MACRO)
+                </h2>
+                <p class="mb-8 bg-[#EFF6FF] p-4 border-l-4 border-[#3B82F6] rounded-r text-[#1E3A8A] text-[1rem]">
+                    Là các lực lượng xã hội rộng lớn tác động gián tiếp nhưng cực kỳ mạnh mẽ. Doanh nghiệp <strong>không thể kiểm soát</strong>, chỉ có thể thích nghi.
+                </p>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Deep Dive Card 1 -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-blue-500 text-blue-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-blue-100 text-blue-600 text-2xl"><i class="fa-solid fa-users"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Nhân khẩu học</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Nghiên cứu dân số: quy mô, cơ cấu độ tuổi (Gen Z, Baby Boomers), và xu hướng gia đình.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Nhân khẩu học trả lời câu hỏi 'Ai đang sống trên thị trường này?'. Sự thay đổi cấu trúc dân số trực tiếp thay đổi cơ cấu sản phẩm. Ví dụ, thanh niên độc thân nhiều thì căn hộ mini lên ngôi.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Sự trỗi dậy của gia đình <span class="keyword-term" data-term="DINK">DINK</span>. Nhóm này chi tiêu rất mạnh tay cho du lịch nghỉ dưỡng cao cấp, thú cưng và trải nghiệm xa xỉ.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Dive Card 2 -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-green-500 text-green-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-green-100 text-green-600 text-2xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Kinh tế</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Yếu tố ảnh hưởng trực tiếp sức mua: lạm phát, lãi suất, cơ cấu ngành kinh tế.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Thu nhập của người dân quyết định họ có mua hàng hay không. Khi kinh tế suy thoái, người dân thắt chặt hầu bao, ưu tiên hàng thiết yếu hoặc săn khuyến mãi.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Trong giai đoạn lạm phát, thay vì mua mỹ phẩm High-end đắt tiền, người tiêu dùng có xu hướng mua các bản 'Dupe' (hàng nội địa giá rẻ chức năng tương tự) dựa theo <span class="keyword-term" data-term="Marketing giá trị">Marketing giá trị</span>.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Dive Card 3 -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-purple-500 text-purple-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-purple-100 text-purple-600 text-2xl"><i class="fa-solid fa-microchip"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Công nghệ</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Sự phát triển AI, IoT, Big Data. Yếu tố mang tính 'hủy diệt' cao nhất nếu không theo kịp.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Công nghệ thay đổi cách sản phẩm được tạo ra và cách khách hàng mua sắm. Chu kỳ sống sản phẩm ngắn lại do công nghệ mới liên tục thay thế công nghệ cũ.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Mã QR và ví điện tử buộc toàn bộ hệ thống kinh doanh (từ siêu thị đến chợ truyền thống) phải trang bị để thanh toán nếu không muốn mất khách.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Dive Card 4 -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-red-500 text-red-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-red-100 text-red-600 text-2xl"><i class="fa-solid fa-scale-balanced"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Chính trị & Pháp luật</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Luật kinh doanh, thuế, độ ổn định chính trị, và rào cản thương mại từ chính phủ.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Mọi hoạt động Marketing phải nằm trong luật pháp. Chính phủ có thể thúc đẩy (trợ cấp) hoặc kìm hãm (thuế) một ngành. DN phân tích để né rủi ro pháp lý.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Khi chính phủ áp thuế tiêu thụ đặc biệt lên đồ uống có đường, các hãng nước ngọt ngay lập tức phải tung ra các dòng sản phẩm 'Zero Sugar' để lách thuế.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Deep Dive Card 5 -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-amber-500 text-amber-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-amber-100 text-amber-600 text-2xl"><i class="fa-solid fa-users"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Văn hóa - Xã hội</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Niềm tin, giá trị cốt lõi, tín ngưỡng và các trào lưu tiêu dùng.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Văn hóa định hình cách khách mua sắm. Những giá trị cốt lõi (tín ngưỡng, truyền thống) cực kỳ khó thay đổi. Tuy nhiên, <span class="keyword-term" data-term="Giá trị văn hóa thứ cấp">giá trị thứ cấp (trend)</span> thì biến đổi liên tục.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Trào lưu 'Eat clean' nở rộ khiến các hãng đồ ăn nhanh (KFC, McDonald's) phải cuống cuồng bổ sung thêm Salad và thịt thực vật vào thực đơn.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Dive Card 6 -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-teal-500 text-teal-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-teal-100 text-teal-600 text-2xl"><i class="fa-solid fa-leaf"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Tự nhiên</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Biến đổi khí hậu, tài nguyên khan hiếm và áp lực phát triển bền vững.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Thời tiết, thiên tai hay dịch bệnh là cú sốc khó lường. Vấn đề cạn kiệt tài nguyên buộc các công ty phải chuyển mình sang sản xuất xanh (ESG).</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Apple ghi điểm lớn khi quyết định loại bỏ nhựa trong hộp đựng và sử dụng 100% vật liệu tái chế cho các linh kiện bên trong iPhone.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="mt-12">
+                    <h3 class="text-[1.3rem] font-bold text-[#1F2937] flex items-center gap-2 mb-4">
+                        <span class="text-[#F59E0B]">✦</span> Bảng KPI Định lượng <span class="keyword-term" data-term="Mô hình PESTLE">PESTLE</span>
+                    </h3>
+                    
+                    <div class="bg-[#FFFBEB] p-5 border-l-4 border-[#F59E0B] rounded-r-lg mb-6 shadow-sm">
+                        <h4 class="font-bold text-[#92400E] text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-lightbulb"></i> Bảng này sinh ra để làm gì?</h4>
+                        <p class="text-[#B45309] text-[0.95rem] leading-relaxed">
+                            Các yếu tố Vĩ mô (Kinh tế, Xã hội...) thường rất <strong>trừu tượng và chung chung</strong>. Nếu chỉ phân tích bằng lời nói, nhà quản trị sẽ không có cơ sở ra quyết định. Bảng KPI này giúp biến những khái niệm mơ hồ đó thành <strong>các con số có thể đo lường được</strong>. <br/>
+                            <span class="italic mt-1 block opacity-90">Ví dụ: Thay vì nói cảm tính "Kinh tế đang xấu đi", nhà quản trị sẽ nhìn vào KPI "Tốc độ tăng GDP" hay "Tỷ lệ lạm phát (CPI)" để đánh giá chính xác mức độ rủi ro nhằm báo cáo cho sếp.</span>
+                        </p>
+                    </div>
+
+                    <div class="overflow-x-auto my-6 font-sans">
+                        <table class="w-full border-collapse shadow-sm rounded-lg overflow-hidden text-base border border-slate-200">
+                            <thead class="bg-[#1E3A8A] text-white">
+                                <tr>
+                                    <th class="p-4 text-left w-1/4 font-semibold border-r border-[#3B82F6]/30">Yếu tố</th>
+                                    <th class="p-4 text-left font-semibold border-r border-[#3B82F6]/30">Tác động chuyên sâu</th>
+                                    <th class="p-4 text-left w-1/4 font-semibold">KPI Đo lường</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-slate-200 bg-white hover:bg-[#EFF6FF] transition-colors">
+                                    <td class="p-4 font-bold flex items-center gap-3 text-[#1E3A8A] bg-slate-50"><i class="fa-solid fa-scale-balanced w-5 text-center"></i> Chính trị (P)</td>
+                                    <td class="p-4 text-slate-700">Sự ổn định, chính sách thuế, rào cản thương mại.</td>
+                                    <td class="p-4 font-bold text-[#0D9488] italic">Stability Index, Tax Rate</td>
+                                </tr>
+                                <tr class="border-b border-slate-200 bg-white hover:bg-[#EFF6FF] transition-colors">
+                                    <td class="p-4 font-bold flex items-center gap-3 text-[#1E3A8A] bg-slate-50"><i class="fa-solid fa-arrow-trend-up w-5 text-center"></i> Kinh tế (E)</td>
+                                    <td class="p-4 text-slate-700">Lạm phát, sức mua, tỷ giá, chu kỳ kinh tế.</td>
+                                    <td class="p-4 font-bold text-[#0D9488] italic">CPI, GDP Growth</td>
+                                </tr>
+                                <tr class="border-b border-slate-200 bg-white hover:bg-[#EFF6FF] transition-colors">
+                                    <td class="p-4 font-bold flex items-center gap-3 text-[#1E3A8A] bg-slate-50"><i class="fa-solid fa-users w-5 text-center"></i> Xã hội (S)</td>
+                                    <td class="p-4 text-slate-700">Xu hướng lối sống, nhân khẩu học, sức khỏe.</td>
+                                    <td class="p-4 font-bold text-[#0D9488] italic">CSI, Trend Adoption Rate</td>
+                                </tr>
+                                <tr class="border-b border-slate-200 bg-white hover:bg-[#EFF6FF] transition-colors">
+                                    <td class="p-4 font-bold flex items-center gap-3 text-[#1E3A8A] bg-slate-50"><i class="fa-solid fa-microchip w-5 text-center"></i> Công nghệ (T)</td>
+                                    <td class="p-4 text-slate-700">Đổi mới sáng tạo, AI, tự động hóa kênh bán.</td>
+                                    <td class="p-4 font-bold text-[#0D9488] italic">R&D Spend %, Digital Penetration</td>
+                                </tr>
+                                <tr class="border-b border-slate-200 bg-white hover:bg-[#EFF6FF] transition-colors">
+                                    <td class="p-4 font-bold flex items-center gap-3 text-[#1E3A8A] bg-slate-50"><i class="fa-solid fa-shield w-5 text-center"></i> Pháp lý (L)</td>
+                                    <td class="p-4 text-slate-700">Luật cạnh tranh, bảo vệ quyền lợi KH, lao động.</td>
+                                    <td class="p-4 font-bold text-[#0D9488] italic">Compliance Cost, Legal Suits</td>
+                                </tr>
+                                <tr class="bg-white hover:bg-[#EFF6FF] transition-colors">
+                                    <td class="p-4 font-bold flex items-center gap-3 text-[#1E3A8A] bg-slate-50"><i class="fa-solid fa-leaf w-5 text-center"></i> Tự nhiên (E)</td>
+                                    <td class="p-4 text-slate-700">Biến đổi khí hậu, sống xanh, tài nguyên.</td>
+                                    <td class="p-4 font-bold text-[#0D9488] italic">Carbon Footprint, Recycle %</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section III -->
+            <section>
+                <h2 class="text-[1.8rem] font-bold text-[#1E3A8A] border-b-2 border-slate-200 pb-4 mb-8 flex items-center gap-3">
+                    <i class="fa-solid fa-bullseye text-[#3B82F6]"></i>
+                    III. MÔI TRƯỜNG VI MÔ (MICRO)
+                </h2>
+                <p class="mb-8 bg-[#FFFBEB] p-4 border-l-4 border-[#F59E0B] rounded-r text-[#92400E] text-[1rem]">
+                    Các yếu tố sát sườn, tác động trực tiếp. Doanh nghiệp <strong>có thể kiểm soát hoặc tác động qua lại</strong> được một phần.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                    <!-- Deep Dive Card 1: Nội bộ -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-slate-500 text-slate-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-slate-200 text-slate-600 text-2xl"><i class="fa-solid fa-building"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900"><span class="keyword-term" data-term="Môi trường nội tại">Nội bộ</span>: Cổ đông & NV</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Sức mạnh từ bên trong doanh nghiệp, đặc biệt là nguồn vốn từ Cổ đông và nhân lực từ Người lao động.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Sự đồng lòng của nội bộ, từ giới chủ (Cổ đông duyệt ngân sách) đến người thực thi (Người lao động) là nội lực sống còn để thực thi các chiến dịch Marketing.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Đội ngũ Marketing tung chương trình 'Giao hỏa tốc 2h', nhưng do đãi ngộ kém nên nhân viên giao hàng đình công. Kết quả là giao trễ và bị khách hàng chê trách.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Dive Card 2: Nhà cung cấp -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-orange-500 text-orange-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-orange-100 text-orange-600 text-2xl"><i class="fa-solid fa-truck"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Nhà cung cấp</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Các cá nhân, tổ chức cung cấp nguyên vật liệu, máy móc, dịch vụ đầu vào.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Sự đứt gãy từ nhà cung cấp sẽ ảnh hưởng trực tiếp đến giá bán và tiến độ ra hàng. Bài toán của Marketing là phải quản trị rủi ro chuỗi cung ứng.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Quán trà sữa đang đông khách thì nhà cung cấp đột ngột báo hết trân châu. Quán buộc phải treo biển 'Hết món' khiến doanh thu sụt giảm ngay lập tức.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Dive Card 3: Khách hàng -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-indigo-500 text-indigo-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-indigo-100 text-indigo-600 text-2xl"><i class="fa-solid fa-bullseye"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Khách hàng</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Đối tượng phục vụ trung tâm của doanh nghiệp. Nơi doanh nghiệp thu về lợi nhuận.</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Thị hiếu, thu nhập và hành vi mua sắm của họ quyết định sự sống còn của sản phẩm. Doanh nghiệp phải phân tích rõ họ đang bán cho ai (B2C, B2B, Chính phủ...).</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Sự chuyển dịch hành vi: Khách trẻ hiện nay thích xem video ngắn (TikTok/Reels). Các thương hiệu lập tức đẩy mạnh Content Video để tiếp cận.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Deep Dive Card 4: Người trung gian -->
+                    <div class="p-6 rounded-2xl border-l-4 shadow-sm bg-white border-pink-500 text-pink-900 transition-all duration-300 flex flex-col h-full hover:shadow-md">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div class="p-3 rounded-lg bg-opacity-20 bg-pink-100 text-pink-600 text-2xl"><i class="fa-solid fa-bullhorn"></i></div>
+                            <h3 class="font-bold text-xl text-slate-900">Người trung gian</h3>
+                        </div>
+                        <p class="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">Các đối tác giúp quảng bá, phân phối và bán sản phẩm (Đại lý, Siêu thị, Vận chuyển, Agency).</p>
+                        
+                        <button class="js-deepdive-toggle flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group">
+                            <span class="flex items-center gap-2">
+                                <i class="fa-solid fa-lightbulb text-amber-500 group-hover:animate-pulse"></i>
+                                <span class="js-text">Xem phân tích chuyên sâu</span>
+                            </span>
+                            <i class="fa-solid fa-chevron-down js-icon-down"></i>
+                            <i class="fa-solid fa-chevron-up js-icon-up hidden"></i>
+                        </button>
+                        
+                        <div class="js-deepdive-content hidden mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+                            <div>
+                                <h4 class="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Phân Tích Chi Tiết</h4>
+                                <p class="text-base text-slate-800 font-serif leading-relaxed">Rất hiếm doanh nghiệp tự làm mọi thứ từ A-Z. Trung gian (nhà bán lẻ, Logistics, Ngân hàng) là cầu nối sống còn đưa sản phẩm ra thị trường.</p>
+                            </div>
+                            <div class="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+                                <h4 class="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><i class="fa-solid fa-bookmark"></i> Ví dụ thực tiễn</h4>
+                                <p class="text-base text-[#115E59] font-serif leading-relaxed italic">Khi nền tảng trung gian như Shopee, TikTok Shop tăng phí sàn, hàng loạt nhà bán hàng lao đao, buộc phải tăng giá bán lẻ hoặc tìm cách kéo khách về website riêng.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCALE CARDS FOR COMPETITORS -->
+                <h3 class="text-[1.3rem] font-bold text-[#1F2937] flex items-center gap-2 mb-6">
+                    <span class="text-[#F59E0B]">✦</span> Đối thủ cạnh tranh (4 Mức độ)
+                </h3>
+                <div class="flex flex-col gap-4 mb-10">
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row items-start gap-4 md:gap-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#93C5FD]"></div>
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-[#EFF6FF] text-[#3B82F6] text-2xl">
+                            <i class="fa-solid fa-wallet"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 text-[1.15rem] mb-2">1. Cạnh tranh nhu cầu/mong muốn (Giành ví tiền)</h4>
+                            <p class="text-slate-700 text-[0.95rem] mb-3 leading-relaxed font-sans">Ví tiền khách hàng có hạn, họ chọn chi cho giải trí hay mua sắm đồ dùng?</p>
+                            <div class="text-[0.9rem] text-[#059669] bg-[#F0FDF4] px-3 py-2 rounded-lg italic flex items-start gap-2">
+                                <i class="fa-solid fa-check mt-1"></i>
+                                <span><strong>Ví dụ:</strong> Bạn bán vé xem phim, bạn đang gián tiếp cạnh tranh với các nhà hàng sang trọng, vì khách đang cân nhắc 'Tối nay đi xem phim hay đi ăn?'</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row items-start gap-4 md:gap-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#60A5FA]"></div>
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-[#DBEAFE] text-[#2563EB] text-2xl">
+                            <i class="fa-solid fa-plane"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 text-[1.15rem] mb-2">2. Cạnh tranh Sản phẩm thay thế</h4>
+                            <p class="text-slate-700 text-[0.95rem] mb-3 leading-relaxed font-sans">Cùng thỏa mãn 1 nhu cầu nhưng bằng phương thức và công nghệ hoàn toàn khác.</p>
+                            <div class="text-[0.9rem] text-[#059669] bg-[#F0FDF4] px-3 py-2 rounded-lg italic flex items-start gap-2">
+                                <i class="fa-solid fa-check mt-1"></i>
+                                <span><strong>Ví dụ:</strong> Đi từ TP.HCM lên Đà Lạt: Hãng hàng không cạnh tranh với hãng xe giường nằm Phương Trang.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row items-start gap-4 md:gap-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#3B82F6]"></div>
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-[#BFDBFE] text-[#1D4ED8] text-2xl">
+                            <i class="fa-solid fa-car"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 text-[1.15rem] mb-2">3. Cạnh tranh Dòng sản phẩm</h4>
+                            <p class="text-slate-700 text-[0.95rem] mb-3 leading-relaxed font-sans">Cùng chủng loại nhưng khác phân khúc giá hoặc đối tượng sử dụng.</p>
+                            <div class="text-[0.9rem] text-[#059669] bg-[#F0FDF4] px-3 py-2 rounded-lg italic flex items-start gap-2">
+                                <i class="fa-solid fa-check mt-1"></i>
+                                <span><strong>Ví dụ:</strong> Toyota Vios (xe bình dân) vs Toyota Camry (xe hạng D sang trọng).</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row items-start gap-4 md:gap-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#1D4ED8]"></div>
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-[#93C5FD] text-[#1E3A8A] text-2xl">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 text-[1.15rem] mb-2">4. Cạnh tranh Nhãn hiệu</h4>
+                            <p class="text-slate-700 text-[0.95rem] mb-3 leading-relaxed font-sans">Trực tiếp và gay gắt nhất. Đây chính là các <span class="keyword-term" data-term="Đối thủ hiện hữu">đối thủ hiện hữu</span> đang trực tiếp bán trên cùng 1 ngách thị trường.</p>
+                            <div class="text-[0.9rem] text-[#059669] bg-[#F0FDF4] px-3 py-2 rounded-lg italic flex items-start gap-2">
+                                <i class="fa-solid fa-check mt-1"></i>
+                                <span><strong>Ví dụ:</strong> Cuộc chiến kinh điển: Coca-Cola vs Pepsi; Honda vs SYM.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SCALE CARDS FOR PUBLICS -->
+                <h3 class="text-[1.3rem] font-bold text-[#1F2937] flex items-center gap-2 mb-6">
+                    <span class="text-[#F59E0B]">✦</span> Công chúng - Publics (3 Loại)
+                </h3>
+                <div class="flex flex-col gap-4 mb-12">
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row items-start gap-4 md:gap-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#A7F3D0]"></div>
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-[#F0FDF4] text-[#059669] text-2xl">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 text-[1.15rem] mb-2">1. Công chúng tích cực</h4>
+                            <p class="text-slate-700 text-[0.95rem] mb-3 leading-relaxed font-sans">Fan trung thành, báo đài địa phương thân thiết. Mọi sai sót nhỏ của DN đều được họ bênh vực.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row items-start gap-4 md:gap-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#FDE68A]"></div>
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-[#FFFBEB] text-[#D97706] text-2xl">
+                            <i class="fa-solid fa-user-plus"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 text-[1.15rem] mb-2">2. Công chúng tìm kiếm</h4>
+                            <p class="text-slate-700 text-[0.95rem] mb-3 leading-relaxed font-sans">Nhóm Doanh nghiệp muốn tiếp cận và 'lấy lòng' (Khách hàng tiềm năng mới, các quỹ đầu tư).</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 md:p-6 flex flex-col md:flex-row items-start gap-4 md:gap-5 relative overflow-hidden shadow-sm hover:shadow-md transition-shadow">
+                        <div class="absolute left-0 top-0 bottom-0 w-2 bg-[#FECACA]"></div>
+                        <div class="w-14 h-14 rounded-xl flex items-center justify-center shrink-0 bg-[#FEF2F2] text-[#DC2626] text-2xl">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-slate-900 text-[1.15rem] mb-2">3. Công chúng không mong muốn</h4>
+                            <p class="text-slate-700 text-[0.95rem] mb-3 leading-relaxed font-sans">Đáng sợ nhất. Gồm các cá nhân/tổ chức chuyên 'bóc phốt', nhóm tẩy chay, hội bảo vệ môi trường cực đoan.</p>
+                            <div class="text-[0.9rem] text-[#059669] bg-[#F0FDF4] px-3 py-2 rounded-lg italic flex items-start gap-2">
+                                <i class="fa-solid fa-check mt-1"></i>
+                                <span class="text-rose-600"><strong>Ví dụ:</strong> Bạn không thể bán hàng nếu nhóm này liên tục đăng bài tiêu cực về bạn. Một cú 'phốt' có thể đập tan chiến dịch PR hàng tỷ đồng.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- --- GIẢI MÃ 5 LỰC LƯỢNG PORTER --- -->
+                <div class="bg-[#F8FAFC] rounded-2xl border border-[#E2E8F0] p-8 shadow-sm">
+                    <div class="text-center mb-8">
+                        <h4 class="font-extrabold text-[#1E3A8A] text-2xl flex items-center justify-center gap-2 mb-3">
+                            <i class="fa-solid fa-khanda"></i> Giải Mã <span class="keyword-term" data-term="Mô hình năm lực lượng cạnh tranh">5 Lực Lượng Porter</span>
+                        </h4>
+                        <p class="text-slate-600 text-[1rem]">Lợi nhuận của bạn đang bị "xâu xé" bởi 5 lực lượng ngầm. Phân tích để biết ngành này "dễ ăn" hay "xương xẩu".</p>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-red-500 hover:-translate-y-1 transition-transform">
+                            <h5 class="font-bold text-slate-900 mb-2">1. Cạnh tranh trong ngành</h5>
+                            <p class="text-[0.9rem] text-slate-700 mb-3">Mức độ khốc liệt giữa các đối thủ <strong>hiện tại</strong>. Đua nhau giảm giá, cắt lỗ để giành giật khách.</p>
+                            <div class="text-[0.85rem] bg-red-50 text-red-800 p-2 rounded italic"><strong>VD:</strong> Cuộc chiến "đốt tiền" freeship giữa Shopee, TikTok Shop.</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-amber-500 hover:-translate-y-1 transition-transform">
+                            <h5 class="font-bold text-slate-900 mb-2">2. Sản phẩm thay thế</h5>
+                            <p class="text-[0.9rem] text-slate-700 mb-3">'Kẻ giết người thầm lặng' khác lõi công nghệ nhưng thỏa mãn cùng nhu cầu.</p>
+                            <div class="text-[0.85rem] bg-amber-50 text-amber-800 p-2 rounded italic"><strong>VD:</strong> Taxi truyền thống bị hạ gục bởi Grab.</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-green-500 hover:-translate-y-1 transition-transform">
+                            <h5 class="font-bold text-slate-900 mb-2">3. Quyền lực Khách hàng</h5>
+                            <p class="text-[0.9rem] text-slate-700 mb-3">Khách hàng "ép giá" khi họ mua số lượng khổng lồ, hoặc thị trường có quá nhiều người bán.</p>
+                            <div class="text-[0.85rem] bg-green-50 text-green-800 p-2 rounded italic"><strong>VD:</strong> Siêu thị lớn ép giá các nhà sản xuất nông sản nhỏ.</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-blue-500 hover:-translate-y-1 transition-transform">
+                            <h5 class="font-bold text-slate-900 mb-2">4. Quyền lực Nhà cung cấp</h5>
+                            <p class="text-[0.9rem] text-slate-700 mb-3">Nhà cung cấp "làm giá" khi họ nắm nguyên liệu khan hiếm hoặc công nghệ lõi độc quyền.</p>
+                            <div class="text-[0.85rem] bg-blue-50 text-blue-800 p-2 rounded italic"><strong>VD:</strong> Hãng máy tính phải phụ thuộc và mua chip giá cao của Intel/Nvidia.</div>
+                        </div>
+                        <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm border-l-4 border-l-purple-500 hover:-translate-y-1 transition-transform md:col-span-2">
+                            <h5 class="font-bold text-slate-900 mb-2">5. Đối thủ tiềm ẩn (Mới)</h5>
+                            <p class="text-[0.9rem] text-slate-700 mb-3">Phụ thuộc vào <strong>Rào cản gia nhập</strong>. Lợi nhuận cao + Rào cản thấp = Nhiều đối thủ nhảy vào.</p>
+                            <div class="text-[0.85rem] bg-purple-50 text-purple-800 p-2 rounded italic"><strong>VD:</strong> Mở quán trà sữa vỉa hè cực dễ (rào cản thấp) &rarr; Đối thủ mọc như nấm. Mở Ngân hàng cần ngàn tỷ (rào cản cao) &rarr; Ít kẻ dám vào.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section IV -->
+            <section>
+                <h2 class="text-[1.8rem] font-bold text-[#1E3A8A] border-b-2 border-slate-200 pb-4 mb-8 flex items-center gap-3">
+                    <i class="fa-solid fa-chart-pie text-[#3B82F6]"></i>
+                    IV. PHÂN TÍCH CHIẾN LƯỢC: SWOT & TOWS
+                </h2>
+                
+                <div class="mb-10 space-y-6 text-[1rem]">
+                    <h3 class="text-[1.3rem] font-bold text-[#1F2937] flex items-center gap-2 mb-4">
+                        <span class="text-[#F59E0B]">✦</span> 1. Giải phẫu Ma trận <span class="keyword-term" data-term="Ma trận SWOT">SWOT</span>
+                    </h3>
+                    <p class="mb-6">SWOT không chỉ là liệt kê ngẫu nhiên, mà là sự <strong>phân định rạch ròi nguồn gốc</strong> để biết đâu là thứ mình có thể can thiệp được.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+                        <div class="p-5 bg-white border border-slate-200 border-t-4 border-t-indigo-500 rounded-lg shadow-sm">
+                            <h4 class="font-bold text-indigo-800 text-lg mb-3 flex items-center gap-2"><i class="fa-solid fa-building"></i> Nội lực (Bên trong)</h4>
+                            <ul class="list-disc pl-5 space-y-2 text-[0.95rem] text-slate-700">
+                                <li>Gồm: <strong>Điểm mạnh (S)</strong> và <strong>Điểm yếu (W)</strong>.</li>
+                                <li><strong>Nguồn gốc:</strong> Từ bản thân doanh nghiệp (Tài chính, nhân sự, công nghệ).</li>
+                                <li><strong>Đặc điểm:</strong> Doanh nghiệp <strong>có quyền kiểm soát trực tiếp</strong> và có thể chủ động thay đổi.</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="p-5 bg-white border border-slate-200 border-t-4 border-t-rose-500 rounded-lg shadow-sm">
+                            <h4 class="font-bold text-rose-800 text-lg mb-3 flex items-center gap-2"><i class="fa-solid fa-globe"></i> Ngoại lực (Bên ngoài)</h4>
+                            <ul class="list-disc pl-5 space-y-2 text-[0.95rem] text-slate-700">
+                                <li>Gồm: <strong>Cơ hội (O)</strong> và <strong>Thách thức (T)</strong>.</li>
+                                <li><strong>Nguồn gốc:</strong> Từ môi trường Vĩ mô (PESTLE) và Vi mô (5 Lực lượng).</li>
+                                <li><strong>Đặc điểm:</strong> <strong>Không thể kiểm soát</strong>. Chỉ có thể dự báo để né tránh rủi ro hoặc chớp thời cơ.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="bg-[#F0FDFA] p-6 border-l-4 border-[#0D9488] rounded-r-lg text-[#115E59]">
+                        <h4 class="font-bold text-lg mb-2 flex items-center gap-2"><i class="fa-solid fa-lightbulb"></i> Tại sao phải tiến lên <span class="keyword-term" data-term="Ma trận TOWS">TOWS</span>?</h4>
+                        <p class="text-[0.95rem] leading-relaxed">
+                            Ma trận SWOT bản chất chỉ là bước <em>"khám bệnh và liệt kê dữ liệu tĩnh"</em>. <strong>Ma trận TOWS</strong> ra đời với vai trò là <em>"đơn thuốc hành động động"</em>, bắt buộc người phân tích phải đem nội lực (S, W) <strong>ghép cặp</strong> với ngoại lực (O, T) để sinh ra các chiến lược tác chiến thực tế.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- TOWS MATRIX -->
+                <div class="my-10 font-sans bg-white p-8 rounded-2xl shadow-sm border border-slate-200">
+                    <h4 class="text-center text-[#1E3A8A] font-bold mb-8 flex items-center justify-center gap-3 uppercase tracking-widest text-lg">
+                        <i class="fa-solid fa-layer-group text-[#3B82F6]"></i> 2. Ma trận hành động chiến lược TOWS
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="p-6 rounded-xl border border-emerald-200 bg-[#F0FDF4] flex flex-col h-full hover:-translate-y-1 transition-transform shadow-sm">
+                            <h5 class="text-emerald-700 font-bold text-lg mb-3 border-b border-emerald-200 pb-2"><span class="keyword-term" data-term="Chiến lược S-O">CHIẾN LƯỢC S-O</span> (TẤN CÔNG)</h5>
+                            <p class="text-base text-slate-700 leading-relaxed mb-5 flex-grow">
+                                Dùng <strong>Sức mạnh nội tại (S)</strong> để chớp lấy <strong>Cơ hội thị trường (O)</strong>. Đây là vị thế lý tưởng nhất để mở rộng và phát triển.
+                            </p>
+                            <div class="bg-white p-4 rounded-lg border border-emerald-100 mt-auto shadow-sm">
+                                <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider block mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark"></i> Ví dụ quản trị:</span>
+                                <span class="text-sm text-slate-600 italic block leading-relaxed">Vinamilk tận dụng mạng lưới phân phối nội địa phủ sóng toàn quốc (S) để ra mắt dòng sữa hạt hữu cơ mới, đón đầu xu hướng tiêu dùng Eat Clean (O) đang lên.</span>
+                            </div>
+                        </div>
+                        <div class="p-6 rounded-xl border border-blue-200 bg-[#EFF6FF] flex flex-col h-full hover:-translate-y-1 transition-transform shadow-sm">
+                            <h5 class="text-blue-700 font-bold text-lg mb-3 border-b border-blue-200 pb-2"><span class="keyword-term" data-term="Chiến lược S-T">CHIẾN LƯỢC S-T</span> (PHÒNG THỦ)</h5>
+                            <p class="text-base text-slate-700 leading-relaxed mb-5 flex-grow">
+                                Dùng <strong>Sức mạnh nội tại (S)</strong> để chặn đứng hoặc né tránh các rủi ro, <strong>Thách thức (T)</strong> từ môi trường bên ngoài.
+                            </p>
+                            <div class="bg-white p-4 rounded-lg border border-blue-100 mt-auto shadow-sm">
+                                <span class="text-xs font-bold text-blue-600 uppercase tracking-wider block mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark"></i> Ví dụ quản trị:</span>
+                                <span class="text-sm text-slate-600 italic block leading-relaxed">Apple sử dụng nguồn dự trữ tiền mặt khổng lồ (S) để tự nghiên cứu và sản xuất chip M-series nhằm đối phó với rủi ro đứt gãy chuỗi cung ứng linh kiện (T).</span>
+                            </div>
+                        </div>
+                        <div class="p-6 rounded-xl border border-amber-200 bg-[#FFFBEB] flex flex-col h-full hover:-translate-y-1 transition-transform shadow-sm">
+                            <h5 class="text-amber-700 font-bold text-lg mb-3 border-b border-amber-200 pb-2"><span class="keyword-term" data-term="Chiến lược W-O">CHIẾN LƯỢC W-O</span> (THÍCH NGHI)</h5>
+                            <p class="text-base text-slate-700 leading-relaxed mb-5 flex-grow">
+                                Mượn <strong>Cơ hội bên ngoài (O)</strong> để "vá" lại các <strong>Điểm yếu nội tại (W)</strong> của doanh nghiệp.
+                            </p>
+                            <div class="bg-white p-4 rounded-lg border border-amber-100 mt-auto shadow-sm">
+                                <span class="text-xs font-bold text-amber-600 uppercase tracking-wider block mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark"></i> Ví dụ quản trị:</span>
+                                <span class="text-sm text-slate-600 italic block leading-relaxed">Một doanh nghiệp SME thiếu vốn mở mạng lưới cửa hàng bán lẻ (W) quyết định hợp tác với sàn TMĐT Shopee/TikTok để tiếp cận lượng truy cập khách hàng khổng lồ (O).</span>
+                            </div>
+                        </div>
+                        <div class="p-6 rounded-xl border border-rose-200 bg-[#FEF2F2] flex flex-col h-full hover:-translate-y-1 transition-transform shadow-sm">
+                            <h5 class="text-rose-700 font-bold text-lg mb-3 border-b border-rose-200 pb-2"><span class="keyword-term" data-term="Chiến lược W-T">CHIẾN LƯỢC W-T</span> (SINH TỒN)</h5>
+                            <p class="text-base text-slate-700 leading-relaxed mb-5 flex-grow">
+                                Chiến lược rút lui, thu hẹp quy mô khi doanh nghiệp có nhiều <strong>Điểm yếu (W)</strong> và đang đối mặt với <strong>Thách thức (T)</strong> gắt gao.
+                            </p>
+                            <div class="bg-white p-4 rounded-lg border border-rose-100 mt-auto shadow-sm">
+                                <span class="text-xs font-bold text-rose-600 uppercase tracking-wider block mb-2 flex items-center gap-1"><i class="fa-solid fa-bookmark"></i> Ví dụ quản trị:</span>
+                                <span class="text-sm text-slate-600 italic block leading-relaxed">Chuỗi F&B quyết định đóng cửa loạt chi nhánh mặt bằng đắt đỏ nhưng kinh doanh kém (W) trong bối cảnh kinh tế vĩ mô suy thoái, lạm phát cao (T) để bảo toàn dòng tiền.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Section V - EXAM CHEAT SHEET -->
+            <section class="mt-16 bg-[#F8FAFC] border border-[#E2E8F0] p-6 md:p-10 rounded-2xl relative shadow-sm">
+                <div class="absolute -top-6 left-8 bg-[#DC2626] text-white font-extrabold font-sans px-6 py-2 rounded-full shadow-lg transform -rotate-1 z-10 border-4 border-white text-sm md:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-crosshairs"></i> TỔNG ÔN TRẮC NGHIỆM (CHUẨN ULAW)
+                </div>
+                
+                <div class="text-center mb-10 pt-4">
+                    <p class="text-[#1E3A8A] font-bold text-lg max-w-3xl mx-auto">Trọng tâm của Chương 2 tập trung cao độ vào việc <span class="golden-keyword text-[#713F12]">phân biệt rạch ròi 3 nhóm môi trường</span>. Dưới đây là các "bẫy" cực độc từ ngân hàng đề mà bạn chắc chắn phải tránh:</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Cột Nội Tại -->
+                    <div class="bg-white rounded-xl shadow-sm border border-indigo-100 overflow-hidden flex flex-col">
+                        <div class="bg-indigo-50 p-4 border-b border-indigo-100">
+                            <h4 class="font-bold text-indigo-800 text-lg flex items-center gap-2"><i class="fa-solid fa-building"></i> 1. Môi trường Nội tại</h4>
+                        </div>
+                        <div class="p-5 flex-1">
+                            <p class="text-[0.9rem] text-slate-600 mb-4 font-medium italic">Gồm: Các phòng ban (Kế toán, R&D), văn hóa doanh nghiệp, cơ cấu tổ chức.</p>
+                            <div class="space-y-4">
+                                <div class="bg-[#FEF2F2] p-3 rounded-lg border border-[#FECACA] highlight-box text-[#991B1B]">
+                                    <span class="font-bold text-[#DC2626] block mb-1 text-sm"><i class="fa-solid fa-circle-exclamation mr-1"></i>Bẫy Mục đích</span>
+                                    <span class="text-[0.95rem]">Đề hỏi phân tích Nội tại để làm gì? Đáp án luôn là: Tìm ra <strong>Điểm mạnh (S)</strong> và <strong>Điểm yếu (W)</strong>.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cột Vi mô -->
+                    <div class="bg-white rounded-xl shadow-sm border-amber-100 overflow-hidden flex flex-col">
+                        <div class="bg-amber-50 p-4 border-b border-amber-100">
+                            <h4 class="font-bold text-amber-800 text-lg flex items-center gap-2"><i class="fa-solid fa-bullseye"></i> 2. Môi trường Vi mô</h4>
+                        </div>
+                        <div class="p-5 flex-1">
+                            <p class="text-[0.9rem] text-slate-600 mb-4 font-medium italic">Gồm 6 yếu tố: Bản thân DN, Nhà cung cấp, Trung gian, Khách hàng, Đối thủ, Công chúng.</p>
+                            <div class="space-y-4">
+                                <div class="bg-[#FEF2F2] p-3 rounded-lg border border-[#FECACA] highlight-box text-[#991B1B]">
+                                    <span class="font-bold text-[#DC2626] block mb-1 text-sm"><i class="fa-solid fa-circle-exclamation mr-1"></i>Bẫy Đối thủ</span>
+                                    <span class="text-[0.95rem]">Đề hỏi Honda và SYM là loại đối thủ gì? Đáp án là <span class="golden-keyword">Đối thủ hiện hữu</span> (không phải tiềm ẩn hay thay thế).</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cột Vĩ mô -->
+                    <div class="bg-white rounded-xl shadow-sm border-rose-100 overflow-hidden flex flex-col">
+                        <div class="bg-rose-50 p-4 border-b border-rose-100">
+                            <h4 class="font-bold text-rose-800 text-lg flex items-center gap-2"><i class="fa-solid fa-globe"></i> 3. Môi trường Vĩ mô</h4>
+                        </div>
+                        <div class="p-5 flex-1">
+                            <p class="text-[0.9rem] text-slate-600 mb-4 font-medium italic">Gồm 6 yếu tố (PESTLE): Chính trị, Kinh tế, Xã hội, Công nghệ, Pháp lý, Tự nhiên.</p>
+                            <div class="space-y-4">
+                                <div class="bg-[#FEF2F2] p-3 rounded-lg border border-[#FECACA] highlight-box text-[#991B1B]">
+                                    <span class="font-bold text-[#DC2626] block mb-1 text-sm"><i class="fa-solid fa-circle-exclamation mr-1"></i>Bẫy Phân loại</span>
+                                    <ul class="list-disc pl-4 text-[0.95rem] space-y-2">
+                                        <li>"Tỷ lệ lạm phát" &rarr; Thuộc <strong>Vĩ mô</strong>.</li>
+                                        <li>"Cơ cấu ngành kinh tế" &rarr; Thuộc yếu tố <strong>Kinh tế</strong> (Dễ nhầm Nhân khẩu học).</li>
+                                        <li>"Tín ngưỡng, giá trị nền văn hóa" &rarr; Yếu tố <strong>bền vững và ít thay đổi nhất</strong>.</li>
+                                    </ul>
+                                </div>
+                                <div class="bg-[#FEF2F2] p-3 rounded-lg border border-[#FECACA] highlight-box text-[#991B1B]">
+                                    <span class="font-bold text-[#DC2626] block mb-1 text-sm"><i class="fa-solid fa-circle-exclamation mr-1"></i>Bẫy Mục đích</span>
+                                    <span class="text-[0.95rem]">Mục đích phân tích PESTLE là để tìm ra <strong>Cơ hội (O)</strong> và <strong>Thách thức (T)</strong>.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+
+        <footer class="bg-[#F8FAFC] p-8 text-center text-slate-500 text-sm font-sans border-t border-slate-200">
+            &copy; Chương 2: Môi trường Marketing - Tài liệu thiết kế chuyên sâu (Phiên bản HTML thuần).
+        </footer>
+    </div>
+
+    <!-- Global Tooltip/Modal Context -->
+    <div id="glossary-modal" class="fixed inset-0 z-50 items-end md:items-center justify-center p-4 hidden">
+        <div id="glossary-overlay" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative w-full max-w-sm bg-white rounded-xl shadow-2xl overflow-hidden translate-y-0 opacity-100 transition-all duration-300">
+            <div class="bg-[#1E3A8A] p-4 flex justify-between items-center text-white">
+                <div class="flex items-center gap-2 font-sans font-bold text-[1rem]"><i class="fa-solid fa-book-open"></i> Sổ tay thuật ngữ</div>
+                <button id="glossary-close" class="p-1 hover:bg-white/20 rounded-full transition-colors w-8 h-8 flex items-center justify-center"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="p-6">
+                <h3 id="glossary-title" class="text-xl font-bold font-sans text-slate-900 mb-3">Term</h3>
+                <p id="glossary-desc" class="text-slate-700 text-[0.95rem] leading-relaxed font-serif">Definition</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- TỪ ĐIỂN THUẬT NGỮ (GLOSSARY DATA) ---
+        const dictionaryData = {
+            "Quy trình Marketing": "Chuỗi các bước tuần tự từ việc nghiên cứu thấu hiểu khách hàng, tạo ra giá trị đến việc xây dựng mối quan hệ và thu về lợi nhuận.",
+            "Môi trường vĩ mô": "Các yếu tố rộng lớn bao trùm ngành kinh doanh. Không thể kiểm soát, chỉ có thể dự báo và thích nghi (Tạo ra Cơ hội/Thách thức).",
+            "Nhân khẩu học": "Nghiên cứu về dân số: quy mô, độ tuổi, giới tính, nghề nghiệp, thu nhập, cấu trúc gia đình...",
+            "DINK": "Double Income, No Kids - Cấu trúc gia đình có 2 nguồn thu nhập nhưng không có con cái, thường có thu nhập khả dụng cao, chuộng du lịch và mua sắm.",
+            "Marketing giá trị": "Chiến lược tập trung vào chất lượng tốt với giá cả hợp lý nhất, thường dùng khi kinh tế suy định.",
+            "Môi trường vi mô": "Các yếu tố ở gần doanh nghiệp, tác động trực tiếp. Có thể kiểm soát một phần (Tạo ra Điểm mạnh/Điểm yếu).",
+            "Môi trường nội tại": "Môi trường bên trong doanh nghiệp (Phòng ban, cơ cấu tổ chức, văn hóa). Hoàn toàn kiểm soát được.",
+            "Mô hình PESTLE": "Phân tích vĩ mô qua 6 yếu tố: Political, Economic, Social, Technological, Legal, Environmental.",
+            "Mô hình năm lực lượng cạnh tranh": "Mô hình của Michael Porter phân tích: Đối thủ hiện tại, Đối thủ mới, SP thay thế, NCC, Khách hàng.",
+            "Đối thủ hiện hữu": "Những đối thủ đang trực tiếp bán sản phẩm tương tự trên cùng một thị trường (VD: Honda và SYM).",
+            "Ma trận SWOT": "Phân tích Điểm mạnh (S), Điểm yếu (W) từ nội tại và Cơ hội (O), Thách thức (T) từ bên ngoài.",
+            "Ma trận TOWS": "Kết hợp các yếu tố SWOT để hình thành chiến lược: S-O, S-T, W-O, W-T.",
+            "Chiến lược S-O": "Sử dụng điểm mạnh để tận dụng các cơ hội (Chiến lược Tấn công).",
+            "Chiến lược S-T": "Sử dụng điểm mạnh để giảm thiểu các mối đe dọa (Chiến lược Phòng thủ).",
+            "Chiến lược W-O": "Khắc phục điểm yếu bằng cách tận dụng các cơ hội (Chiến lược Thích nghi).",
+            "Chiến lược W-T": "Giảm thiểu điểm yếu và tránh các đe dọa (Chiến lược Sinh tồn)."
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // --- XỬ LÝ ĐÓNG MỞ THẺ PHÂN TÍCH SÂU (DEEP DIVE CARD) ---
+            const deepDiveBtns = document.querySelectorAll('.js-deepdive-toggle');
+            deepDiveBtns.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    const content = this.nextElementSibling;
+                    const iconDown = this.querySelector('.js-icon-down');
+                    const iconUp = this.querySelector('.js-icon-up');
+                    const textSpan = this.querySelector('.js-text');
+
+                    if (content.classList.contains('hidden')) {
+                        content.classList.remove('hidden');
+                        iconDown.classList.add('hidden');
+                        iconUp.classList.remove('hidden');
+                        textSpan.textContent = "Thu gọn phân tích";
+                    } else {
+                        content.classList.add('hidden');
+                        iconDown.classList.remove('hidden');
+                        iconUp.classList.add('hidden');
+                        textSpan.textContent = "Xem phân tích chuyên sâu";
+                    }
+                });
+            });
+
+            // --- XỬ LÝ TỪ ĐIỂN THUẬT NGỮ (GLOSSARY) ---
+            const modal = document.getElementById('glossary-modal');
+            const modalTitle = document.getElementById('glossary-title');
+            const modalDesc = document.getElementById('glossary-desc');
+            const overlay = document.getElementById('glossary-overlay');
+            const closeBtn = document.getElementById('glossary-close');
+            const keywords = document.querySelectorAll('.keyword-term');
+
+            const openModal = (term, element) => {
+                // Xóa active ở các từ khóa khác
+                keywords.forEach(k => k.classList.remove('active', 'bg-blue-600', 'text-white'));
+                element.classList.add('active', 'bg-blue-600', 'text-white');
+
+                modalTitle.textContent = term;
+                modalDesc.innerHTML = dictionaryData[term] || "Đang cập nhật định nghĩa cho thuật ngữ này...";
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            };
+
+            const closeModal = () => {
+                modal.classList.add('hidden');
+                modal.classList.remove('flex');
+                keywords.forEach(k => k.classList.remove('active', 'bg-blue-600', 'text-white'));
+            };
+
+            keywords.forEach(kw => {
+                kw.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const term = this.getAttribute('data-term');
+                    openModal(term, this);
+                });
+            });
+
+            overlay.addEventListener('click', closeModal);
+            closeBtn.addEventListener('click', closeModal);
+        });
+    </script>
+</body>
+</html>
