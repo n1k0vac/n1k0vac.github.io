@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 4: Nghiên cứu Marketing</title>
+    <!-- Font Be Vietnam Pro cực chuẩn cho Tiếng Việt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-body: #F4F6F8;
+            --bg-paper: #FFFFFF;
+            --text-main: #333D4B;
+            --text-muted: #6B7280;
+            --primary: #3B82F6;
+            --primary-dark: #1E3A8A;
+            --primary-light: #EFF6FF;
+            --accent-teal: #0D9488;
+            --accent-teal-bg: #F0FDFA;
+            --accent-orange: #F59E0B;
+            --exam-red: #DC2626;
+            --exam-bg: #FEF2F2;
+            --radius: 16px;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.7;
+            font-size: 16px;
+            padding: 30px 20px;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background-color: var(--bg-paper);
+            border-radius: var(--radius);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        /* --- HERO BANNER --- */
+        .hero-banner {
+            position: relative;
+            width: 100%;
+            height: 350px;
+            background-color: var(--primary-dark);
+            overflow: hidden;
+        }
+        
+        .hero-banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(to top, rgba(30, 58, 138, 0.9), rgba(30, 58, 138, 0.3));
+        }
+
+        .hero-content h1 {
+            color: #FFFFFF;
+            font-size: 3rem;
+            font-family: 'Lora', serif;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .hero-content .subtitle {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(5px);
+            color: #FFFFFF;
+            padding: 8px 24px;
+            border-radius: 30px;
+            font-weight: 500;
+            font-size: 1.1rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .content-body { padding: 50px 60px; }
+        h2, h3, h4 { color: #111827; font-weight: 700; }
+
+        h2 {
+            font-size: 1.8rem;
+            margin: 60px 0 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #E5E7EB;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--primary-dark);
+        }
+        h2 i { color: var(--primary); font-size: 1.6rem; }
+
+        h3 {
+            font-size: 1.3rem;
+            margin: 40px 0 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #1F2937;
+        }
+        h3::before { content: "✦"; color: var(--accent-orange); font-size: 1.2rem; }
+
+        p, ul, ol { margin-bottom: 18px; }
+        ul, ol { padding-left: 24px; }
+        li { margin-bottom: 10px; }
+        li::marker { color: var(--primary); }
+
+        /* --- TỪ KHÓA TƯƠNG TÁC --- */
+        .keyword {
+            background-color: var(--primary-light);
+            color: var(--primary-dark);
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.2s;
+            border-bottom: 2px solid #BFDBFE;
+        }
+        .keyword:hover, .keyword.active {
+            background-color: var(--primary);
+            color: white;
+            border-bottom-color: var(--primary-dark);
+        }
+
+        .tooltiptext {
+            visibility: hidden;
+            width: 300px;
+            background-color: #1F2937;
+            color: #F9FAFB;
+            text-align: left;
+            border-radius: 8px;
+            padding: 16px;
+            position: absolute;
+            z-index: 100;
+            bottom: calc(100% + 12px);
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+            font-weight: 400;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            pointer-events: none;
+        }
+        .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -6px;
+            border-width: 6px;
+            border-style: solid;
+            border-color: #1F2937 transparent transparent transparent;
+        }
+        .keyword:hover .tooltiptext, .keyword.active .tooltiptext { visibility: visible; opacity: 1; }
+
+        /* --- EXAM TIPS BOX (Ghi chú giảng viên) --- */
+        .exam-tip {
+            background-color: var(--exam-bg);
+            border: 2px solid #FECACA;
+            border-left: 6px solid var(--exam-red);
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin: 25px 0;
+            position: relative;
+        }
+        .exam-tip-title {
+            color: var(--exam-red);
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+        }
+        .golden-keyword {
+            background: linear-gradient(120deg, #FDE047 0%, #FEF08A 100%);
+            color: #713F12;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+
+        /* --- TRÍCH DẪN & KHỐI VÍ DỤ --- */
+        .quote-box {
+            border-left: 4px solid var(--primary);
+            padding: 12px 20px;
+            margin-bottom: 15px;
+            background: #F8FAFC;
+            border-radius: 0 8px 8px 0;
+            color: #475569;
+        }
+        
+        details.example-box {
+            background-color: var(--accent-teal-bg);
+            border-radius: 12px;
+            margin: 20px 0 30px;
+            border: 1px solid #CCFBF1;
+        }
+        summary.example-summary {
+            padding: 16px 24px;
+            font-weight: 600;
+            color: var(--accent-teal);
+            cursor: pointer;
+            list-style: none;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        summary.example-summary::-webkit-details-marker { display: none; }
+        summary.example-summary::before {
+            content: "\f0eb";
+            font-family: "Font Awesome 6 Free";
+            font-weight: 900;
+            margin-right: 5px;
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+        summary.example-summary::after {
+            content: "Nhấn để xem Giải thích & Ví dụ";
+            font-family: 'Be Vietnam Pro', sans-serif;
+            border-bottom: 1px dashed var(--accent-teal);
+            margin-left: auto;
+            flex-shrink: 0;
+        }
+        details.example-box[open] summary.example-summary::after { content: "Thu gọn"; border-bottom: none; }
+        .example-content { padding: 0 24px 20px 24px; color: #115E59; }
+
+        /* --- SƠ ĐỒ MIS MỚI --- */
+        .mis-modern-container {
+            background: #F8FAFC;
+            border-radius: 20px;
+            padding: 40px;
+            margin: 20px 0;
+            border: 1px solid #E2E8F0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .mis-core-block {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            padding: 20px 40px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(30, 58, 138, 0.2);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 450px;
+        }
+        .mis-branches { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; }
+        .mis-branch-item {
+            background: white; border: 1px solid #E2E8F0; padding: 20px; border-radius: 12px;
+            display: flex; align-items: center; gap: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        /* --- BẢNG SO SÁNH SƠ CẤP & THỨ CẤP --- */
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 25px 0;
+        }
+        .comp-card {
+            background: #FFFFFF;
+            border: 2px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+        }
+        .comp-card.primary { border-top: 6px solid var(--primary); }
+        .comp-card.secondary { border-top: 6px solid var(--accent-orange); }
+        .comp-title { font-size: 1.25rem; font-weight: 800; margin-bottom: 15px; display: flex; align-items: center; gap: 10px;}
+        .comp-card.primary .comp-title { color: var(--primary-dark); }
+        .comp-card.secondary .comp-title { color: #B45309; }
+        .comp-section { margin-bottom: 15px; }
+        .comp-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; color: #94A3B8; font-weight: 700; margin-bottom: 5px; display: block;}
+        .pro-con-list { list-style: none; padding: 0; }
+        .pro-con-list li { display: flex; align-items: flex-start; gap: 8px; font-size: 0.95rem; margin-bottom: 8px;}
+        .pro-con-list li.pro i { color: #10B981; margin-top: 4px;}
+        .pro-con-list li.con i { color: #EF4444; margin-top: 4px;}
+
+        /* --- QUY TRÌNH & PIPELINE --- */
+        .timeline { margin: 40px 0; padding-left: 20px; }
+        .step { position: relative; padding-left: 45px; padding-bottom: 40px; border-left: 2px dashed #CBD5E1; }
+        .step:last-child { border-left: 2px solid transparent; padding-bottom: 0; }
+        .step-num {
+            position: absolute; left: -20px; top: 0; width: 38px; height: 38px;
+            background: var(--primary-dark); color: white; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; font-weight: 700;
+            font-size: 1.1rem; box-shadow: 0 0 0 6px var(--bg-paper);
+        }
+
+        /* Sơ đồ Ống */
+        .pipeline-wrapper { display: flex; justify-content: space-between; align-items: flex-start; position: relative; margin: 30px 0; background: #F8FAFC; padding: 30px 20px; border-radius: 12px; }
+        .pipeline-wrapper::before { content: ''; position: absolute; top: 55px; left: 10%; right: 10%; height: 4px; background: #DBEAFE; z-index: 1; }
+        .pipe-node { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; width: 18%; text-align: center; }
+        .pipe-icon { width: 54px; height: 54px; border-radius: 50%; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 12px; border: 4px solid var(--primary-light); box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .pipe-text { font-size: 0.85rem; font-weight: 600; color: #475569; line-height: 1.4;}
+
+        /* --- THANG ĐO LƯỜNG (Card Stack) --- */
+        .scale-cards { display: flex; flex-direction: column; gap: 16px; margin: 20px 0; }
+        .scale-card { background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; display: flex; align-items: flex-start; gap: 20px; position: relative; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.02); }
+        .scale-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; }
+        .scale-card:nth-child(1)::before { background: #93C5FD; }
+        .scale-card:nth-child(2)::before { background: #60A5FA; }
+        .scale-card:nth-child(3)::before { background: #3B82F6; }
+        .scale-card:nth-child(4)::before { background: #1D4ED8; }
+        .scale-number { font-size: 1.4rem; font-weight: 800; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 12px; flex-shrink: 0; }
+        .scale-card:nth-child(1) .scale-number { background: #EFF6FF; color: #3B82F6; }
+        .scale-card:nth-child(2) .scale-number { background: #DBEAFE; color: #2563EB; }
+        .scale-card:nth-child(3) .scale-number { background: #BFDBFE; color: #1D4ED8; }
+        .scale-card:nth-child(4) .scale-number { background: #93C5FD; color: #1E3A8A; }
+        .scale-content h4 { color: #111827; margin-bottom: 6px; font-size: 1.15rem; }
+
+        /* Chọn mẫu lưới */
+        .sampling-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px;}
+        .sample-card { background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0; text-align: center;}
+        .sample-card i { font-size: 1.5rem; color: var(--primary); margin-bottom: 10px;}
+
+        /* CSS MỚI CHO 6 TIÊU CHÍ PHÂN LOẠI */
+        .criteria-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+        .criteria-card { background: white; border: 1px solid #E2E8F0; border-radius: 12px; padding: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: all 0.2s; }
+        .criteria-card:hover { transform: translateY(-3px); box-shadow: 0 10px 15px rgba(0,0,0,0.05); }
+        .criteria-card.hot { border: 2px solid var(--exam-red); background: var(--exam-bg); }
+        .criteria-card h5 { color: var(--primary-dark); font-size: 1.05rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .criteria-card.hot h5 { color: var(--exam-red); }
+
+        @media (max-width: 768px) {
+            .content-body { padding: 30px 20px; }
+            .hero-content h1 { font-size: 2.2rem; }
+            .mis-branches, .comparison-grid, .sampling-grid, .criteria-grid { grid-template-columns: 1fr; }
+            .pipeline-wrapper { flex-direction: column; align-items: center; gap: 20px; }
+            .pipeline-wrapper::before { display: none; }
+            .pipe-node { width: 100%; flex-direction: row; text-align: left; gap: 15px;}
+            .scale-card { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="hero-banner">
+        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80" 
+             alt="" 
+             onerror="this.src='https://placehold.co/1200x350/1E3A8A/FFFFFF?text=Nghien+Cuu+Marketing'">
+        <div class="hero-content">
+            <h1>Nghiên cứu Marketing</h1>
+            <div class="subtitle">Chương 4 — Bước 1 trong Quy trình Marketing</div>
+        </div>
+    </div>
+
+    <div class="content-body">
+        
+        <div style="background: linear-gradient(90deg, #F59E0B, #D97706); color: white; padding: 12px 20px; border-radius: 8px; margin-bottom: 40px; font-weight: 600; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 10px rgba(245, 158, 11, 0.2);">
+            <i class="fa-solid fa-graduation-cap" style="font-size: 1.2rem;"></i> 
+            Bản cập nhật bao gồm các "Từ khóa vàng" và Kiến thức Cô giảng thêm (Chuyên trị trắc nghiệm & Thi đóng).
+        </div>
+
+        <!-- ==========================================
+             PHẦN I
+        =========================================== -->
+        <h2><i class="fa-solid fa-chart-pie"></i> I. Khái niệm & Vai trò</h2>
+        
+        <h3>1. Khái niệm</h3>
+        <p><strong>Nghiên cứu Marketing:</strong> Là quá trình thiết kế, thu thập, phân tích và báo cáo các thông tin có thể được sử dụng để giải quyết một số vấn đề riêng biệt.</p>
+        
+        <h3>2. Vai trò của Nghiên cứu Marketing</h3>
+        <div class="exam-tip" style="background: #FFFBEB; border-color: #FDE68A; border-left-color: #F59E0B;">
+            <div class="exam-tip-title" style="color: #B45309;"><i class="fa-solid fa-key"></i> Từ khóa vàng đánh trắc nghiệm</div>
+            Nghiên cứu Marketing <span class="golden-keyword">không đảm bảo thành công 100%</span>, nhưng nó cung cấp thông tin nền tảng, định hướng cho mọi quyết định Quản trị Marketing của doanh nghiệp (<span class="keyword">Phân khúc<span class="tooltiptext">Chia thị trường lớn thành các nhóm khách hàng nhỏ có chung đặc điểm (độ tuổi, thu nhập...).</span></span>, chọn <span class="keyword">thị trường mục tiêu<span class="tooltiptext">Nhóm khách hàng tiềm năng nhất mà công ty quyết định sẽ dồn lực để bán hàng.</span></span>, 4P...).
+        </div>
+
+        <h3>3. Hệ thống quản trị thông tin Marketing (MIS)</h3>
+        <div class="mis-modern-container">
+            <div class="mis-core-block">
+                <i class="fa-solid fa-server" style="font-size: 2.5rem; margin-bottom: 10px;"></i>
+                <h4 style="color: white; margin:0 0 5px 0;">Hệ thống Quản trị (MIS)</h4>
+                <p style="color: rgba(255,255,255,0.9); font-size: 0.9rem; margin:0;">Hệ thống lớn, hoạt động thường xuyên & liên tục</p>
+            </div>
+            <div class="mis-branches">
+                <div class="mis-branch-item">
+                    <div class="mis-icon"><i class="fa-solid fa-file-invoice"></i></div>
+                    <div><h5 style="margin:0; font-size: 1rem;">1. Báo cáo nội bộ</h5><p style="margin:0; font-size: 0.85rem; color:#64748B;">Lấy số liệu kế toán, bán hàng.</p></div>
+                </div>
+                <div class="mis-branch-item">
+                    <div class="mis-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                    <div><h5 style="margin:0; font-size: 1rem;">2. Thu thập TT (Tình báo)</h5><p style="margin:0; font-size: 0.85rem; color:#64748B;">Quan sát môi trường bên ngoài.</p></div>
+                </div>
+                <div class="mis-branch-item" style="border: 2px solid var(--primary);">
+                    <div class="mis-icon"><i class="fa-solid fa-magnifying-glass"></i></div>
+                    <div><h5 style="margin:0; font-size: 1rem; color: var(--primary-dark);">3. Nghiên cứu (MR)</h5><p style="margin:0; font-size: 0.85rem; color:#64748B;">Giải quyết vấn đề đột xuất, cụ thể.</p></div>
+                </div>
+                <div class="mis-branch-item">
+                    <div class="mis-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    <div><h5 style="margin:0; font-size: 1rem;">4. Phân tích thông tin</h5><p style="margin:0; font-size: 0.85rem; color:#64748B;">Xử lý dữ liệu ra quyết định.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CÔ GIẢNG THÊM: MIS vs MR -->
+        <div class="exam-tip">
+            <div class="exam-tip-title"><i class="fa-solid fa-bullhorn"></i> Cô giảng thêm: MIS ưu việt hơn MR thế nào?</div>
+            <ul style="margin-bottom: 0;">
+                <li><strong>MIS (Hệ thống thông tin):</strong> Là một hệ thống lớn bao trùm, hoạt động <span class="golden-keyword">thường xuyên và liên tục</span>.</li>
+                <li><strong>MR (Nghiên cứu Marketing):</strong> Chỉ là 1 trong 4 hệ thống con của MIS. Nó mang tính chất <span class="golden-keyword">đột xuất</span>, chỉ được thực hiện khi có một bài toán/vấn đề cụ thể cần giải quyết ngay.</li>
+            </ul>
+        </div>
+
+        <!-- ==========================================
+             PHẦN II & III
+        =========================================== -->
+        <h2><i class="fa-solid fa-layer-group"></i> II. 6 Tiêu chí Phân loại Nghiên cứu Marketing</h2>
+        
+        <div class="quote-box" style="border-left-color: var(--accent-orange); background: var(--accent-orange-bg);">
+            <strong>Theo bài giảng cô Vân:</strong> Không có một con số cố định cho "loại hình nghiên cứu", mà cô chia các loại hình này ra theo <strong>6 tiêu chí phân loại</strong> khác nhau:
+        </div>
+
+        <div class="criteria-grid">
+            <div class="criteria-card">
+                <h5><i class="fa-solid fa-magnifying-glass-plus"></i> 1. Mức độ chuyên sâu</h5>
+                <p style="font-size: 0.9rem; margin:0; color:#475569;">Gồm nghiên cứu <strong>thăm dò</strong> (khám phá và sơ bộ).</p>
+                <div style="background: #F0FDF4; color: #166534; padding: 8px; border-radius: 6px; font-size: 0.85rem; margin-top: 10px; border-left: 3px solid #22C55E;"><strong>Ví dụ:</strong> Bán thử nghiệm một loại nước mắm mới ở 1 siêu thị xem phản ứng khách ra sao (Thăm dò).</div>
+            </div>
+            <div class="criteria-card">
+                <h5><i class="fa-solid fa-cubes"></i> 2. Mô hình nghiên cứu</h5>
+                <p style="font-size: 0.9rem; margin:0; color:#475569;">Gồm nghiên cứu <strong>mô tả</strong> và nghiên cứu <strong>nhân quả</strong>.</p>
+                <div style="background: #F0FDF4; color: #166534; padding: 8px; border-radius: 6px; font-size: 0.85rem; margin-top: 10px; border-left: 3px solid #22C55E;"><strong>Ví dụ:</strong> "Ai là người mua trà sữa?" (Mô tả) vs "Tại sao giảm giá 50% mà khách vẫn không mua?" (Nhân quả).</div>
+            </div>
+            <div class="criteria-card hot">
+                <h5><i class="fa-solid fa-scale-balanced"></i> 3. Tính chất</h5>
+                <p style="font-size: 0.9rem; margin:0; color:#991B1B;">Gồm nghiên cứu <span class="keyword">định tính<span class="tooltiptext">Tập trung vào cảm nhận, lý do sâu xa, thường phỏng vấn ít người (VD: Hỏi "Tại sao bạn thích vị này?").</span></span> và <span class="keyword">định lượng<span class="tooltiptext">Đo lường bằng con số, tỷ lệ %, cần khảo sát mẫu lớn (VD: 85% người chọn màu Đỏ).</span></span>.</p>
+                <span class="golden-keyword" style="font-size: 0.75rem; display:inline-block; margin-top:8px;">★ TRỌNG TÂM THI</span>
+            </div>
+            <div class="criteria-card hot">
+                <h5><i class="fa-solid fa-database"></i> 4. Nguồn dữ liệu</h5>
+                <p style="font-size: 0.9rem; margin:0; color:#991B1B;">Gồm nghiên cứu tại bàn (<span class="keyword">thứ cấp<span class="tooltiptext">Dữ liệu CŨ đã có sẵn trên mạng, báo đài, hoặc báo cáo nội bộ từ năm ngoái.</span></span>) và hiện trường (<span class="keyword">sơ cấp<span class="tooltiptext">Dữ liệu MỚI do chính doanh nghiệp tự đi khảo sát ngoài thực tế.</span></span>).</p>
+                <span class="golden-keyword" style="font-size: 0.75rem; display:inline-block; margin-top:8px;">★ TRỌNG TÂM THI</span>
+            </div>
+            <div class="criteria-card">
+                <h5><i class="fa-solid fa-clock-rotate-left"></i> 5. Tính liên tục</h5>
+                <p style="font-size: 0.9rem; margin:0; color:#475569;">Gồm nghiên cứu <strong>đột xuất</strong>, <strong>kết hợp</strong> và <strong>thường xuyên</strong>.</p>
+                <div style="background: #F0FDF4; color: #166534; padding: 8px; border-radius: 6px; font-size: 0.85rem; margin-top: 10px; border-left: 3px solid #22C55E;"><strong>Ví dụ:</strong> Bỗng nhiên bị bóc phốt trên mạng ➔ Tổ chức khảo sát ngay lập tức (Đột xuất).</div>
+            </div>
+            <div class="criteria-card">
+                <h5><i class="fa-solid fa-bullseye"></i> 6. Mục tiêu nghiên cứu</h5>
+                <p style="font-size: 0.9rem; margin:0; color:#475569;">Gồm nghiên cứu <strong>cơ bản</strong> và nghiên cứu <strong>ứng dụng</strong>.</p>
+                <div style="background: #F0FDF4; color: #166534; padding: 8px; border-radius: 6px; font-size: 0.85rem; margin-top: 10px; border-left: 3px solid #22C55E;"><strong>Ví dụ:</strong> Nghiên cứu hành vi Gen Z nói chung (Cơ bản) vs Nghiên cứu cách bán giày cho Gen Z của hãng Nike (Ứng dụng).</div>
+            </div>
+        </div>
+
+        <div class="exam-tip">
+            <div class="exam-tip-title"><i class="fa-solid fa-fire"></i> Lời dặn dò thi cử</div>
+            Trong bài thi, các câu hỏi thường xoay nhiều nhất quanh việc phân biệt nhóm <span class="golden-keyword">Định tính vs Định lượng</span> hoặc <span class="golden-keyword">Dữ liệu Sơ cấp vs Thứ cấp</span>.
+        </div>
+
+        <h3 style="margin-top: 50px;">III. Phân tích sâu: Nguồn Dữ Liệu Sơ Cấp & Thứ Cấp <span style="color: var(--exam-red); font-size: 1rem;">(Chắc chắn ra thi)</span></h3>
+        
+        <div class="comparison-grid">
+            <!-- Thứ cấp -->
+            <div class="comp-card secondary">
+                <div class="comp-title"><i class="fa-solid fa-folder-open"></i> Dữ liệu Thứ cấp (Tại bàn)</div>
+                <div class="comp-section">
+                    <span class="comp-label">Khái niệm & Nguồn</span>
+                    <p style="font-size: 0.95rem;">Là dữ liệu <span class="golden-keyword">đã có sẵn từ trước</span>, do người khác thu thập cho mục đích khác.<br>
+                    <strong>Nguồn:</strong> Bên trong DN (báo cáo doanh thu, kế toán) hoặc Bên ngoài DN (Tổng cục thống kê, báo chí, mạng).</p>
+                    <div style="background: #FFF7ED; color: #C2410C; padding: 10px; border-radius: 8px; font-size: 0.9rem; margin-top: 10px; border: 1px dashed #FDBA74;">
+                        <i class="fa-solid fa-lightbulb"></i> <strong>Ví dụ:</strong> Lên mạng tải "Báo cáo thị trường F&B 2023 của Nielsen" về làm dữ liệu tham khảo cho đồ án môn học.
+                    </div>
+                </div>
+                <div class="comp-section">
+                    <span class="comp-label">Đánh giá</span>
+                    <ul class="pro-con-list">
+                        <li class="pro"><i class="fa-solid fa-circle-check"></i> Tiết kiệm chi phí.</li>
+                        <li class="pro"><i class="fa-solid fa-circle-check"></i> Thu thập rất nhanh chóng.</li>
+                        <li class="con"><i class="fa-solid fa-circle-xmark"></i> Cũ, có thể không sát với mục tiêu hiện tại.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Sơ cấp -->
+            <div class="comp-card primary">
+                <div class="comp-title"><i class="fa-solid fa-clipboard-user"></i> Dữ liệu Sơ cấp (Hiện trường)</div>
+                <div class="comp-section">
+                    <span class="comp-label">Khái niệm & Phương pháp</span>
+                    <p style="font-size: 0.95rem;">Là dữ liệu <span class="golden-keyword">thu thập lần đầu tiên</span>, phục vụ trực tiếp cho mục tiêu nghiên cứu hiện tại.<br>
+                    <strong>Phương pháp:</strong> Quan sát, Thực nghiệm (Thử nghiệm), Phỏng vấn (Điều tra).</p>
+                    <div style="background: #EFF6FF; color: #1D4ED8; padding: 10px; border-radius: 8px; font-size: 0.9rem; margin-top: 10px; border: 1px dashed #93C5FD;">
+                        <i class="fa-solid fa-lightbulb"></i> <strong>Ví dụ:</strong> Tự in 500 phiếu câu hỏi, thuê sinh viên ra đứng trước cổng trường để khảo sát người qua đường.
+                    </div>
+                </div>
+                <div class="comp-section">
+                    <span class="comp-label">Đánh giá</span>
+                    <ul class="pro-con-list">
+                        <li class="pro"><i class="fa-solid fa-circle-check"></i> Tính cập nhật cực cao.</li>
+                        <li class="pro"><i class="fa-solid fa-circle-check"></i> Độ tin cậy sát với vấn đề cần giải quyết.</li>
+                        <li class="con"><i class="fa-solid fa-circle-xmark"></i> Rất tốn kém chi phí.</li>
+                        <li class="con"><i class="fa-solid fa-circle-xmark"></i> Mất nhiều thời gian thực hiện.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==========================================
+             PHẦN IV: QUY TRÌNH
+        =========================================== -->
+        <h2><i class="fa-solid fa-route"></i> IV. Quy trình nghiên cứu Marketing (Chuẩn 4 bước)</h2>
+        <p><em>Luôn nhớ nguyên tắc 4 bước của trường (không phải 3 hay 5 bước như các giáo trình bên ngoài).</em></p>
+
+        <div class="timeline">
+            <!-- BƯỚC 1 -->
+            <div class="step">
+                <div class="step-num">1</div>
+                <h4>Xác định vấn đề và mục tiêu nghiên cứu</h4>
+                <div class="exam-tip" style="margin: 10px 0; padding: 12px 20px;">
+                    <i class="fa-solid fa-star" style="color: #F59E0B;"></i> Đây là bước <span class="golden-keyword">đầu tiên và quan trọng nhất</span>, định hướng cho toàn bộ quá trình nghiên cứu phía sau. Sai bước này là sai toàn bộ.
+                </div>
+            </div>
+
+            <!-- BƯỚC 2 -->
+            <div class="step">
+                <div class="step-num">2</div>
+                <h4>Phát triển kế hoạch nghiên cứu</h4>
+                <p>Bước này phải quyết định lấy nguồn tài liệu nào (sơ cấp/thứ cấp), công cụ nào và cách lấy mẫu. Chú ý 3 phần thi trọng tâm dưới đây:</p>
+                
+                <!-- 1. Phương thức tiếp xúc -->
+                <div style="background: white; border: 1px solid #E2E8F0; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px;">
+                    <h5 style="color: var(--primary-dark); margin-bottom: 8px;">A. Quyết định Phương thức tiếp xúc:</h5>
+                    <ul style="margin-bottom: 0; font-size: 0.95rem;">
+                        <li><strong>Điện thoại/Thư tín:</strong> Nhanh, chi phí thấp NHƯNG tỷ lệ phản hồi kém.</li>
+                        <li><strong>Trực tiếp cá nhân:</strong> Tốn kém nhất NHƯNG thông tin thu được nhiều nhất, độ tin cậy cao nhất và có thể <span class="golden-keyword">quan sát thái độ</span>.</li>
+                    </ul>
+                </div>
+
+                <!-- 2. CÔ GIẢNG THÊM: Chọn mẫu phi xác suất -->
+                <div class="exam-tip" style="margin-bottom: 20px;">
+                    <div class="exam-tip-title"><i class="fa-solid fa-users-viewfinder"></i> B. Cô giảng thêm: Các phương pháp Chọn mẫu phi xác suất</div>
+                    <div class="sampling-grid">
+                        <div class="sample-card">
+                            <i class="fa-solid fa-snowflake"></i>
+                            <h6 style="font-size: 1rem; margin-bottom: 5px;">Tuyết lăn (Snowball)</h6>
+                            <p style="font-size: 0.85rem; color: #475569; margin: 0;">Tìm 1 người, nhờ họ giới thiệu người tiếp. Dùng cho đối tượng <strong>hiếm, khó tìm</strong>.</p>
+                        </div>
+                        <div class="sample-card">
+                            <i class="fa-solid fa-chart-column"></i>
+                            <h6 style="font-size: 1rem; margin-bottom: 5px;">Định mức (Quota)</h6>
+                            <p style="font-size: 0.85rem; color: #475569; margin: 0;">Phỏng vấn liên tục cho đến khi <strong>đủ số lượng đặt ra</strong> thì dừng.</p>
+                        </div>
+                        <div class="sample-card">
+                            <i class="fa-solid fa-handshake-simple"></i>
+                            <h6 style="font-size: 1rem; margin-bottom: 5px;">Thuận tiện</h6>
+                            <p style="font-size: 0.85rem; color: #475569; margin: 0;">Gặp ai tiện thì hỏi người đó (Vd: Đứng trước cổng trường phỏng vấn).</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. THANG ĐO MỚI CẬP NHẬT -->
+                <div class="exam-tip" style="background: #FFFBEB; border-color: #FDE68A;">
+                    <div class="exam-tip-title" style="color: #B45309;"><i class="fa-solid fa-ruler"></i> C. Cô giảng thêm: 4 Loại Thang Đo Lường</div>
+                    
+                    <div class="scale-cards">
+                        <div class="scale-card">
+                            <div class="scale-number">1</div>
+                            <div>
+                                <h4 style="margin-bottom: 5px; font-size: 1.1rem;">Biểu danh (Nominal)</h4>
+                                <p style="font-size: 0.95rem; margin-bottom: 0;">Phân loại đối tượng (VD: Giới tính Nam/Nữ). Số không có nghĩa cao thấp.</p>
+                            </div>
+                        </div>
+                        
+                        <div class="scale-card">
+                            <div class="scale-number">2</div>
+                            <div>
+                                <h4 style="margin-bottom: 5px; font-size: 1.1rem;">Thứ tự (Ordinal)</h4>
+                                <p style="font-size: 0.95rem; margin-bottom: 0;">Sắp xếp thứ bậc rõ ràng (VD: Giỏi, Khá, Trung bình).</p>
+                            </div>
+                        </div>
+                        
+                        <div class="scale-card" style="border: 2px solid var(--exam-red); box-shadow: 0 4px 15px rgba(220, 38, 38, 0.15);">
+                            <div class="scale-number" style="background: var(--exam-red); color: white;">3</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin-bottom: 5px; font-size: 1.1rem; color: var(--exam-red);">Khoảng cách/Quãng (Interval) - <span class="golden-keyword" style="font-size: 0.85rem;">HAY RA THI NHẤT</span></h4>
+                                <p style="font-size: 0.95rem; margin-bottom: 10px;">Khoảng cách giữa các bậc được quy ước bằng nhau, và <strong>điểm 0 không có ý nghĩa tuyệt đối</strong> (Ví dụ: 0°C không phải là "hoàn toàn không có nhiệt độ").</p>
+                                
+                                <div style="background: #FEE2E2; border-left: 4px solid var(--exam-red); padding: 12px 15px; border-radius: 4px;">
+                                    <p style="font-size: 0.9rem; color: #991B1B; margin-bottom: 8px;">
+                                        <strong><i class="fa-solid fa-circle-exclamation"></i> Chú ý: 2 Thang đo CỰC KỲ hay ra thi thuộc nhóm này:</strong>
+                                    </p>
+                                    <ul style="font-size: 0.9rem; color: #7F1D1D; margin-bottom: 0; padding-left: 20px;">
+                                        <li style="margin-bottom: 8px;">
+                                            <strong>Thang đo Likert (Đo mức độ đồng ý):</strong><br>
+                                            <em style="color: #B91C1C;">VD hỏi: "Giá ly trà sữa 50k là hợp lý"</em> ➔ Khách chọn: [1. Rất phản đối] - [2. Phản đối] - [3. Trung lập] - [4. Đồng ý] - [5. Rất đồng ý].
+                                        </li>
+                                        <li>
+                                            <strong>Thang đo Stapel (Đánh giá quanh 1 tính từ):</strong><br>
+                                            Thường chạy từ -5 đến +5 và <strong>không có số 0 ở giữa</strong>.<br>
+                                            <em style="color: #B91C1C;">VD đánh giá nhân viên:</em> [-3] [-2] [-1] <strong>(Nhanh nhẹn)</strong> [+1] [+2] [+3].
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="scale-card">
+                            <div class="scale-number">4</div>
+                            <div>
+                                <h4 style="margin-bottom: 5px; font-size: 1.1rem;">Tỷ lệ (Ratio)</h4>
+                                <p style="font-size: 0.95rem; margin-bottom: 0;">Có điểm 0 tuyệt đối (VD: Thu nhập, độ tuổi, cân nặng).</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- BỔ SUNG VÍ DỤ XUYÊN SUỐT DỄ HIỂU NHẤT -->
+                    <details class="example-box" style="margin-bottom: 0; margin-top: 15px; background: white; border: 1px dashed var(--primary);">
+                        <summary class="example-summary" style="background: var(--primary-light); color: var(--primary-dark);">💡 Nhấn xem Ví dụ xuyên suốt: Áp dụng 4 Thang đo vào "Khảo sát Trà Sữa"</summary>
+                        <div class="example-content" style="padding-top: 15px;">
+                            <ul style="margin: 0; font-size: 0.95rem; color: #475569;">
+                                <li style="margin-bottom: 12px;"><strong>1. Biểu danh:</strong> "Bạn thích vị trà sữa nào nhất? (1. Truyền thống | 2. Matcha | 3. Khoai môn)".<br><em style="color: #92400E;">(Giải thích: Số 2 chỉ là mã hóa cho vị Matcha, không có nghĩa là Matcha ngon gấp đôi Truyền thống)</em>.</li>
+                                <li style="margin-bottom: 12px;"><strong>2. Thứ tự:</strong> "Bạn đánh giá thái độ nhân viên thế nào? (1. Kém | 2. Bình thường | 3. Tốt)".<br><em style="color: #92400E;">(Giải thích: Đã bắt đầu có sự hơn/kém rõ ràng)</em>.</li>
+                                <li style="margin-bottom: 12px;"><strong>3. Khoảng cách (Likert):</strong> "Bạn có đồng ý là giá 50k/ly rất đắt không? (1-Rất không đồng ý ➔ 5-Rất đồng ý)".</li>
+                                <li><strong>4. Tỷ lệ:</strong> "Tuần trước bạn mua bao nhiêu ly trà sữa?".<br><em style="color: #92400E;">(Giải thích: Nếu khách trả lời "0", tức là hoàn toàn không uống ly nào - CÓ điểm 0 tuyệt đối)</em>.</li>
+                            </ul>
+                        </div>
+                    </details>
+                </div>
+            </div>
+
+            <!-- BƯỚC 3 -->
+            <div class="step">
+                <div class="step-num">3</div>
+                <h4>Thực hiện kế hoạch (Thu thập và Phân tích)</h4>
+                <p>Quy trình xử lý dữ liệu chuẩn bắt buộc phải đi qua <strong>5 khâu liên tiếp</strong>:</p>
+                
+                <div class="pipeline-wrapper">
+                    <div class="pipe-node">
+                        <div class="pipe-icon"><i class="fa-solid fa-1"></i></div>
+                        <div class="pipe-text">Chuẩn bị<br>dữ liệu</div>
+                    </div>
+                    <div class="pipe-node">
+                        <div class="pipe-icon"><i class="fa-solid fa-2"></i></div>
+                        <div class="pipe-text">Mã hóa<br>dữ liệu</div>
+                    </div>
+                    <div class="pipe-node">
+                        <div class="pipe-icon"><i class="fa-solid fa-3"></i></div>
+                        <div class="pipe-text">Kiểm tra &<br>Hiệu chỉnh</div>
+                    </div>
+                    <div class="pipe-node">
+                        <div class="pipe-icon"><i class="fa-solid fa-4"></i></div>
+                        <div class="pipe-text">Nhập dữ liệu<br>vào máy</div>
+                    </div>
+                    <div class="pipe-node">
+                        <div class="pipe-icon"><i class="fa-solid fa-5"></i></div>
+                        <div class="pipe-text">Xử lý &<br>Phân tích</div>
+                    </div>
+                </div>
+
+                <!-- BỔ SUNG PHÂN TÍCH & MẸO GHI NHỚ CHO BƯỚC 3 -->
+                <div class="exam-tip" style="background: #F8FAFC; border-color: #CBD5E1; border-left-color: var(--primary); margin-top: 20px;">
+                    <div class="exam-tip-title" style="color: var(--primary-dark);"><i class="fa-solid fa-brain"></i> Mẹo ghi nhớ & Phân tích chi tiết (Hay ra thi)</div>
+                    
+                    <div style="background: white; border: 2px dashed var(--accent-orange); padding: 12px 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                        <span style="color: #475569; font-size: 0.95rem;">💡 Thần chú phòng thi (Lấy chữ cái đầu):</span><br>
+                        <strong style="color: #B45309; font-size: 1.15rem;">"Chó Mèo Kêu Nhặng Xị"</strong><br>
+                        <span style="font-size: 0.85rem; color: #64748B;">(<strong>C</strong>huẩn bị ➔ <strong>M</strong>ã hóa ➔ <strong>K</strong>iểm tra ➔ <strong>N</strong>hập liệu ➔ <strong>X</strong>ử lý)</span>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div style="background: white; padding: 12px 15px; border-radius: 8px; border: 1px solid #E2E8F0; font-size: 0.95rem;">
+                            <strong>1. Chuẩn bị:</strong> Gom tất cả 500 phiếu khảo sát (cả giấy và form online) tập hợp về một chỗ.
+                        </div>
+                        <div style="background: white; padding: 12px 15px; border-radius: 8px; border: 1px solid #E2E8F0; font-size: 0.95rem;">
+                            <strong>2. Mã hóa:</strong> Phần mềm máy tính không hiểu chữ, phải <span class="golden-keyword">quy ước chữ thành số</span>.<br>
+                            <em style="color: #64748B;">VD: Khách đánh tick vào ô "Nữ" ➔ Mã hóa thành số "2". Tick vào "Thích" ➔ Mã hóa thành số "1".</em>
+                        </div>
+                        <div style="background: #FEF2F2; padding: 12px 15px; border-radius: 8px; border: 1px solid #FECACA; border-left: 4px solid var(--exam-red); font-size: 0.95rem;">
+                            <strong style="color: var(--exam-red);">3. Kiểm tra & Hiệu chỉnh (Làm sạch):</strong> Đây là bước hay bị hỏi nhất! Cần loại bỏ các phiếu "rác" để không làm sai lệch kết quả.<br>
+                            <em style="color: #991B1B;">VD: Phiếu mà khách đánh lụi (chọn toàn câu A, đánh zic-zac) hoặc phiếu bị bỏ trống quá 50% ➔ Phải vứt bỏ không đưa vào máy.</em>
+                        </div>
+                        <div style="background: white; padding: 12px 15px; border-radius: 8px; border: 1px solid #E2E8F0; font-size: 0.95rem;">
+                            <strong>4. Nhập liệu vào máy:</strong> Gõ các chuỗi số (1, 2, 0, 4...) từ các phiếu đã được làm sạch ở trên vào phần mềm Excel hoặc SPSS.
+                        </div>
+                        <div style="background: white; padding: 12px 15px; border-radius: 8px; border: 1px solid #E2E8F0; font-size: 0.95rem;">
+                            <strong>5. Xử lý & Phân tích:</strong> Bấm lệnh để phần mềm chạy ra biểu đồ, tỷ lệ % và rút ra kết luận cuối cùng.<br>
+                            <em style="color: #64748B;">VD: Phần mềm báo kết quả có 70% khách chê mức giá 50k là đắt.</em>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- BƯỚC 4 -->
+            <div class="step">
+                <div class="step-num">4</div>
+                <h4>Trình bày báo cáo kết quả</h4>
+                <p><strong>Yêu cầu sống còn:</strong> Bản báo cáo phải <span class="golden-keyword">RÕ RÀNG, GỌN & CHÍNH XÁC</span>.</p>
+                <div style="background: #EFF6FF; padding: 15px 20px; border-radius: 8px; border-left: 4px solid var(--primary);">
+                    <strong>Cấu trúc 8 phần:</strong> Trang nhan đề ➔ Mục lục ➔ Lời giới thiệu ➔ Tóm tắt ➔ Phương pháp ➔ Kết quả ➔ Kết luận & Đề xuất ➔ Phụ lục.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const keywords = document.querySelectorAll('.keyword');
+        keywords.forEach(kw => {
+            kw.addEventListener('click', function(e) {
+                keywords.forEach(k => { if(k !== this) k.classList.remove('active'); });
+                this.classList.toggle('active');
+                e.stopPropagation();
+            });
+        });
+        document.addEventListener('click', function() {
+            keywords.forEach(k => k.classList.remove('active'));
+        });
+    });
+</script>
+
+</body>
+</html>
