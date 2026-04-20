@@ -1,0 +1,769 @@
+import React, { useState, createContext, useContext, useEffect, useRef } from 'react';
+import { 
+  BookOpen, Lightbulb, ChevronDown, ChevronUp, X, 
+  Bookmark, TrendingUp, Scale, Globe, Building, 
+  Target, Swords, Search, Layers, PieChart, Shield,
+  Zap, AlertCircle, GraduationCap, Wallet, Plane, 
+  Fingerprint, Crosshair, Calculator, Rocket, Tag,
+  BarChart3, Package, Clock, BrainCircuit, PenTool,
+  Info, ListChecks
+} from 'lucide-react';
+
+// --- TỪ ĐIỂN THUẬT NGỮ (GLOSSARY DATA) ---
+const dictionaryData = {
+  "Marketing Mix - 4P": "Tập hợp các công cụ tiếp thị mà doanh nghiệp sử dụng để đạt được mục tiêu thị trường, bao gồm: Product (Sản phẩm), Price (Giá), Place (Phân phối) và Promotion (Xúc tiến).",
+  "Chi phí cố định (FC)": "Định phí. Là những khoản chi phí không thay đổi theo khối lượng sản xuất hoặc doanh thu. VD: Tiền thuê mặt bằng, khấu hao máy móc.",
+  "Chi phí biến đổi (VC)": "Biến phí. Là chi phí thay đổi tỷ lệ thuận với số lượng sản phẩm sản xuất ra. VD: Tiền mua nguyên vật liệu, bao bì.",
+  "Độ co giãn của cầu": "Mức độ phản ứng của lượng khách mua hàng khi giá cả thay đổi. 'Cầu co giãn nhiều': Tăng giá nhẹ khách sẽ bỏ đi. 'Cầu co giãn ít': Giá tăng khách vẫn phải mua (điện, nước).",
+  "Điểm hòa vốn": "Là điểm mà tại đó Tổng Doanh Thu bán hàng vừa đủ bù đắp Tổng Chi Phí sản xuất. Doanh nghiệp không lỗ cũng không có lãi.",
+  "Định giá phân biệt": "Bán 1 sản phẩm với nhiều mức giá khác nhau tùy thuộc vào Thời gian (bay đêm/ngày), Địa điểm, hoặc Đối tượng khách hàng.",
+  "Định giá động (Dynamic)": "Giá được thay đổi liên tục theo thời gian thực dựa trên thuật toán Cung - Cầu. Điển hình như vé máy bay hoặc cước Grab.",
+  "Định giá Tâm lý": "Lợi dụng sự ngộ nhận hoặc cảm xúc của não bộ về các con số để định giá. VD: Bán 199.000đ thay vì 200.000đ để tạo cảm giác rẻ hơn hẳn."
+};
+
+const GlossaryContext = createContext();
+
+// --- HELPER COMPONENTS ---
+
+const Term = ({ term, children }) => {
+  const { setActiveTerm, activeTerm } = useContext(GlossaryContext);
+  const isActive = activeTerm === term;
+  return (
+    <span 
+      onClick={(e) => { e.stopPropagation(); setActiveTerm(term); }}
+      className={`inline-block font-semibold px-2 py-0.5 mx-1 rounded-md cursor-pointer transition-all duration-200 border-b-[3px] 
+        ${isActive ? 'bg-blue-600 text-white border-blue-800 shadow-sm' : 'bg-blue-50 text-blue-800 border-blue-200 hover:bg-blue-600 hover:text-white hover:border-blue-800'}`}
+    >
+      {children || term}
+    </span>
+  );
+};
+
+const DeepDiveCard = ({ icon: Icon, title, summary, details, example, colorTheme }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className={`p-6 rounded-2xl border-l-4 shadow-sm bg-white font-sans ${colorTheme} transition-all duration-300 flex flex-col h-full hover:shadow-md`}>
+      <div className="flex items-center gap-4 mb-4">
+        <div className="p-3 rounded-lg bg-opacity-20 bg-current text-current"><Icon size={28} /></div>
+        <h3 className="font-bold text-xl text-slate-900">{title}</h3>
+      </div>
+      <p className="text-base text-slate-700 font-serif leading-relaxed mb-6 flex-grow">{summary}</p>
+      
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        className="flex items-center justify-between w-full p-3 bg-slate-50 hover:bg-slate-100 rounded-lg transition-colors font-bold text-slate-700 text-sm border border-slate-200 mt-auto group"
+      >
+        <span className="flex items-center gap-2">
+          <Lightbulb size={16} className="text-amber-500 group-hover:animate-pulse" />
+          {isOpen ? "Thu gọn phân tích" : "Xem góc nhìn dễ hiểu"}
+        </span>
+        {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+      </button>
+
+      {isOpen && (
+        <div className="mt-5 pt-5 border-t border-slate-200 animate-in fade-in slide-in-from-top-2 duration-300 space-y-5">
+          <div>
+            <h4 className="font-bold text-sm text-slate-900 uppercase tracking-wider mb-2 opacity-80">Bản chất vấn đề</h4>
+            <p className="text-base text-slate-800 font-serif leading-relaxed">{details}</p>
+          </div>
+          {example && (
+            <div className="bg-[#F0FDFA] p-4 rounded-xl border border-[#CCFBF1]">
+              <h4 className="font-bold text-sm text-[#0D9488] uppercase tracking-wider mb-2 flex items-center gap-2"><Bookmark size={16}/> Ví dụ thực tiễn</h4>
+              <p className="text-base text-[#115E59] font-serif leading-relaxed italic">{example}</p>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
+
+const ExamTip = ({ title, children }) => (
+  <div className="bg-[#FEF2F2] border border-[#FECACA] border-l-6 border-l-[#DC2626] p-6 md:p-8 rounded-xl my-8 shadow-sm">
+    <div className="text-[#DC2626] font-bold text-lg flex items-center gap-2 mb-4 uppercase tracking-wide font-sans">
+      <AlertCircle size={24} /> {title}
+    </div>
+    <div className="text-slate-800 text-[1rem] leading-relaxed font-serif">
+      {children}
+    </div>
+  </div>
+);
+
+// --- COMPONENT BÀI TẬP THỰC HÀNH ---
+const MathExercise = ({ title, problem, data, steps, answer }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  return (
+    <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm mb-6 font-sans">
+      <div className="p-5 md:p-6 bg-slate-50 border-b border-slate-200">
+         <h4 className="font-bold text-[#1E3A8A] text-lg flex items-center gap-2 mb-3">
+           <PenTool size={20} className="text-[#3B82F6]" /> {title}
+         </h4>
+         <p className="text-slate-800 leading-relaxed font-serif text-[0.95rem]">{problem}</p>
+      </div>
+      <div 
+        className="p-4 bg-white flex justify-between items-center cursor-pointer hover:bg-slate-50 transition-colors" 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="font-bold text-[#059669] flex items-center gap-2">
+          <Lightbulb size={18} className={isOpen ? "" : "animate-pulse"}/> {isOpen ? 'Ẩn lời giải chi tiết' : 'Xem lời giải chi tiết'}
+        </span>
+        {isOpen ? <ChevronUp size={20} className="text-[#059669]"/> : <ChevronDown size={20} className="text-[#059669]"/>}
+      </div>
+      {isOpen && (
+        <div className="p-5 md:p-6 bg-[#F0FDFA] border-t border-[#A7F3D0] animate-in fade-in slide-in-from-top-2 duration-300 font-serif">
+          <div className="mb-5">
+            <strong className="text-[#065F46] flex items-center gap-2 mb-2 font-sans uppercase text-sm tracking-wider">
+              <span className="bg-[#34D399] text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">1</span>
+              Tóm tắt dữ kiện:
+            </strong>
+            <ul className="list-disc pl-8 text-slate-700 space-y-1 text-[0.95rem]">
+              {data.map((item, i) => <li key={i}>{item}</li>)}
+            </ul>
+          </div>
+          <div className="mb-5">
+            <strong className="text-[#065F46] flex items-center gap-2 mb-3 font-sans uppercase text-sm tracking-wider">
+              <span className="bg-[#34D399] text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">2</span>
+              Áp dụng công thức:
+            </strong>
+            <div className="space-y-4">
+              {steps.map((step, i) => (
+                <div key={i} className="bg-white p-4 rounded-lg border border-[#A7F3D0] shadow-sm text-[0.95rem] text-slate-800 leading-relaxed">
+                  {step}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="mt-4 pt-4 border-t border-[#A7F3D0] flex items-start gap-2">
+            <strong className="text-[#065F46] font-sans mt-0.5 shrink-0">{'=>'} Kết luận: </strong>
+            <span className="text-[#064E3B] font-bold italic">{answer}</span>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// --- CHART COMPONENT (APPLE STYLE) ---
+const BreakEvenChart = () => {
+  const chartRef = useRef(null);
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    // Dynamically load Chart.js to ensure it runs in the React Canvas
+    const script = document.createElement('script');
+    script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+    script.async = true;
+    
+    script.onload = () => {
+      if (canvasRef.current && window.Chart) {
+        const ctx = canvasRef.current.getContext('2d');
+        
+        // Custom Gradient for Revenue
+        const revGradient = ctx.createLinearGradient(0, 0, 0, 300);
+        revGradient.addColorStop(0, 'rgba(16, 185, 129, 0.2)'); // Emerald
+        revGradient.addColorStop(1, 'rgba(16, 185, 129, 0)');
+
+        chartRef.current = new window.Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['0', '50', '100', '150', '200', '250'],
+            datasets: [
+              {
+                label: 'Doanh thu',
+                data: [0, 20, 40, 60, 80, 100],
+                borderColor: '#10B981', // Emerald 500
+                backgroundColor: revGradient,
+                borderWidth: 4,
+                tension: 0,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                fill: true,
+                order: 1
+              },
+              {
+                label: 'Tổng chi phí',
+                data: [20, 30, 40, 50, 60, 70],
+                borderColor: '#F43F5E', // Rose 500
+                backgroundColor: '#F43F5E',
+                borderWidth: 4,
+                tension: 0,
+                pointRadius: 0,
+                pointHoverRadius: 6,
+                fill: false,
+                order: 2
+              },
+              {
+                label: 'Chi phí cố định',
+                data: [20, 20, 20, 20, 20, 20],
+                borderColor: '#94A3B8', // Slate 400
+                borderWidth: 3,
+                borderDash: [8, 6],
+                pointRadius: 0,
+                pointHoverRadius: 0,
+                fill: false,
+                order: 3
+              },
+              {
+                label: 'Điểm Hòa Vốn',
+                data: [null, null, 40, null, null, null],
+                backgroundColor: '#3B82F6', // Blue 500
+                borderColor: '#FFFFFF',
+                borderWidth: 3,
+                pointRadius: 8,
+                pointHoverRadius: 10,
+                showLine: false,
+                order: 0
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: {
+                position: 'top',
+                align: 'end',
+                labels: {
+                  usePointStyle: true,
+                  pointStyle: 'circle',
+                  padding: 20,
+                  font: { family: 'system-ui', size: 13, weight: '500' },
+                  color: '#475569',
+                  filter: (item) => item.text !== 'Điểm Hòa Vốn'
+                }
+              },
+              tooltip: {
+                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                titleColor: '#1E293B',
+                titleFont: { family: 'system-ui', size: 14, weight: '700' },
+                bodyColor: '#475569',
+                bodyFont: { family: 'system-ui', size: 13 },
+                borderColor: '#E2E8F0',
+                borderWidth: 1,
+                padding: 12,
+                boxPadding: 6,
+                usePointStyle: true,
+                callbacks: {
+                  title: (context) => 'Sản lượng: ' + context[0].label,
+                  label: (context) => {
+                    if (context.dataset.label === 'Điểm Hòa Vốn') return null;
+                    return context.dataset.label + ': ' + context.parsed.y + ' Tr';
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                grid: { display: false, drawBorder: false },
+                ticks: { font: { family: 'system-ui' }, color: '#94A3B8' }
+              },
+              y: {
+                grid: { display: false, drawBorder: false },
+                ticks: { 
+                  font: { family: 'system-ui' }, color: '#94A3B8',
+                  callback: (value) => value + ' Tr'
+                },
+                beginAtZero: true,
+                max: 100
+              }
+            }
+          }
+        });
+      }
+    };
+    
+    document.body.appendChild(script);
+
+    return () => {
+      if (chartRef.current) chartRef.current.destroy();
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  return (
+    <div className="bg-white border border-slate-200 rounded-2xl p-6 md:p-8 my-10 max-w-3xl mx-auto shadow-sm">
+      <div className="text-center mb-6 font-sans">
+        <h4 className="text-[#64748B] text-sm font-bold uppercase tracking-widest">Biểu đồ Điểm hòa vốn (Break-even Chart)</h4>
+      </div>
+      <div className="relative h-[300px] w-full">
+        <canvas ref={canvasRef}></canvas>
+      </div>
+      
+      {/* Chart Explainer */}
+      <div className="mt-8 pt-6 border-t border-slate-100 font-sans">
+        <h4 className="text-slate-900 font-bold mb-4 flex items-center gap-2"><Zap size={20} className="text-amber-500"/> Giải ngố nhanh 3 đường cơ bản:</h4>
+        <div className="space-y-3">
+          <div className="flex items-start gap-3">
+            <div className="w-3 h-3 rounded-full mt-1.5 shrink-0 bg-[#CBD5E1] border-2 border-[#94A3B8]"></div>
+            <p className="text-slate-600 text-[0.95rem]"><strong className="text-slate-800">Đường màu xám (Cố định):</strong> Tháng nào cũng phải trả cục tiền này (VD: thuê mặt bằng) dù bán 0 hay 1000 SP. Nên nó luôn nằm ngang.</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-3 h-3 rounded-full mt-1.5 shrink-0 bg-[#F43F5E]"></div>
+            <p className="text-slate-600 text-[0.95rem]"><strong className="text-slate-800">Đường màu đỏ (Tổng chi phí):</strong> Bằng [Cố định] + [Sản xuất thêm]. Do đó, nó luôn xuất phát từ cái mốc của đường Xám đi lên.</p>
+          </div>
+          <div className="flex items-start gap-3">
+            <div className="w-3 h-3 rounded-full mt-1.5 shrink-0 bg-[#10B981]"></div>
+            <p className="text-slate-600 text-[0.95rem]"><strong className="text-slate-800">Đường màu xanh (Doanh thu):</strong> Chưa bán được gì thì 0đ, nên bắt đầu từ mốc 0 và dốc lên. Chạm vào đường Đỏ ở đâu, đó là <strong>Điểm hòa vốn</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+// --- MAIN PAGE COMPONENT ---
+export default function MarketingPricingChapter() {
+  const [activeTerm, setActiveTerm] = useState(null);
+
+  const handleContainerClick = () => {
+    if (activeTerm) setActiveTerm(null);
+  };
+
+  return (
+    <GlossaryContext.Provider value={{ setActiveTerm, activeTerm }}>
+      <style dangerouslySetInnerHTML={{__html: `
+        @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400;1,600&family=Lora:ital,wght@0,500;0,600;0,700;1,500&display=swap');
+        :root { 
+          --font-sans-vn: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif; 
+          --font-serif-vn: 'Lora', Georgia, serif; 
+        }
+        body { font-family: var(--font-sans-vn); background-color: #F4F6F8; color: #333D4B;}
+        .font-sans { font-family: var(--font-sans-vn) !important; }
+        .font-serif { font-family: var(--font-serif-vn) !important; }
+        .golden-keyword {
+            background: linear-gradient(120deg, #FDE047 0%, #FEF08A 100%);
+            color: #713F12;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 700;
+        }
+        .highlight-box { box-shadow: inset 4px 0 0 0 currentColor; }
+        .formula-box { font-family: 'Courier New', Courier, monospace; font-weight: bold; background: #F8FAFC; padding: 4px 8px; border-radius: 4px; border: 1px solid #E2E8F0; }
+        
+        /* Math Formatting Highlights */
+        .math-hl { color: #2563EB; font-weight: bold; }
+        .math-ans { color: #059669; font-weight: bold; font-size: 1.05em; }
+
+        .strategy-grid { display: grid; grid-template-columns: repeat(1, minmax(0, 1fr)); gap: 1.5rem; }
+        @media (min-width: 768px) { .strategy-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+      `}} />
+
+      <div className="min-h-screen py-8 px-4 md:px-0 font-sans" onClick={handleContainerClick}>
+        <div className="max-w-5xl mx-auto bg-white shadow-[0_10px_40px_rgba(0,0,0,0.05)] rounded-2xl overflow-hidden border border-slate-100">
+          
+          {/* HERO BANNER */}
+          <div className="relative h-[350px] bg-[#1E3A8A] overflow-hidden flex flex-col justify-center items-center text-center p-8">
+            <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=1200" alt="Bảng tính Chiến lược giá" className="absolute inset-0 w-full h-full object-cover opacity-40 mix-blend-overlay" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#1E3A8A]/95 to-[#1E3A8A]/40"></div>
+            
+            <div className="relative z-10 w-full max-w-3xl flex flex-col items-center">
+              <Tag size={48} className="text-amber-400 mb-4" />
+              <h1 className="text-white font-serif text-[2.5rem] md:text-[3rem] font-bold mb-4 drop-shadow-[0_2px_4px_rgba(0,0,0,0.3)] leading-tight">
+                Chương 7: Chiến lược Định giá
+              </h1>
+              <div className="bg-white/20 backdrop-blur-[5px] text-white px-6 py-2 rounded-full font-medium text-lg border border-white/30 tracking-wide">
+                Biến số duy nhất tạo ra Doanh Thu (Revenue)
+              </div>
+            </div>
+          </div>
+
+          {/* ULAW Banner */}
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-5 font-sans flex items-start md:items-center gap-4 shadow-inner">
+            <GraduationCap size={40} className="shrink-0 text-amber-300" />
+            <div>
+              <p className="font-bold text-base md:text-lg">Tài liệu tham khảo chuyên sâu (Bản cập nhật)</p>
+              <p className="text-sm text-blue-100 opacity-90 mt-1">Đã cập nhật toàn bộ 14 chiến lược giá và các bẫy trắc nghiệm phân tích chi tiết. Rê chuột vào các chữ nền xanh nhạt để xem giải nghĩa!</p>
+            </div>
+          </div>
+
+          <div className="p-8 md:p-14 space-y-16">
+            
+            {/* Section I: KHÁI NIỆM & BẢN CHẤT (UPDATED) */}
+            <section>
+              <h2 className="text-[1.8rem] font-bold text-[#1E3A8A] border-b-2 border-slate-200 pb-4 mb-8 flex items-center gap-3">
+                <Search className="text-[#3B82F6]" size={28} />
+                I. KHÁI NIỆM VÀ TẦM QUAN TRỌNG CỦA GIÁ
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* Box Khái Niệm */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-[#3B82F6] hover:-translate-y-1 transition-transform">
+                  <h4 className="font-bold text-[#1E3A8A] text-lg mb-4 flex items-center gap-2"><BookOpen size={20}/> 1. Khái niệm Định giá</h4>
+                  <ul className="space-y-4 text-slate-700 font-serif text-[0.95rem]">
+                    <li>
+                      <strong className="text-[#1E3A8A] bg-blue-50 px-1 rounded">Theo nghĩa hẹp:</strong> Là số tiền trả cho một sản phẩm hoặc dịch vụ. <br/>
+                      <em className="text-slate-500 mt-1 inline-block">&rarr; VD: Khách trả hóa đơn 50.000đ cho ly trà sữa.</em>
+                    </li>
+                    <li className="pt-2 border-t border-slate-100">
+                      <strong className="text-[#1E3A8A] bg-blue-50 px-1 rounded">Theo nghĩa rộng:</strong> Là <span className="golden-keyword">tổng giá trị</span> mà khách hàng phải bỏ ra/đánh đổi (tiền bạc, thời gian, công sức) để nhận được lợi ích từ việc sở hữu hay sử dụng SP/DV.<br/>
+                      <em className="text-slate-500 mt-1 inline-block">&rarr; VD: Ly trà sữa 50k nhưng phải đội mưa xếp hàng 30 phút. Giá ở đây gồm cả 30 phút mệt mỏi đó.</em>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Box Tầm quan trọng */}
+                <div className="bg-white p-6 rounded-xl border border-slate-200 shadow-sm border-t-4 border-t-[#F59E0B] hover:-translate-y-1 transition-transform">
+                  <h4 className="font-bold text-[#92400E] text-lg mb-4 flex items-center gap-2"><Target size={20}/> 2. Tầm quan trọng</h4>
+                  <ul className="space-y-4 text-slate-700 font-serif text-[0.95rem]">
+                    <li>
+                      <strong className="text-[#92400E] bg-amber-50 px-1 rounded">Đối với Doanh nghiệp:</strong> Đây là biến số <strong className="text-red-600">DUY NHẤT</strong> trong <Term term="Marketing Mix - 4P" /> trực tiếp tạo ra doanh thu và lợi nhuận. Đồng thời nó ảnh hưởng trực tiếp, cực mạnh đến khả năng cạnh tranh (chỉ cần giảm giá 1 chút là thấy tác động tức thì).
+                    </li>
+                    <li className="pt-2 border-t border-slate-100">
+                      <strong className="text-[#92400E] bg-amber-50 px-1 rounded">Đối với Khách hàng:</strong> Giá là cơ sở đặc biệt quan trọng để ra quyết định mua. Khách thường dùng giá để làm thước đo chất lượng ("Tiền nào của nấy").
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            {/* Section II */}
+            <section>
+              <h2 className="text-[1.8rem] font-bold text-[#1E3A8A] border-b-2 border-slate-200 pb-4 mb-8 flex items-center gap-3">
+                <Scale className="text-[#3B82F6]" size={28} />
+                II. CÁC YẾU TỐ CHI PHỐI VIỆC ĐỊNH GIÁ
+              </h2>
+              <p className="mb-8 font-serif text-slate-700 text-[1rem]">Giám đốc Marketing không thể "hứng lên" thì đặt giá 1 triệu hay 100 ngàn. Họ bị kẹp giữa 2 nhóm yếu tố Nội lực và Ngoại lực:</p>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <DeepDiveCard icon={Building} title="Yếu tố Nội tại Công ty" colorTheme="border-indigo-500 text-indigo-900"
+                  summary="Bao gồm: Mục tiêu Marketing, Chiến lược Marketing Mix, Vị trí Chu kỳ sống và Chi phí sản xuất."
+                  details="Doanh nghiệp phải xem xét 'túi tiền' và mục tiêu của mình. Nếu mục tiêu là: Dẫn đầu lợi nhuận hiện tại thì định giá cao, Dẫn đầu thị phần thì định giá thấp (chiến lược thâm nhập thị trường), Dẫn đầu chất lượng sản phẩm thì định giá cao nhất để bù đắp R&D. Ngoài ra, giá bán bắt buộc phải bù đắp được Chi phí cố định và Chi phí biến đổi. Mục tiêu khác: Định giá thấp để ngăn đối thủ gia nhập, hoặc định giá ngang bằng để ổn định thị trường."
+                />
+                <DeepDiveCard icon={Globe} title="Yếu tố Thị trường (Bên ngoài)" colorTheme="border-emerald-500 text-emerald-900"
+                  summary="Bao gồm: Đặc điểm thị trường & Số cầu, Đối thủ cạnh tranh và Môi trường kinh tế."
+                  details="Dù bạn tính toán chi phí kỹ đến đâu, nhưng nếu cầu co giãn nhiều (khách nhạy cảm về giá) hoặc đối thủ đang bán phá giá, bạn bắt buộc phải điều chỉnh mức giá bán của mình để tồn tại. Giá của đối thủ là 'giá tham khảo' quan trọng nhất, cần so sánh tương quan giữa giá, chi phí, chất lượng và dự đoán phản ứng của đối thủ."
+                />
+              </div>
+            </section>
+
+            {/* Section III */}
+            <section>
+              <h2 className="text-[1.8rem] font-bold text-[#1E3A8A] border-b-2 border-slate-200 pb-4 mb-8 flex items-center gap-3">
+                <Calculator className="text-[#3B82F6]" size={28} />
+                III. 3 PHƯƠNG PHÁP ĐỊNH GIÁ CỐT LÕI
+              </h2>
+
+              <div className="space-y-12">
+                {/* Method 1 */}
+                <div>
+                  <h3 className="text-[1.4rem] font-bold text-slate-900 flex items-center gap-2 mb-4 font-sans">
+                    <span className="bg-[#3B82F6] text-white w-8 h-8 rounded-full flex items-center justify-center text-lg">1</span> 
+                    Định giá dựa trên Chi phí (Cost-driven)
+                  </h3>
+                  <p className="font-serif text-slate-700 text-[1rem] mb-6">Đây là cách an toàn và truyền thống nhất. Bắt đầu từ việc tính toán chi phí sản xuất, cộng thêm phần tiền lãi mong muốn để ra mức giá bán.</p>
+
+                  <BreakEvenChart />
+
+                  {/* MATH FORMULA BOX */}
+                  <div className="bg-[#F8FAFC] border border-[#CBD5E1] border-t-4 border-t-[#3B82F6] p-6 md:p-8 rounded-xl shadow-sm my-8 font-sans">
+                    <div className="text-[#1E3A8A] font-bold text-lg flex items-center gap-3 mb-6 uppercase tracking-wide">
+                      <Calculator size={24} /> Góc ôn thi: Các công thức tính toán cốt lõi
+                    </div>
+                    <p className="text-slate-700 mb-6 font-serif">Bài tập chương này chắc chắn có tính toán. Yêu cầu nhớ 4 biến số: <span className="formula-box">FC</span> (Chi phí cố định), <span className="formula-box">VC</span> (Biến phí 1 SP), <span className="formula-box">Q</span> (Sản lượng), <span className="formula-box">P</span> (Giá bán).</p>
+                    
+                    <ul className="space-y-4 font-serif text-[0.95rem] text-slate-800">
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#3B82F6] mt-1"><i className="fa-solid fa-check-circle"></i></span>
+                        <div>
+                          <strong>1. Tính Sản lượng hòa vốn (Q):</strong><br/>
+                          Công thức: <span className="formula-box">Q = FC / (P - VC)</span><br/>
+                          <em className="text-slate-500">(Ý nghĩa: Doanh nghiệp cần bán bao nhiêu cái để huề vốn?)</em>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#3B82F6] mt-1"><i className="fa-solid fa-check-circle"></i></span>
+                        <div>
+                          <strong>2. Tính Giá bán hòa vốn (P):</strong><br/>
+                          Công thức: <span className="formula-box">P = (FC / Q) + VC</span><br/>
+                          <em className="text-slate-500">(Ý nghĩa: Nếu chỉ bán được Q cái, phải định giá bao nhiêu để không lỗ?)</em>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#3B82F6] mt-1"><i className="fa-solid fa-check-circle"></i></span>
+                        <div>
+                          <strong>3. BẪY ĐỊNH GIÁ MARKUP (Cực kỳ chú ý chữ "TRÊN"):</strong><br/>
+                          Khái niệm cần nhớ: <span className="formula-box">Giá thành 1 SP = (FC / Q) + VC</span><br/>
+                          <div className="mt-2 space-y-2 text-[0.9rem]">
+                            <p>🔸 Nếu đề cho "Lợi nhuận trên <strong>Giá thành</strong>":<br/>
+                            <span className="formula-box ml-4 bg-amber-50 border-amber-200">Giá bán = Giá thành 1 SP × (1 + Tỷ lệ lợi nhuận)</span></p>
+                            <p>🔸 Nếu đề cho "Lợi nhuận trên <strong>Giá bán</strong> (Doanh thu)":<br/>
+                            <span className="formula-box ml-4">Giá bán = Giá thành 1 SP / (1 - Tỷ lệ lợi nhuận)</span></p>
+                          </div>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#3B82F6] mt-1"><i className="fa-solid fa-check-circle"></i></span>
+                        <div>
+                          <strong>4. Tính Độ co giãn của cầu theo giá (E):</strong><br/>
+                          Công thức: <span className="formula-box">E = (% Thay đổi lượng cầu) / (% Thay đổi giá)</span><br/>
+                          <em className="text-slate-500">(Ý nghĩa: Đo lường xem khách hàng có nhạy cảm với việc tăng/giảm giá không. Cầu co giãn nhiều thì E {'>'} 1, co giãn ít thì E {'<'} 1.)</em>
+                        </div>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="text-[#3B82F6] mt-1"><i className="fa-solid fa-check-circle"></i></span>
+                        <div>
+                          <strong>5. Tính Độ co giãn của cung theo giá (Es):</strong><br/>
+                          Công thức: <span className="formula-box">Es = (% Thay đổi lượng cung) / (% Thay đổi giá)</span><br/>
+                          <em className="text-slate-500">(Ý nghĩa: Phản ứng của nhà sản xuất/đối thủ khi giá thị trường thay đổi. Giá tăng thì cung thường tăng do biên lợi nhuận hấp dẫn, lôi kéo đối thủ mới nhảy vào.)</em>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+
+                  {/* THỰC HÀNH TÍNH TOÁN */}
+                  <div className="mt-10 mb-12">
+                    <h3 className="text-[1.3rem] font-bold text-slate-800 font-sans uppercase tracking-wider mb-6 flex items-center gap-2 border-l-4 border-[#10B981] pl-3">
+                      Bài Tập Thực Hành (Có Lời Giải)
+                    </h3>
+
+                    <MathExercise 
+                      title="Bài tập 1: Đi tìm Sản lượng mục tiêu cho quán Cà phê"
+                      problem="Một quán cà phê có chi phí thuê mặt bằng, điện nước, lương nhân viên cố định là 30.000.000đ/tháng. Chi phí nguyên liệu (cà phê, đường, sữa, ly nhựa) để pha 1 ly cà phê là 12.000đ. Quán dự định bán với giá 27.000đ/ly. Hỏi: a) Quán cần bán bao nhiêu ly mỗi tháng để hòa vốn? b) Nếu chủ quán muốn đút túi lợi nhuận 15.000.000đ/tháng thì cần bán bao nhiêu ly?"
+                      data={[
+                        "FC (Định phí) = 30.000.000 đ",
+                        "VC (Biến phí 1 ly) = 12.000 đ",
+                        "P (Giá bán dự kiến) = 27.000 đ",
+                        "Lợi nhuận mục tiêu = 15.000.000 đ"
+                      ]}
+                      steps={[
+                        <span key="1">
+                          <strong>Câu a) Tính Sản lượng hòa vốn (Q):</strong><br/>
+                          Áp dụng công thức: Q = FC / (P - VC)<br/>
+                          Q = 30.000.000 / (27.000 - 12.000)<br/>
+                          Q = 30.000.000 / 15.000 = <span className="math-ans">2.000 ly</span>. <br/>
+                          <em>(Bản chất: Mỗi ly bán ra bạn lời được 15k tiền gộp (27k - 12k). Lấy 15k này đắp dần vào cục chi phí 30 triệu mặt bằng. Đắp đủ 2000 ly thì huề vốn).</em>
+                        </span>,
+                        <span key="2">
+                          <strong>Câu b) Tính Sản lượng theo Lợi nhuận mục tiêu:</strong><br/>
+                          Tương tự câu a, nhưng phần tử số bạn phải gánh thêm phần lãi mục tiêu mong muốn.<br/>
+                          Công thức: Q = (FC + Lợi nhuận) / (P - VC)<br/>
+                          Q = (30.000.000 + 15.000.000) / 15.000<br/>
+                          Q = 45.000.000 / 15.000 = <span className="math-ans">3.000 ly</span>.
+                        </span>
+                      ]}
+                      answer="Để không lỗ, quán phải bán được 2.000 ly/tháng (khoảng 66 ly/ngày). Để đạt mục tiêu lãi 15 triệu, quán phải bán được 3.000 ly/tháng (100 ly/ngày)."
+                    />
+
+                    <MathExercise 
+                      title="Bài tập 2: Bẫy lợi nhuận trên Giá thành vs Giá bán (Câu hỏi ULAW)"
+                      problem="Cho dữ kiện: FC = 1.500 tr, VC = 9 tr, Q = 500 SP. Nếu doanh nghiệp muốn lợi nhuận là 15% giá thành thì giá bán là bao nhiêu?"
+                      data={[
+                        "FC = 1.500 tr",
+                        "VC = 9 tr/SP",
+                        "Q = 500 SP",
+                        "Mục tiêu: Lợi nhuận = 15% Giá thành (Markup on Cost)"
+                      ]}
+                      steps={[
+                        <span key="1">
+                          <strong>Bước 1: Tính Giá thành toàn bộ 1 sản phẩm (Chi phí trung bình):</strong><br/>
+                          Giá thành 1 SP = VC + (FC / Q)<br/>
+                          Giá thành 1 SP = 9 + (1.500 / 500) = 9 + 3 = <span className="math-hl">12 tr/SP</span>
+                        </span>,
+                        <span key="2">
+                          <strong>Bước 2: Tính Giá bán (Dựa trên Lợi nhuận trên GIÁ THÀNH):</strong><br/>
+                          Vì đề yêu cầu lợi nhuận bằng 15% <strong>giá thành</strong>, ta áp dụng công thức nhân:<br/>
+                          Giá bán = Giá thành 1 SP × (1 + Tỷ lệ lợi nhuận)<br/>
+                          Giá bán = 12 × (1 + 15%) = 12 × 1.15 = <span className="math-ans">13,8 tr/SP</span>
+                        </span>,
+                        <span key="3" className="text-rose-700 bg-rose-50 p-2 rounded block mt-2 border border-rose-200">
+                          <AlertCircle size={16} className="inline mr-1 mb-1"/> <strong>Lưu ý bẫy:</strong> Nếu đề đổi lại chữ "Lợi nhuận là 15% <strong>giá bán</strong>", bạn phải dùng công thức chia: Giá bán = Giá thành / (1 - Tỷ lệ LN) = 12 / (1 - 0.15) = 14,11 tr/SP. Đừng nhầm lẫn!
+                        </span>
+                      ]}
+                      answer="Giá bán cần thiết là 13,80 tr.đ/SP."
+                    />
+                  </div>
+                </div>
+
+                {/* Method 2 & 3 Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
+                    <h3 className="text-[1.2rem] font-bold text-slate-900 flex items-center gap-2 mb-4 font-sans">
+                      <span className="bg-[#8B5CF6] text-white w-8 h-8 rounded-full flex items-center justify-center text-lg">2</span> 
+                      Định giá dựa trên Giá trị Khách hàng
+                    </h3>
+                    <p className="font-serif text-slate-700 text-[0.95rem] mb-4">
+                      Ngược lại hoàn toàn với Cách 1. Định giá xuất phát từ <strong>cảm nhận của người mua</strong> về giá trị sản phẩm, chứ không phải từ chi phí sản xuất. Khách thấy "đáng giá" bao nhiêu thì bán bấy nhiêu. Có thể thiết kế sản phẩm, tăng thêm dịch vụ (như giao hàng tận nhà, thái độ nhân viên, mặt bằng đẹp) để tạo giá trị gia tăng và định mức giá bán cao hơn. Cần nghiên cứu kỹ thị trường mục tiêu để đo lường nhận thức này.
+                    </p>
+                    <div className="bg-[#FAF5FF] p-4 rounded-lg border border-[#E9D5FF] text-[#581C87] text-sm font-serif italic">
+                      <strong>Ví dụ:</strong> Chi phí ly cafe đen chỉ 5.000đ. Bán vỉa hè giá 15.000đ. Nhưng trong không gian sang trọng của Highlands Coffee, khách sẵn sàng trả 45.000đ vì họ mua "giá trị không gian và thương hiệu".
+                    </div>
+                  </div>
+
+                  <div className="bg-white border border-slate-200 p-6 rounded-xl shadow-sm">
+                    <h3 className="text-[1.2rem] font-bold text-slate-900 flex items-center gap-2 mb-4 font-sans">
+                      <span className="bg-[#F59E0B] text-white w-8 h-8 rounded-full flex items-center justify-center text-lg">3</span> 
+                      Định giá theo Cạnh tranh
+                    </h3>
+                    <p className="font-serif text-slate-700 text-[0.95rem] mb-4">
+                      Bỏ qua chi phí hay giá trị, doanh nghiệp định giá hoàn toàn dựa trên mức giá của đối thủ.
+                    </p>
+                    <ul className="list-disc pl-5 font-serif text-[0.9rem] text-slate-700 space-y-2">
+                      <li><strong>Định giá hiện hành:</strong> Đặt giá bằng, cao hơn hoặc thấp hơn đối thủ một chút (VD: Bột giặt Aba định giá thấp hơn OMO).</li>
+                      <li><strong>Định giá đấu thầu kín:</strong> Dự đoán mức giá của đối thủ và thường đặt mức giá thấp hơn đối thủ để trúng thầu.</li>
+                    </ul>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {/* Section V: TỔNG ÔN 14 CHIẾN LƯỢC */}
+            <section className="mt-16 bg-[#F8FAFC] border border-[#E2E8F0] p-6 md:p-10 rounded-2xl relative shadow-sm">
+              <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 bg-[#DC2626] text-white font-extrabold font-sans px-8 py-2 rounded-full shadow-lg border-4 border-white text-sm md:text-base flex items-center gap-2 whitespace-nowrap z-10">
+                <Crosshair size={20} /> TỔNG ÔN TRẮC NGHIỆM: 14 CHIẾN LƯỢC ĐỊNH GIÁ ĐIỂN HÌNH
+              </div>
+              
+              <div className="pt-6 text-center mb-8">
+                <p className="text-slate-700 font-serif text-[1.05rem] max-w-3xl mx-auto">
+                  Toàn bộ 14 chiến lược định giá được chia làm 4 nhóm lớn. Hãy nắm thật chắc khái niệm và <span className="text-red-600 font-bold">bẫy đề thi</span> (phần in nghiêng) để không bị mất điểm oan.
+                </p>
+              </div>
+
+              {/* NHÓM 1 */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold text-slate-900 mb-4 font-sans flex items-center gap-2 border-b-2 border-slate-200 pb-2">
+                  <span className="bg-blue-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">N.1</span> 
+                  Nhóm 1: Dành cho Sản phẩm mới (Rất hay thi)
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-white p-5 rounded-xl border border-blue-200 shadow-sm border-l-4 border-l-blue-600">
+                    <h4 className="font-bold text-blue-800 text-lg mb-2">Giá Hớt Váng (Skimming)</h4>
+                    <p className="text-[0.95rem] text-slate-700 mb-3">Định giá thật cao ngay từ đầu để tối đa hóa lợi nhuận, sau đó giảm dần.</p>
+                    <div className="bg-blue-50 p-3 rounded text-sm text-blue-900 mb-3">
+                      <strong>Điều kiện (Bẫy):</strong> SP độc đáo, ít đối thủ, thương hiệu cao cấp, nguồn lực có hạn. <em>(VD: iPhone 15 Pro Max, Nike Air Max lúc mới ra).</em>
+                    </div>
+                  </div>
+                  <div className="bg-white p-5 rounded-xl border border-emerald-200 shadow-sm border-l-4 border-l-emerald-600">
+                    <h4 className="font-bold text-emerald-800 text-lg mb-2">Giá Thâm Nhập (Penetration)</h4>
+                    <p className="text-[0.95rem] text-slate-700 mb-3">Định giá cực thấp để nhanh chóng giành giật thị phần.</p>
+                    <div className="bg-emerald-50 p-3 rounded text-sm text-emerald-900 mb-3">
+                      <strong>Điều kiện (Bẫy):</strong> Thị trường cực kỳ nhạy cảm về giá, cạnh tranh rất mạnh. <em>(VD: Shopee, IKEA giảm giá 20% mọi SP).</em>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* NHÓM 2 */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold text-slate-900 mb-4 font-sans flex items-center gap-2 border-b-2 border-slate-200 pb-2">
+                  <span className="bg-purple-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">N.2</span> 
+                  Nhóm 2: Cho tập hợp sản phẩm (Dễ nhầm lẫn)
+                </h3>
+                <div className="grid md:grid-cols-2 gap-5 font-serif text-[0.95rem]">
+                  <div className="bg-white p-4 border border-slate-200 rounded-lg">
+                    <strong className="text-purple-800 block mb-1">3. Định giá Dòng sản phẩm (Product Line)</strong>
+                    <p className="text-slate-600">Thiết lập các mức giá khác nhau (bậc thang) cho các sản phẩm trong cùng một dòng. <br/><em className="text-slate-500">VD: iPhone 15 (20tr) - 15 Plus (23tr) - 15 Pro (26tr).</em></p>
+                  </div>
+                  <div className="bg-white p-4 border border-slate-200 rounded-lg">
+                    <strong className="text-purple-800 block mb-1">4. Sản phẩm phụ thêm (Optional Product)</strong>
+                    <p className="text-slate-600">Định giá cho các phụ kiện, tính năng bán kèm SP chính (không bắt buộc mua). <br/><em className="text-slate-500">VD: Mua xe ô tô mua thêm option ghế da, cửa sổ trời.</em></p>
+                  </div>
+                  <div className="bg-white p-4 border border-rose-200 rounded-lg shadow-sm">
+                    <strong className="text-rose-700 block mb-1 flex items-center gap-1"><AlertCircle size={16}/> 5. Sản phẩm Bổ sung (Captive Product)</strong>
+                    <p className="text-slate-700"><strong>Bẫy thi:</strong> Bắt buộc phải mua kèm mới sử dụng được. Thường bán SP chính rất rẻ, nhưng SP phụ cực đắt. <br/><em className="text-rose-600">VD: Bán máy in rẻ, mực in đắt. Máy cạo râu rẻ, lưỡi dao đắt.</em></p>
+                  </div>
+                  <div className="bg-white p-4 border border-rose-200 rounded-lg shadow-sm">
+                    <strong className="text-rose-700 block mb-1 flex items-center gap-1"><AlertCircle size={16}/> 6. Định giá Trọn gói (Combo/Bundle)</strong>
+                    <p className="text-slate-700"><strong>Bẫy thi:</strong> Gộp nhiều SP lại. Nguyên tắc BẮT BUỘC: Giá trọn gói phải <span className="font-bold underline">nhỏ hơn</span> tổng tiền mua lẻ từng món. <br/><em className="text-rose-600">VD: Combo Gà rán + Nước + Khoai (79k) rẻ hơn mua lẻ (100k).</em></p>
+                  </div>
+                </div>
+              </div>
+
+              {/* NHÓM 3 */}
+              <div className="mb-10">
+                <h3 className="text-xl font-bold text-slate-900 mb-4 font-sans flex items-center gap-2 border-b-2 border-slate-200 pb-2">
+                  <span className="bg-amber-500 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">N.3</span> 
+                  Nhóm 3: Chiến lược điều chỉnh giá (Theo tình huống)
+                </h3>
+                <div className="bg-white rounded-xl border border-slate-200 overflow-hidden text-[0.95rem] font-serif">
+                  <div className="p-4 border-b border-slate-100 flex gap-3 hover:bg-slate-50">
+                    <div className="w-6 font-bold text-amber-600 shrink-0">7.</div>
+                    <div><strong className="text-slate-900">Chiết giá & Bớt giá:</strong> Áp dụng khi khách mua số lượng lớn, mua trái vụ hoặc thanh toán tiền mặt nhanh (Discount).</div>
+                  </div>
+                  <div className="p-4 border-b border-slate-100 flex gap-3 hover:bg-amber-50 bg-amber-50/30">
+                    <div className="w-6 font-bold text-amber-600 shrink-0">8.</div>
+                    <div><strong className="text-slate-900">Định giá phân biệt (Rất hay thi):</strong> Cùng 1 SP nhưng bán giá khác nhau. 
+                      <ul className="list-disc pl-5 mt-1 text-slate-600 text-sm">
+                        <li><em>Theo khách hàng:</em> Vé người lớn / vé sinh viên.</li>
+                        <li><em>Theo địa điểm:</em> Ghế VIP / ghế thường trong rạp phim.</li>
+                        <li><em>Theo thời gian:</em> Bay đêm rẻ hơn bay ngày, xem phim thứ 3 rẻ hơn.</li>
+                        <li><em>Theo hình thức:</em> Mì Hảo Hảo gói (4k) vs ly (8k).</li>
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="p-4 border-b border-slate-100 flex gap-3 hover:bg-amber-50 bg-amber-50/30">
+                    <div className="w-6 font-bold text-amber-600 shrink-0">9.</div>
+                    <div><strong className="text-slate-900">Định giá Tâm lý:</strong> Lợi dụng cảm xúc con số (số 9, lộc phát) hoặc tâm lý "giá cao đi kèm chất lượng tốt". <em className="text-slate-500 block">VD: Bán 199.000đ để cảm giác rẻ hơn hẳn 200.000đ.</em></div>
+                  </div>
+                  <div className="p-4 border-b border-slate-100 flex gap-3 hover:bg-slate-50">
+                    <div className="w-6 font-bold text-amber-600 shrink-0">10.</div>
+                    <div><strong className="text-slate-900">Định giá Khuyến mại:</strong> Điều chỉnh giá TẠM THỜI (bán giá vốn, trả góp 0%) để thúc đẩy doanh số ngắn hạn (Flash Sale).</div>
+                  </div>
+                  <div className="p-4 border-b border-slate-100 flex gap-3 hover:bg-amber-50 bg-amber-50/30">
+                    <div className="w-6 font-bold text-amber-600 shrink-0">11.</div>
+                    <div><strong className="text-slate-900">Định giá Động (Dynamic):</strong> Giá thay đổi liên tục theo thời gian thực (real-time) dựa vào cung-cầu. <em className="text-slate-500 block">VD: Giá cước Grab x2 khi trời mưa, vé máy bay mua sát giờ tăng vọt.</em></div>
+                  </div>
+                  <div className="p-4 border-b border-slate-100 flex gap-3 hover:bg-slate-50">
+                    <div className="w-6 font-bold text-amber-600 shrink-0">12.</div>
+                    <div><strong className="text-slate-900">Định giá Địa lý:</strong> FOB (Giao tại bến), CIF (Bao gồm bảo hiểm, cước phí), giá thống nhất mọi nơi hoặc giá phân biệt theo khu vực vận chuyển.</div>
+                  </div>
+                  <div className="p-4 flex gap-3 hover:bg-slate-50">
+                    <div className="w-6 font-bold text-amber-600 shrink-0">13.</div>
+                    <div><strong className="text-slate-900">Định giá Quốc tế:</strong> Tùy chỉnh mức giá cho cùng một sản phẩm tại các quốc gia khác nhau do thuế, phí... <em className="text-slate-500 block">VD: Quần Levi's bán ở Mỹ 30$, Nhật 63$, Pháp 88$.</em></div>
+                  </div>
+                </div>
+              </div>
+
+              {/* NHÓM 4 */}
+              <div>
+                <h3 className="text-xl font-bold text-slate-900 mb-4 font-sans flex items-center gap-2 border-b-2 border-slate-200 pb-2">
+                  <span className="bg-teal-600 text-white w-8 h-8 rounded-lg flex items-center justify-center text-sm">N.4</span> 
+                  Nhóm 4: Thay đổi giá do biến động thị trường
+                </h3>
+                <div className="grid md:grid-cols-3 gap-5 font-serif text-[0.95rem]">
+                  <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <strong className="text-teal-800 flex items-center gap-2 mb-2"><TrendingUp className="rotate-180" size={18}/> 14a. Chủ động CẮT giá</strong>
+                    <p className="text-slate-700">Áp dụng khi doanh nghiệp muốn khống chế thị trường, hoặc khi <strong>dư thừa năng lực sản xuất</strong> (cần xả hàng gấp).</p>
+                  </div>
+                  <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <strong className="text-teal-800 flex items-center gap-2 mb-2"><TrendingUp size={18}/> 14b. Chủ động TĂNG giá</strong>
+                    <p className="text-slate-700">Áp dụng bất đắc dĩ khi xảy ra <strong>lạm phát</strong> chi phí, hoặc khi <strong>cầu vượt quá cung</strong> (không sản xuất kịp để bán).</p>
+                  </div>
+                  <div className="bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <strong className="text-teal-800 flex items-center gap-2 mb-2"><Swords size={18}/> 14c. Đối phó đối thủ</strong>
+                    <p className="text-slate-700">Khi đối thủ đổi giá, DN có 3 hướng: Giảm giá theo thấp hơn, Giữ nguyên giá nhưng đẩy mạnh truyền thông, hoặc Nâng giá + Cải tiến chất lượng (Re-positioning).</p>
+                  </div>
+                </div>
+              </div>
+
+            </section>
+
+          </div>
+
+          <footer className="bg-[#F8FAFC] p-8 text-center text-slate-500 text-sm font-sans border-t border-slate-200">
+            © Chương 7: Chiến lược Định giá - Tài liệu thiết kế chuyên sâu tối ưu hóa trải nghiệm ôn thi.
+          </footer>
+        </div>
+
+        {/* Global Tooltip/Modal Context */}
+        {activeTerm && (
+          <div className="fixed inset-0 z-50 flex items-end md:items-center justify-center p-4">
+            <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setActiveTerm(null)}></div>
+            <div className="relative w-full max-w-sm bg-white rounded-xl shadow-2xl overflow-hidden animate-in slide-in-from-bottom-5">
+              <div className="bg-[#1E3A8A] p-4 flex justify-between items-center text-white">
+                <div className="flex items-center gap-2 font-sans font-bold text-[1rem]"><BookOpen size={18}/> Sổ tay thuật ngữ</div>
+                <button onClick={() => setActiveTerm(null)} className="p-1 hover:bg-white/20 rounded-full transition-colors"><X size={20}/></button>
+              </div>
+              <div className="p-6">
+                <h3 className="text-xl font-bold font-sans text-slate-900 mb-3">{activeTerm}</h3>
+                <p className="text-slate-700 text-[0.95rem] leading-relaxed font-serif">{dictionaryData[activeTerm]}</p>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    </GlossaryContext.Provider>
+  );
+}
