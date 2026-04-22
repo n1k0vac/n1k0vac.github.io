@@ -1,467 +1,1104 @@
 <!DOCTYPE html>
-<html lang="vi" class="light">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mục Lục - Kinh Tế Vĩ Mô</title>
-    
-    <!-- Tailwind CSS -->
+    <title>Sơ đồ tư duy & Trắc nghiệm Marketing (ULAW)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        primary: {
-                            50: '#eff6ff',
-                            100: '#dbeafe',
-                            500: '#3b82f6',
-                            600: '#2563eb',
-                            900: '#1e3a8a',
-                        }
-                    }
-                }
-            }
         }
     </script>
-
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .glass-effect {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-        }
-        .dark .glass-effect {
-            background: rgba(30, 41, 59, 0.7);
+        /* Base styles */
+        body {
+            overflow-x: hidden;
         }
         
-        /* Custom Scrollbar cho Modal */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-        .dark ::-webkit-scrollbar-thumb { background: #475569; }
-        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        body.mindmap-active {
+            overflow: hidden; 
+        }
+
+        /* --- Mindmap Styles (Native Scroll Optimized for Mobile) --- */
+        .canvas-container {
+            width: 100vw;
+            height: calc(100vh - 4rem);
+            overflow: auto; /* Bật cuộn tự nhiên */
+            -webkit-overflow-scrolling: touch; /* Cuộn mượt trên thiết bị cảm ứng */
+            position: relative;
+            padding-bottom: 5rem;
+        }
+
+        .mindmap-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3rem;
+            padding: 3rem;
+            width: max-content; 
+            min-width: 100%; 
+            margin: 0 auto;
+        }
+
+        .connector {
+            width: 4px;
+            height: 3rem;
+            background-color: #cbd5e1;
+            position: relative;
+        }
+        .connector::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: -6px;
+            border-width: 8px 8px 0;
+            border-style: solid;
+            border-color: #cbd5e1 transparent transparent transparent;
+        }
+
+        .dark .connector { background-color: #475569; }
+        .dark .connector::after { border-color: #475569 transparent transparent transparent; }
+
+        .node-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .node-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #3b82f6 !important; 
+        }
+
+        /* Tùy chỉnh thanh cuộn cho canvas */
+        .canvas-container::-webkit-scrollbar { height: 8px; width: 8px; }
+        .canvas-container::-webkit-scrollbar-track { background: #f1f1f1; }
+        .canvas-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .canvas-container::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        
+        .dark .canvas-container::-webkit-scrollbar-track { background: #1f2937; }
+        .dark .canvas-container::-webkit-scrollbar-thumb { background: #475569; }
+        .dark .canvas-container::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* --- Quiz Styles --- */
+        .radio-custom:checked + div {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
+        }
+        .radio-custom:checked + div .radio-circle {
+            border-color: #3b82f6;
+        }
+        .radio-custom:checked + div .radio-circle::after {
+            transform: scale(1);
+        }
+
+        .dark .radio-custom:checked + div {
+            border-color: #3b82f6 !important;
+            background-color: #1e3a8a !important;
+        }
+        .dark .radio-custom:checked + div .radio-circle {
+            border-color: #60a5fa !important;
+        }
     </style>
 </head>
-<body class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-200 transition-colors duration-300 min-h-screen flex flex-col">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-100 font-sans antialiased mindmap-active transition-colors duration-300" onload="initApp()">
 
-    <!-- Header -->
-    <header class="sticky top-0 z-50 glass-effect border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-primary-600 flex items-center justify-center text-white shadow-lg">
-                    <i class="fa-solid fa-book-open"></i>
-                </div>
-                <h1 class="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary-600 to-blue-400 dark:from-primary-400 dark:to-blue-300">
-                    Kinh Tế Vĩ Mô
-                </h1>
+    <!-- Header / Navigation Tabs -->
+    <div class="fixed top-0 left-0 right-0 bg-white dark:bg-gray-800 border-b border-transparent dark:border-gray-700 shadow-md z-50 h-16 flex justify-between items-center px-4 md:px-6 transition-colors duration-300">
+        <div class="flex items-center gap-3">
+            <div class="bg-blue-600 text-white p-2 rounded-lg hidden sm:block">
+                <i class="fa-solid fa-graduation-cap"></i>
             </div>
-            
-            <!-- Actions -->
-            <div class="flex items-center gap-2">
-                <a href="https://www.facebook.com/n1k0vac/" target="_blank" rel="noopener noreferrer" 
-                   class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500" title="Liên hệ Facebook">
-                    <i class="fa-brands fa-facebook text-xl text-blue-600 dark:text-blue-400"></i>
-                </a>
-
-                <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500" title="Đổi giao diện">
-                    <i id="theme-icon" class="fa-solid fa-moon text-xl text-gray-600 dark:text-yellow-400"></i>
-                </button>
-            </div>
+            <h1 class="text-base sm:text-lg md:text-xl font-bold text-gray-800 dark:text-white truncate">Ôn tập Marketing (ULAW)</h1>
         </div>
-    </header>
+        
+        <!-- Controls area -->
+        <div class="flex items-center gap-2 md:gap-4 shrink-0">
+            <!-- Contact Info -->
+            <a href="https://www.facebook.com/n1k0vac/" target="_blank" title="Liên hệ tác giả" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-blue-50 dark:bg-gray-700 text-blue-600 dark:text-blue-400 hover:bg-blue-100 dark:hover:bg-gray-600 transition-colors">
+                <i class="fa-brands fa-facebook-f"></i>
+            </a>
 
-    <!-- Main Content -->
-    <main class="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full">
-        <div class="text-center mb-12">
-            <h2 class="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">Mục Lục Khóa Học</h2>
-            <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">Chọn chương để bắt đầu học lý thuyết hoặc ôn tập kiến thức thông qua hệ thống câu hỏi trắc nghiệm.</p>
-        </div>
-
-        <!-- Grid Container -->
-        <div id="chapters-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Cards will be injected here by JS -->
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-gray-800 mt-auto py-6 text-center text-gray-500 dark:text-gray-400 text-sm transition-colors duration-300">
-        <p>&copy; 2024 Hệ thống học tập Kinh Tế Vĩ Mô. Chúc bạn học tốt!</p>
-    </footer>
-
-    <!-- ================= MODAL THÔNG BÁO CHƯA CÓ DATA ================= -->
-    <div id="notice-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm opacity-0 transition-opacity duration-300">
-        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl p-6 max-w-md w-full mx-4 transform scale-95 transition-transform duration-300">
-            <div class="text-center">
-                <div class="w-16 h-16 rounded-full bg-yellow-100 dark:bg-yellow-900/30 flex items-center justify-center mx-auto mb-4 text-yellow-500 text-2xl">
-                    <i class="fa-solid fa-person-digging"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2">Hệ thống đang hoàn thiện</h3>
-                <p class="text-gray-600 dark:text-gray-300 mb-6">File JSON dữ liệu trắc nghiệm cho chương này chưa được tạo (hoặc bị lỗi tên file). Vui lòng bổ sung file để làm bài!</p>
-                <button onclick="closeNoticeModal()" class="w-full py-2.5 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors">
-                    Đã hiểu
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MODAL LÀM BÀI TRẮC NGHIỆM ================= -->
-    <div id="quiz-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm">
-        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-3xl mx-4 flex flex-col overflow-hidden max-h-[90vh]">
-            
-            <!-- Quiz Header -->
-            <div class="px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center bg-gray-50 dark:bg-gray-800/50">
-                <h3 id="quiz-title" class="text-lg md:text-xl font-bold text-gray-900 dark:text-white">Tên Chương</h3>
-                <button onclick="closeQuizModal()" class="text-gray-500 hover:text-red-500 transition-colors">
-                    <i class="fa-solid fa-xmark text-2xl"></i>
-                </button>
-            </div>
-
-            <!-- Quiz Progress -->
-            <div class="px-6 py-3 border-b border-gray-100 dark:border-gray-800">
-                <div class="flex justify-between text-sm text-gray-600 dark:text-gray-400 mb-2 font-medium">
-                    <span>Tiến độ</span>
-                    <span id="quiz-progress-text">0/0</span>
-                </div>
-                <div class="w-full bg-gray-200 rounded-full h-2 dark:bg-gray-700">
-                    <div id="quiz-progress-bar" class="bg-primary-600 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-            </div>
-
-            <!-- Quiz Body (Scrollable) -->
-            <div class="p-6 flex-grow overflow-y-auto">
-                <h4 id="question-text" class="text-lg font-semibold mb-6 text-gray-800 dark:text-gray-200 leading-relaxed">
-                    <!-- Text câu hỏi -->
-                </h4>
-                <div id="options-container" class="flex flex-col gap-3">
-                    <!-- Các nút đáp án sẽ được render ở đây -->
-                </div>
-            </div>
-
-            <!-- Quiz Footer Buttons -->
-            <div class="px-6 py-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 flex justify-between gap-4">
-                <button id="btn-prev" onclick="prevQuestion()" class="px-5 py-2.5 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-600 font-medium transition-colors hidden">
-                    <i class="fa-solid fa-arrow-left mr-2"></i> Câu trước
-                </button>
-                <div class="flex-grow"></div> <!-- Spacer -->
-                <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors">
-                    Câu tiếp theo <i class="fa-solid fa-arrow-right ml-2"></i>
-                </button>
-                <button id="btn-submit" onclick="submitQuiz()" class="px-5 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 font-medium transition-colors hidden">
-                    Nộp bài <i class="fa-solid fa-check ml-2"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ================= MODAL KẾT QUẢ VÀ GIẢI THÍCH ================= -->
-    <div id="results-modal" class="fixed inset-0 z-[100] hidden items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm py-4">
-        <div class="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 max-w-4xl w-full mx-4 flex flex-col h-full max-h-[90vh]">
-            
-            <!-- Phần Header Kết quả -->
-            <div class="text-center flex-shrink-0 mb-4 border-b border-gray-200 dark:border-gray-800 pb-4">
-                <div class="w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4 text-green-500 text-3xl">
-                    <i class="fa-solid fa-trophy"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 dark:text-white mb-2">Hoàn thành!</h3>
-                <p class="text-gray-600 dark:text-gray-400 mb-1">Bạn đã hoàn thành bài kiểm tra trắc nghiệm.</p>
-                <p id="results-score" class="text-xl font-bold text-primary-600 dark:text-primary-400">Đúng: 0/0 câu</p>
-            </div>
-            
-            <!-- Phần Xem lại đáp án chi tiết (Có thanh cuộn) -->
-            <div id="results-review" class="flex-grow overflow-y-auto space-y-6 pr-2 mb-4">
-                <!-- Nội dung giải thích từng câu sẽ được JS tạo tự động ở đây -->
-            </div>
-            
-            <!-- Nút đóng -->
-            <button onclick="closeResultsModal()" class="w-full flex-shrink-0 py-3 px-4 bg-gray-200 hover:bg-gray-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg font-medium transition-colors border border-gray-300 dark:border-gray-700">
-                Trở về Mục lục
+            <!-- Theme Toggle -->
+            <button onclick="toggleTheme()" class="w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-yellow-400 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
+                <i id="themeIcon" class="fa-solid fa-moon"></i>
             </button>
+
+            <!-- Tab Switcher -->
+            <div class="flex bg-gray-100 dark:bg-gray-700 p-1 rounded-lg shrink-0">
+                <button onclick="switchTab('mindmap')" id="tab-mindmap" class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md bg-white dark:bg-gray-800 shadow text-blue-600 dark:text-blue-400 transition-all flex items-center">
+                    <i class="fa-solid fa-project-diagram sm:mr-2"></i><span class="hidden sm:inline">Sơ đồ tư duy</span>
+                </button>
+                <button onclick="switchTab('quiz')" id="tab-quiz" class="px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all flex items-center">
+                    <i class="fa-solid fa-list-check sm:mr-2"></i><span class="hidden sm:inline">Trắc nghiệm</span>
+                </button>
+            </div>
         </div>
     </div>
 
-
-    <!-- JavaScript -->
-    <script>
-        // Dữ liệu hiển thị Grid
-        const chapters = [
-            { id: 1, title: "Tổng quan", desc: "Giới thiệu các nguyên lý kinh tế học, phân biệt vi mô - vĩ mô.", icon: "fa-globe" },
-            { id: 2, title: "Các biến số vĩ mô cơ bản", desc: "Tìm hiểu về GDP, CPI, cách đo lường thu nhập quốc gia.", icon: "fa-chart-line" },
-            { id: 3, title: "Tăng trưởng kinh tế", desc: "Phân tích các yếu tố quyết định năng suất và chính sách tăng trưởng.", icon: "fa-arrow-trend-up" },
-            { id: 4, title: "Hệ thống tài chính", desc: "Tiết kiệm, đầu tư và vai trò của các trung gian tài chính.", icon: "fa-building-columns" },
-            { id: 5, title: "Thất nghiệp & Lạm phát", desc: "Đo lường thất nghiệp, nguyên nhân và chi phí của lạm phát.", icon: "fa-scale-unbalanced" },
-            { id: 6, title: "Tổng cung & Tổng cầu", desc: "Mô hình AD-AS giải thích những biến động kinh tế trong ngắn hạn.", icon: "fa-chart-pie" },
-            { id: 7, title: "Tổng cầu & Chính sách tài khoá", desc: "Tác động của chi tiêu chính phủ và thuế (tác động lấn át).", icon: "fa-landmark" },
-            { id: 8, title: "Tiền tệ & Chính sách tiền tệ", desc: "Hệ thống tiền tệ, ngân hàng trung ương và công cụ điều tiết.", icon: "fa-coins" },
-            { id: 9, title: "Kinh tế vĩ mô nền kinh tế mở", desc: "Hàng hóa quốc tế, tỷ giá hối đoái và cán cân thanh toán.", icon: "fa-ship" }
-        ];
-
-        // Render Danh sách chương
-        const grid = document.getElementById('chapters-grid');
-        chapters.forEach(ch => {
-            const linkDetail = `https://n1k0vac.github.io/ktvm/c${ch.id}/`;
-            const card = document.createElement('div');
-            card.className = "bg-white dark:bg-gray-800 rounded-2xl shadow-sm hover:shadow-xl transition-shadow duration-300 overflow-hidden border border-gray-100 dark:border-gray-700 flex flex-col h-full group";
-            card.innerHTML = `
-                <div class="p-6 flex-grow">
-                    <div class="w-12 h-12 rounded-lg bg-primary-50 dark:bg-gray-700 text-primary-600 dark:text-primary-400 flex items-center justify-center text-xl mb-4 group-hover:scale-110 transition-transform duration-300">
-                        <i class="fa-solid ${ch.icon}"></i>
-                    </div>
-                    <div class="text-sm font-semibold text-primary-600 dark:text-primary-400 mb-1 tracking-wider uppercase">Chương ${ch.id}</div>
-                    <h3 class="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">${ch.title}</h3>
-                    <p class="text-gray-600 dark:text-gray-400 text-sm line-clamp-3">${ch.desc}</p>
+    <!-- ========================================== -->
+    <!-- TAB 1: SƠ ĐỒ TƯ DUY -->
+    <!-- ========================================== -->
+    <div id="mindmapTab" class="mt-16 block">
+        <!-- Main Canvas (Scrollable natively) -->
+        <div id="canvas" class="canvas-container">
+            <div id="mindmap" class="mindmap-wrapper">
+                
+                <div class="text-center text-gray-400 dark:text-gray-500 text-sm animate-pulse mb-[-1rem]">
+                    <i class="fa-solid fa-arrows-up-down-left-right mr-1"></i> Cuộn/Vuốt để xem toàn bộ sơ đồ
                 </div>
-                <div class="p-4 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-100 dark:border-gray-700 flex flex-col gap-2 mt-auto">
-                    <a href="${linkDetail}" target="_blank" rel="noopener noreferrer" 
-                       class="w-full py-2.5 px-4 bg-primary-600 hover:bg-primary-700 text-white rounded-lg text-sm font-medium text-center transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-book-open-reader"></i> Xem nội dung
-                    </a>
-                    <button onclick="startQuiz(${ch.id})" 
-                       class="w-full py-2.5 px-4 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-600 rounded-lg text-sm font-medium text-center transition-colors flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-pencil"></i> Làm bài tập
+
+                <!-- ROOT: Chương 1 -->
+                <div class="flex flex-col items-center mt-4">
+                    <div class="bg-indigo-600 text-white px-4 py-1 rounded-full text-sm font-semibold mb-2 shadow-sm">Nền tảng</div>
+                    <div class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 rounded-xl shadow-lg p-6 w-72 md:w-80 text-center node-card cursor-pointer flex flex-col" onclick="openDetail(1)">
+                        <i class="fa-solid fa-globe text-4xl text-indigo-500 mb-3"></i>
+                        <h2 class="text-xl font-bold text-gray-800 dark:text-white">Chương 1</h2>
+                        <p class="text-md font-semibold text-gray-600 dark:text-gray-300 mt-1">Tổng quan Marketing</p>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 flex-1">Bản chất, triết lý, khái niệm cốt lõi.</p>
+                        <button onclick="window.open('https://n1k0vac.github.io/c1', '_blank'); event.stopPropagation();" class="mt-4 w-full py-2 bg-gray-100 dark:bg-gray-700 hover:bg-indigo-100 dark:hover:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                        </button>
+                    </div>
+                </div>
+
+                <div class="connector"></div>
+
+                <!-- STAGE 1: Nghiên cứu -->
+                <div class="flex flex-col items-center w-full">
+                    <div class="bg-blue-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm text-center">Bước 1: Nghiên cứu & Thấu hiểu</div>
+                    
+                    <div class="flex justify-center gap-6 md:gap-8 relative">
+                        <div class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 rounded-xl shadow-lg p-5 w-60 md:w-64 node-card cursor-pointer shrink-0 flex flex-col" onclick="openDetail(2)">
+                            <div class="flex items-center gap-3 border-b dark:border-gray-700 pb-3 mb-3">
+                                <div class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 p-2 rounded-lg"><i class="fa-solid fa-seedling"></i></div>
+                                <div>
+                                    <h2 class="font-bold text-gray-800 dark:text-white">Chương 2</h2>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">Môi trường MKT</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 flex-1">Môi trường Vĩ mô, Vi mô và Nội tại doanh nghiệp.</p>
+                            <button onclick="window.open('https://n1k0vac.github.io/c2/', '_blank'); event.stopPropagation();" class="mt-3 w-full py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                            </button>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 rounded-xl shadow-lg p-5 w-60 md:w-64 node-card cursor-pointer shrink-0 flex flex-col" onclick="openDetail(3)">
+                            <div class="flex items-center gap-3 border-b dark:border-gray-700 pb-3 mb-3">
+                                <div class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 p-2 rounded-lg"><i class="fa-solid fa-users-viewfinder"></i></div>
+                                <div>
+                                    <h2 class="font-bold text-gray-800 dark:text-white">Chương 3</h2>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">Hành vi khách hàng</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 flex-1">Tâm lý, nhận thức, niềm tin và quá trình ra quyết định.</p>
+                            <button onclick="window.open('https://n1k0vac.github.io/c3/', '_blank'); event.stopPropagation();" class="mt-3 w-full py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                            </button>
+                        </div>
+
+                        <div class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 rounded-xl shadow-lg p-5 w-60 md:w-64 node-card cursor-pointer shrink-0 flex flex-col" onclick="openDetail(4)">
+                            <div class="flex items-center gap-3 border-b dark:border-gray-700 pb-3 mb-3">
+                                <div class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 p-2 rounded-lg"><i class="fa-solid fa-chart-pie"></i></div>
+                                <div>
+                                    <h2 class="font-bold text-gray-800 dark:text-white">Chương 4</h2>
+                                    <p class="text-sm text-gray-600 dark:text-gray-300 font-medium">Nghiên cứu MKT</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 dark:text-gray-400 flex-1">Dữ liệu sơ cấp, thứ cấp, quy trình phân tích và báo cáo.</p>
+                            <button onclick="window.open('https://n1k0vac.github.io/c4/', '_blank'); event.stopPropagation();" class="mt-3 w-full py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-blue-100 dark:hover:bg-blue-900/60 text-blue-600 dark:text-blue-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="connector"></div>
+
+                <!-- STAGE 2: Chiến lược -->
+                <div class="flex flex-col items-center w-full">
+                    <div class="bg-emerald-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm text-center">Bước 2: Thiết kế chiến lược hướng khách hàng</div>
+                    
+                    <div class="bg-white dark:bg-gray-800 border border-transparent dark:border-gray-700 rounded-xl shadow-lg p-6 w-80 md:w-[30rem] node-card cursor-pointer text-center shrink-0 flex flex-col" onclick="openDetail(5)">
+                        <div class="flex justify-center mb-3">
+                            <div class="bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 p-3 rounded-full text-xl"><i class="fa-solid fa-bullseye"></i></div>
+                        </div>
+                        <h2 class="text-lg font-bold text-gray-800 dark:text-white">Chương 5: Phân khúc & Định vị (STP)</h2>
+                        <div class="flex justify-between mt-4 mb-4 text-xs md:text-sm font-medium text-gray-600 dark:text-gray-300 gap-2 flex-1">
+                            <div class="bg-gray-50 dark:bg-gray-700 border-transparent dark:border-gray-600 px-2 md:px-3 py-2 rounded border flex-1">S - Phân khúc</div>
+                            <div class="bg-gray-50 dark:bg-gray-700 border-transparent dark:border-gray-600 px-2 md:px-3 py-2 rounded border flex-1">T - Mục tiêu</div>
+                            <div class="bg-gray-50 dark:bg-gray-700 border-transparent dark:border-gray-600 px-2 md:px-3 py-2 rounded border flex-1">P - Định vị</div>
+                        </div>
+                        <button onclick="window.open('https://n1k0vac.github.io/c5/', '_blank'); event.stopPropagation();" class="mt-2 w-full py-2 bg-gray-100 dark:bg-gray-700 hover:bg-emerald-100 dark:hover:bg-emerald-900/60 text-emerald-600 dark:text-emerald-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                            <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                        </button>
+                    </div>
+                </div>
+
+                <div class="connector"></div>
+
+                <!-- STAGE 3: Marketing Mix -->
+                <div class="flex flex-col items-center w-full">
+                    <div class="bg-rose-500 text-white px-4 py-1 rounded-full text-sm font-semibold mb-4 shadow-sm text-center">Bước 3: Xây dựng chương trình Marketing (4P)</div>
+                    
+                    <div class="flex justify-center gap-4 md:gap-6 relative">
+                        <div class="bg-white dark:bg-gray-800 border-x border-b border-transparent dark:border-x-gray-700 dark:border-b-gray-700 rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-t-rose-400 shrink-0 flex flex-col" onclick="openDetail(6)">
+                            <div class="flex flex-col items-center text-center flex-1">
+                                <i class="fa-solid fa-box-open text-2xl md:text-3xl text-rose-500 mb-2"></i>
+                                <h2 class="font-bold text-gray-800 dark:text-white">Chương 6</h2>
+                                <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 font-bold mb-2">Sản phẩm (Product)</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Cấp độ, chu kỳ sống, SP mới.</p>
+                            </div>
+                            <button onclick="window.open('https://n1k0vac.github.io/c6/', '_blank'); event.stopPropagation();" class="mt-auto w-full py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                            </button>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 border-x border-b border-transparent dark:border-x-gray-700 dark:border-b-gray-700 rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-t-rose-400 shrink-0 flex flex-col" onclick="openDetail(7)">
+                            <div class="flex flex-col items-center text-center flex-1">
+                                <i class="fa-solid fa-tags text-2xl md:text-3xl text-rose-500 mb-2"></i>
+                                <h2 class="font-bold text-gray-800 dark:text-white">Chương 7</h2>
+                                <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 font-bold mb-2">Định giá (Price)</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Chiến lược giá, phương pháp.</p>
+                            </div>
+                            <button onclick="window.open('https://n1k0vac.github.io/c7/', '_blank'); event.stopPropagation();" class="mt-auto w-full py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                            </button>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 border-x border-b border-transparent dark:border-x-gray-700 dark:border-b-gray-700 rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-t-rose-400 shrink-0 flex flex-col" onclick="openDetail(8)">
+                            <div class="flex flex-col items-center text-center flex-1">
+                                <i class="fa-solid fa-truck-fast text-2xl md:text-3xl text-rose-500 mb-2"></i>
+                                <h2 class="font-bold text-gray-800 dark:text-white">Chương 8</h2>
+                                <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 font-bold mb-2">Phân phối (Place)</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Cấu trúc kênh, trung gian.</p>
+                            </div>
+                            <button onclick="window.open('https://n1k0vac.github.io/c8/', '_blank'); event.stopPropagation();" class="mt-auto w-full py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                            </button>
+                        </div>
+                        <div class="bg-white dark:bg-gray-800 border-x border-b border-transparent dark:border-x-gray-700 dark:border-b-gray-700 rounded-xl shadow-lg p-5 w-48 md:w-60 node-card cursor-pointer border-t-4 border-t-rose-400 shrink-0 flex flex-col" onclick="openDetail(9)">
+                            <div class="flex flex-col items-center text-center flex-1">
+                                <i class="fa-solid fa-bullhorn text-2xl md:text-3xl text-rose-500 mb-2"></i>
+                                <h2 class="font-bold text-gray-800 dark:text-white">Chương 9</h2>
+                                <p class="text-xs md:text-sm text-gray-600 dark:text-gray-300 font-bold mb-2">Xúc tiến (Promotion)</p>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-2">Quảng cáo, PR, Bán hàng...</p>
+                            </div>
+                            <button onclick="window.open('https://n1k0vac.github.io/c9/', '_blank'); event.stopPropagation();" class="mt-auto w-full py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-rose-100 dark:hover:bg-rose-900/60 text-rose-600 dark:text-rose-400 text-xs font-bold rounded-lg transition-colors flex items-center justify-center">
+                                <i class="fa-solid fa-book-open mr-1.5"></i> Xem nội dung
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detail Sidebar for Mindmap -->
+        <div id="detailPanel" class="fixed top-0 right-0 h-full w-full md:w-96 bg-white dark:bg-gray-800 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out z-50 flex flex-col">
+            <div id="panelHeader" class="p-6 border-b dark:border-gray-700 flex justify-between items-center text-white bg-blue-600">
+                <div>
+                    <span id="detailChapter" class="text-xs font-bold uppercase tracking-wider opacity-80"></span>
+                    <h2 id="detailTitle" class="text-xl font-bold mt-1"></h2>
+                </div>
+                <button onclick="closeDetail()" class="p-2 hover:bg-white hover:bg-opacity-20 rounded-full transition">
+                    <i class="fa-solid fa-xmark text-xl"></i>
+                </button>
+            </div>
+            <div class="p-6 overflow-y-auto no-scrollbar flex-1 bg-gray-50 dark:bg-gray-900" id="detailContent"></div>
+        </div>
+        <div id="backdrop" class="fixed inset-0 bg-black bg-opacity-30 dark:bg-opacity-60 z-40 hidden transition-opacity duration-300 opacity-0" onclick="closeDetail()"></div>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- TAB 2: BÀI TẬP TRẮC NGHIỆM -->
+    <!-- ========================================== -->
+    <div id="quizTab" class="hidden mt-16 p-4 md:p-6 max-w-5xl mx-auto min-h-screen">
+        
+        <!-- Menu Mode Selection -->
+        <div id="quizMenu" class="block">
+            <div class="text-center mb-8 md:mb-10 mt-6 md:mt-8">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800 dark:text-white mb-4">Hệ Thống Luyện Đề (Giáo trình ULAW)</h2>
+                <p class="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto text-sm md:text-base">Dữ liệu được biên soạn 100% sát với giáo trình, kèm theo giải thích chi tiết. Hệ thống sẽ lưu lại lịch sử làm bài để bạn dễ dàng xem lại lỗi sai.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-4 md:gap-6">
+                <!-- Mode 1: Theo chương -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-blue-900/20 transition cursor-pointer group" onclick="showChapterSelection()">
+                    <div class="w-14 h-14 bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white dark:group-hover:text-white transition">
+                        <i class="fa-solid fa-book-open"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">Ôn tập theo chương</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs">Củng cố kiến thức từng phần. Chọn chương từ 1 đến 9 để làm bộ bài tập tương ứng.</p>
+                </div>
+
+                <!-- Mode 2: Thi thử (Bộ đề) -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-orange-900/20 transition cursor-pointer group" onclick="showMockSelection()">
+                    <div class="w-14 h-14 bg-orange-100 dark:bg-orange-900/50 text-orange-600 dark:text-orange-400 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-orange-600 dark:group-hover:bg-orange-500 group-hover:text-white dark:group-hover:text-white transition">
+                        <i class="fa-solid fa-stopwatch"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">Đề thi tổng hợp</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs">Có 5 bộ đề, mỗi đề 40 câu được phân bổ chuẩn theo cấu trúc đề thi thực tế.</p>
+                </div>
+
+                <!-- Mode 3: Lịch sử -->
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-emerald-900/20 transition cursor-pointer group" onclick="showHistory()">
+                    <div class="w-14 h-14 bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 rounded-2xl flex items-center justify-center text-2xl mb-4 group-hover:bg-emerald-600 dark:group-hover:bg-emerald-500 group-hover:text-white dark:group-hover:text-white transition">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">Lịch sử làm bài</h3>
+                    <p class="text-gray-500 dark:text-gray-400 text-xs">Xem lại kết quả các bài kiểm tra đã hoàn thành, kiểm tra câu đúng/sai kèm giải thích.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chapter Selection (Hidden initially) -->
+        <div id="chapterSelection" class="hidden">
+            <button onclick="backToMenu()" class="mb-4 md:mb-6 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại
+            </button>
+            <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Chọn chương cần ôn tập</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" id="chapterButtonsContainer">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+
+        <!-- Mock Exam Selection (Hidden initially) -->
+        <div id="mockSelection" class="hidden">
+            <button onclick="backToMenu()" class="mb-4 md:mb-6 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại
+            </button>
+            <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white mb-4 md:mb-6">Chọn Bộ Đề Thi Thử (40 Câu/Đề)</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 md:gap-4" id="mockButtonsContainer">
+                <!-- Buttons injected via JS -->
+            </div>
+        </div>
+
+        <!-- History View (Hidden initially) -->
+        <div id="historyView" class="hidden">
+            <button onclick="backToMenu()" class="mb-4 md:mb-6 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại
+            </button>
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">Lịch sử làm bài</h3>
+                <button onclick="clearHistory()" class="text-sm bg-red-100 hover:bg-red-200 text-red-600 px-3 py-1 rounded transition">Xóa lịch sử</button>
+            </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm">
+                    <thead class="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                            <th class="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300">Thời gian</th>
+                            <th class="px-4 py-3 text-left font-medium text-gray-500 dark:text-gray-300">Chế độ</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-500 dark:text-gray-300">Điểm số</th>
+                            <th class="px-4 py-3 text-right font-medium text-gray-500 dark:text-gray-300">Phần trăm</th>
+                            <th class="px-4 py-3 text-center font-medium text-gray-500 dark:text-gray-300">Chi tiết</th>
+                        </tr>
+                    </thead>
+                    <tbody id="historyTableBody" class="divide-y divide-gray-200 dark:divide-gray-700">
+                        <!-- History injected via JS -->
+                    </tbody>
+                </table>
+                <div id="emptyHistoryMsg" class="hidden p-6 text-center text-gray-500 dark:text-gray-400">Bạn chưa hoàn thành bài kiểm tra nào.</div>
+            </div>
+        </div>
+
+        <!-- Review View (Hidden initially) -->
+        <div id="reviewView" class="hidden">
+            <button onclick="backToHistory()" class="mb-4 md:mb-6 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Quay lại lịch sử
+            </button>
+            <div class="flex justify-between items-center mb-6 border-b dark:border-gray-700 pb-4">
+                <div>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white">Chi tiết bài làm</h3>
+                    <p id="reviewSubtitle" class="text-sm text-gray-500 dark:text-gray-400 mt-1"></p>
+                </div>
+                <div id="reviewScore" class="text-xl font-bold px-4 py-2 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-lg border border-blue-200 dark:border-blue-800">
+                </div>
+            </div>
+            <div id="reviewContent" class="space-y-4">
+                <!-- Review details injected via JS -->
+            </div>
+        </div>
+
+        <!-- Quiz Execution Area (Hidden initially) -->
+        <div id="quizExecution" class="hidden">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-end mb-6 border-b dark:border-gray-700 pb-4 gap-4">
+                <div>
+                    <button onclick="backToMenu()" class="mb-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 font-medium flex items-center gap-2 text-sm">
+                        <i class="fa-solid fa-arrow-left"></i> Thoát bài thi
+                    </button>
+                    <h3 id="quizTitle" class="text-xl md:text-2xl font-bold text-gray-800 dark:text-white"></h3>
+                    <p id="quizSubtitle" class="text-gray-500 dark:text-gray-400 text-xs md:text-sm mt-1"></p>
+                </div>
+                <div class="sm:text-right">
+                    <div class="bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-300 px-4 py-2 rounded-lg font-bold text-sm inline-block">
+                        <span id="questionCount">0</span> Câu hỏi
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form câu hỏi -->
+            <form id="quizForm" class="space-y-6 md:space-y-8 mb-8" onsubmit="event.preventDefault(); submitQuiz();">
+                <div id="questionsContainer" class="space-y-6">
+                    <!-- Questions injected via JS -->
+                </div>
+
+                <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4 sticky bottom-4 z-10 transition-colors duration-300">
+                    <div id="resultSummary" class="text-base md:text-lg font-bold text-gray-800 dark:text-white hidden text-center md:text-left"></div>
+                    <div class="w-full md:w-auto flex flex-col sm:flex-row gap-2 md:gap-4">
+                        <button type="submit" id="submitBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 md:px-8 py-3 rounded-xl font-bold shadow-md transition w-full md:w-auto text-sm md:text-base">
+                            <i class="fa-solid fa-paper-plane mr-2"></i>Nộp bài chấm điểm
+                        </button>
+                        <button type="button" id="retryBtn" onclick="retryCurrentQuiz()" class="hidden bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-800 dark:text-gray-100 px-6 md:px-8 py-3 rounded-xl font-bold transition w-full md:w-auto text-sm md:text-base">
+                            <i class="fa-solid fa-rotate-right mr-2"></i>Làm lại bài này
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- ========================================== -->
+    <!-- JAVASCRIPT LOGIC -->
+    <!-- ========================================== -->
+    <script>
+        /* --- 0. DARK MODE & INIT --- */
+        function initApp() {
+            initTheme();
+            centerMindmap();
+            initMockExams();
+            renderChapterButtons();
+            renderMockButtons();
+        }
+
+        function initTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-sun';
+            } else {
+                document.documentElement.classList.remove('dark');
+                document.getElementById('themeIcon').className = 'fa-solid fa-moon';
+            }
+        }
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('themeIcon');
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.theme = 'light';
+                icon.className = 'fa-solid fa-moon';
+            } else {
+                html.classList.add('dark');
+                localStorage.theme = 'dark';
+                icon.className = 'fa-solid fa-sun';
+            }
+        }
+
+        /* --- 1. DATA: MINDMAP CHAPTERS --- */
+        const chapterData = {
+            1: { chapter: "Chương 1", title: "Tổng quan Marketing", color: "bg-indigo-600", icon: "fa-globe", summary: "Nền tảng cơ bản nhất về Marketing.", url: "https://n1k0vac.github.io/c1", points: ["Khái niệm cốt lõi: Nhu cầu, Mong muốn, Yêu cầu.", "Các triết lý quản trị MKT.", "Quy trình Marketing 5 bước."] },
+            2: { chapter: "Chương 2", title: "Môi trường Marketing", color: "bg-blue-600", icon: "fa-seedling", summary: "Yếu tố bên trong/ngoài ảnh hưởng đến DN.", url: "https://n1k0vac.github.io/c2/", points: ["Môi trường Vi mô.", "Môi trường Vĩ mô.", "Nhận diện cơ hội, thách thức."] },
+            3: { chapter: "Chương 3", title: "Hành vi khách hàng", color: "bg-blue-600", icon: "fa-users-viewfinder", summary: "Hộp đen ý thức của người mua.", url: "https://n1k0vac.github.io/c3/", points: ["Mô hình hành vi.", "Yếu tố ảnh hưởng (Văn hóa, XH, Cá nhân, Tâm lý).", "Quá trình ra quyết định mua."] },
+            4: { chapter: "Chương 4", title: "Nghiên cứu Marketing", color: "bg-blue-600", icon: "fa-chart-pie", summary: "Thu thập, phân tích dữ liệu MKT.", url: "https://n1k0vac.github.io/c4/", points: ["Hệ thống thông tin.", "Quy trình nghiên cứu 4 bước.", "Dữ liệu sơ cấp, thứ cấp."] },
+            5: { chapter: "Chương 5", title: "Phân khúc & Định vị (STP)", color: "bg-emerald-600", icon: "fa-bullseye", summary: "Quyết định phục vụ ai và như thế nào.", url: "https://n1k0vac.github.io/c5/", points: ["Phân khúc (Segmentation).", "Mục tiêu (Targeting).", "Định vị (Positioning)."] },
+            6: { chapter: "Chương 6", title: "Sản phẩm (Product)", color: "bg-rose-600", icon: "fa-box-open", summary: "Tạo ra giá trị cho thị trường.", url: "https://n1k0vac.github.io/c6/", points: ["Cấu thành SP (Lõi, Cụ thể, Gia tăng).", "Chu kỳ sống SP (PLC).", "Phát triển SP mới."] },
+            7: { chapter: "Chương 7", title: "Định giá (Price)", color: "bg-rose-600", icon: "fa-tags", summary: "Yếu tố duy nhất tạo doanh thu.", url: "https://n1k0vac.github.io/c7/", points: ["Yếu tố ảnh hưởng giá.", "Phương pháp định giá.", "Chiến lược giá SP mới (Hớt váng/Thâm nhập)."] },
+            8: { chapter: "Chương 8", title: "Phân phối (Place)", color: "bg-rose-600", icon: "fa-truck-fast", summary: "Đưa SP đến tay người tiêu dùng.", url: "https://n1k0vac.github.io/c8/", points: ["Cấu trúc kênh.", "Các trung gian.", "Quản lý kênh phân phối."] },
+            9: { chapter: "Chương 9", title: "Xúc tiến (Promotion)", color: "bg-rose-600", icon: "fa-bullhorn", summary: "Truyền thông giá trị SP.", url: "https://n1k0vac.github.io/c9/", points: ["Quảng cáo.", "PR.", "Khuyến mãi.", "Bán hàng cá nhân", "Direct MKT."] }
+        };
+
+        /* --- 2. DATA: QUESTION BANK (ULAW SYLLABUS - REVISED) --- */
+        const questionBank = {
+            1: [
+                { q: "Marketing ra đời:", options: ["Trong nền sản xuất hàng hóa", "Nhằm giải quyết mâu thuẫn giữa cung và cầu", "Ở tất cả các giai đoạn của quá trình sản xuất, từ khi nghiên cứu thị trường để nắm bắt nhu cầu cho đến cả sau khi bán hàng", "Tất cả các câu trên đều đúng"], correct: 3, explanation: "Marketing ra đời trong nền sản xuất hàng hóa nhằm giải quyết mâu thuẫn cung cầu và bao trùm mọi giai đoạn từ nghiên cứu đến sau khi bán." },
+                { q: "Tư duy Marketing là tư duy:", options: ["Bán những thứ mà doanh nghiệp có", "Bán những thứ mà khách hàng cần", "Bán những thứ mà đối thủ cạnh tranh không có", "Bán những thứ mà doanh nghiệp có lợi thế"], correct: 1, explanation: "Tư duy Marketing hiện đại luôn lấy khách hàng làm trung tâm, bán những thứ khách hàng cần thay vì những gì doanh nghiệp có sẵn." },
+                { q: "Trong một tình huống marketing cụ thể thì marketing là công việc của:", options: ["Người bán", "Người mua", "Đồng thời của cả người bán và người mua", "Bên nào tích cực hơn trong việc tìm cách trao đổi với bên kia"], correct: 3, explanation: "Bất kỳ bên nào chủ động, tích cực hơn trong việc tìm kiếm trao đổi đều đang làm marketing, không phân biệt là người mua hay người bán." },
+                { q: "Sự khác biệt giữa marketing và bán hàng là ở:", options: ["Xuất phát điểm của quy trình", "Ðối tượng phục vụ", "Công cụ thực hiện và mục tiêu", "Tất cả các điểm trên"], correct: 3, explanation: "Khác biệt ở xuất phát điểm (thị trường vs nhà máy), đối tượng phục vụ (khách hàng mục tiêu vs sản phẩm), công cụ và mục tiêu." },
+                { q: "Bạn đang chọn hình thức giải trí cho 2 ngày nghỉ cuối tuần sắp tới. Sự lựa chọn đó được quyết định bởi:", options: ["Sự ưa thích của cá nhân bạn", "Giá tiền của từng loại hình giải trí", "Giá trị của từng loại hình giải trí", "Tất cả các điều nêu trên"], correct: 3, explanation: "Lựa chọn của khách hàng bị chi phối bởi sở thích cá nhân, chi phí (giá tiền) và giá trị nhận được từ sản phẩm/dịch vụ." },
+                { q: "Quan điểm marketing định hướng sản xuất cho rằng người tiêu dùng sẽ ưa thích những sản phẩm:", options: ["Được bán rộng rãi với giá hạ", "Được sản xuất bằng dây chuyền công nghệ cao", "Có kiểu dáng độc đáo", "Có nhiều tính năng mới"], correct: 0, explanation: "Quan điểm định hướng sản xuất cho rằng người tiêu dùng ưa thích những sản phẩm được bán rộng rãi với giá hạ." },
+                { q: "Mong muốn của con người sẽ trở thành yêu cầu khi có:", options: ["Nhu cầu", "Sản phẩm", "Năng lực mua sắm", "Ước muốn"], correct: 2, explanation: "Yêu cầu (Demand) = Mong muốn (Wants) + Khả năng mua sắm/thanh toán." },
+                { q: "Sự hài lòng của khách hàng sau khi sử dụng hàng hoá tuỳ thuộc vào:", options: ["Giá của hàng hoá đó cao hay thấp", "Kỳ vọng của người tiêu dùng về sản phẩm đó", "So sánh giữa giá trị tiêu dùng và kì vọng về sản phẩm", "So sánh giữa giá trị tiêu dùng và sự hoàn thiện của sản phẩm"], correct: 2, explanation: "Sự hài lòng là trạng thái cảm giác bắt nguồn từ việc so sánh kết quả nhận được (giá trị tiêu dùng) với kỳ vọng trước khi mua." },
+                { q: "Câu nói nào dưới đây thể hiện đúng nhất triết lý kinh doanh theo định hướng Marketing?", options: ["Chúng ta đang cố gắng bán cho khách hàng những sản phẩm hoàn hảo.", "Khách hàng đang cần sản phẩm A, hãy sản xuất và bán cho khách hàng sản phẩm A", "Chi phí cho nguyên vật liệu đầu vào của sản phẩm B đang rất cao, hãy cố giảm nó để bán được nhiều sản phẩm B với giá rẻ hơn.", "Doanh số đang giảm, hãy tập trung mọi nguồn lực để đẩy mạnh bán hàng."], correct: 1, explanation: "Khách hàng cần sản phẩm A, hãy sản xuất và bán cho khách hàng sản phẩm A. Đây là triết lý hướng về khách hàng." },
+                { q: "Marketing là gì?", options: ["Bán hàng nhiều hơn", "Quảng cáo sản phẩm", "Tìm hiểu và thỏa mãn nhu cầu khách hàng", "Thiết kế sản phẩm đẹp hơn"], correct: 2, explanation: "Theo triết lý Marketing hiện đại, hoạt động cốt lõi không phải là cố bán những gì mình có, mà là tìm hiểu nhu cầu và thỏa mãn khách hàng để tạo ra giá trị." },
+                { q: "Trong mô hình 4P, \"Place\" có nghĩa là gì?", options: ["Giá cả", "Sản phẩm", "Phân phối", "Xúc tiến"], correct: 2, explanation: "Place là chữ P thứ 3 trong Marketing Mix, đại diện cho hệ thống kênh phân phối đưa sản phẩm từ nhà sản xuất đến tay người tiêu dùng." },
+                { q: "Yếu tố nào sau đây KHÔNG thuộc Marketing Mix truyền thống (4P)?", options: ["Product", "Price", "Promotion", "People"], correct: 3, explanation: "Mô hình 4P truyền thống chỉ bao gồm Sản phẩm (Product), Giá (Price), Phân phối (Place) và Xúc tiến (Promotion). People thuộc mô hình 7P mở rộng." },
+                { q: "Giá trị cốt lõi mà khách hàng nhận được từ sản phẩm gọi là gì?", options: ["Lợi ích", "Chi phí", "Tính năng", "Thương hiệu"], correct: 0, explanation: "Ở cấp độ cơ bản nhất (Sản phẩm cốt lõi), khách hàng thực chất đang mua lợi ích hoặc giải pháp cho vấn đề của họ (VD: mua mỹ phẩm là mua 'hy vọng đẹp hơn')." },
+                { q: "Yếu tố nào sau đây không thuộc mô hình 4P trong marketing?", options: ["People (Con người)", "Product (Sản phẩm)", "Price (Giá cả)", "Promotion (Khuyến mãi/Xúc tiến)"], correct: 0, explanation: "Marketing-Mix cốt lõi dành cho hàng hóa hữu hình là 4P (Product, Price, Place, Promotion). Chữ 'People' là thành tố mở rộng của mô hình 7P (dành cho Dịch vụ)." }
+            ],
+            2: [
+                { q: "Trong các yếu tố sau đây, yếu tố nào không thuộc về môi trường Marketing vi mô của doanh nghiệp?", options: ["Các trung gian Marketing", "Khách hàng", "Tỷ lệ lạm phát hàng năm", "Đối thủ cạnh tranh"], correct: 2, explanation: "Tỷ lệ lạm phát hàng năm thuộc môi trường vĩ mô (yếu tố Kinh tế)." },
+                { q: "Honda là đối thủ cạnh tranh nào của SYM trên thị trường xe gắn máy:", options: ["Đối thủ cạnh tranh tiềm ẩn", "Đối thủ cạnh tranh hiện hữu", "Đối thủ cạnh tranh cung cấp sản phẩm thay thế", "Đối thủ cạnh tranh sản phẩm"], correct: 1, explanation: "Honda và SYM cùng cung cấp xe gắn máy hiện tại trên thị trường nên là đối thủ cạnh tranh hiện hữu." },
+                { q: "Môi trường nội tại của doanh nghiệp là:", options: ["Là các bộ chức năng trong doanh nghiệp", "Là văn hoá doanh nghiệp", "Là cơ cấu tổ chức trong doanh nghiệp", "Gồm nhiều yếu tố, trong đó có các yếu tố trên"], correct: 3, explanation: "Môi trường nội tại bao gồm các bộ phận chức năng, văn hóa và cơ cấu tổ chức bên trong doanh nghiệp." },
+                { q: "Tín ngưỡng và các giá trị ......... rất bền vững và ít thay đổi nhất.", options: ["Nhân khẩu", "Sơ cấp", "Nhánh văn hoá", "Nền văn hoá"], correct: 3, explanation: "Các giá trị nền văn hóa (Core cultural values) được truyền từ đời này sang đời khác và rất khó bị thay đổi." },
+                { q: "Môi trường Marketing của một doanh nghiệp có thể được định nghĩa là:", options: ["Một tập hợp của những nhân tố có thể kiểm soát được.", "Một tập hợp của những nhân tố không thể kiểm soát được.", "Một tập hợp của những nhân tố bên ngoài doanh nghiệp đó.", "Một tập hợp của những nhân tố có thể kiểm soát được và không thể kiểm soát được."], correct: 3, explanation: "Bao gồm môi trường nội tại (có thể kiểm soát) và môi trường vi mô, vĩ mô (phần lớn không thể kiểm soát)." },
+                { q: "Khi phân tích môi trường bên trong doanh nghiệp, nhà phân tích sẽ thấy được:", options: ["Cơ hội và nguy cơ đối với doanh nghiệp", "Điểm mạnh và điểm yếu của doanh nghiệp", "Cơ hội và điểm yếu của doanh nghiệp", "Điểm mạnh và nguy cơ của doanh nghiệp"], correct: 1, explanation: "Phân tích môi trường bên trong giúp nhận diện Điểm mạnh (Strengths) và Điểm yếu (Weaknesses) trong SWOT." },
+                { q: "Trong các yếu tố sau, yếu tố nào không thuộc phạm vi của môi trường nhân khẩu học:", options: ["Quy mô và tốc độ tăng dân số.", "Cơ cấu tuổi tác trong dân cư.", "Cơ cấu của ngành kinh tế", "Thay đổi quy mô hộ gia đình."], correct: 2, explanation: "Cơ cấu của ngành kinh tế thuộc về môi trường Kinh tế (Economic Environment), không phải môi trường Nhân khẩu học (Demographic)." },
+                { q: "Việc ứng dụng mô hình PESTLE có mục tiêu chính là gì?", options: ["Phân tích điểm mạnh và điểm yếu của doanh nghiệp", "Xác định được cơ hội (Opportunities) và thách thức (Threats)", "Xác định mức độ cạnh tranh trong ngành", "Xây dựng chiến lược Marketing Mix"], correct: 1, explanation: "PESTLE dùng để phân tích môi trường vĩ mô, từ đó tìm ra O và T." },
+                { q: "Trong mô hình SWOT, chữ 'O' đại diện cho điều gì?", options: ["Objectives (Mục tiêu)", "Opportunities (Cơ hội)", "Operations (Hoạt động)", "Obstacles (Trở ngại)"], correct: 1, explanation: "Trong bài giảng trên lớp, cô Vân nhấn mạnh việc phân tích môi trường bên ngoài (bằng mô hình PESTLE) chính là để xác định được Cơ hội (Opportunities) và Thách thức/Nguy cơ (Threats)." }
+            ],
+            3: [
+                { q: "Trong các yếu tố sau đây, yếu tố nào không phải là tác nhân môi trường có thể ảnh hưởng đến hành vi mua của người tiêu dùng?", options: ["Kinh tế", "Văn hoá", "Chính trị", "Khuyến mại"], correct: 3, explanation: "Khuyến mại là yếu tố thuộc nỗ lực Marketing của doanh nghiệp (4P), không phải tác nhân môi trường." },
+                { q: "Câu nào không đúng khi so sánh sự khác nhau giữa thị trường của tổ chức khác với thị trường người tiêu dùng?", options: ["Số lượng khách hàng tổ chức thường ít nhưng lại mua với số lượng lớn", "Khách hàng là các tổ chức thường tập trung theo vùng địa lý", "Có nhiều người tham gia vào quá trình mua hàng của các tổ chức", "Các tổ chức mua hàng hóa, dịch vụ thường thiếu tính chuyên nghiệp so với người tiêu dùng"], correct: 3, explanation: "Khách hàng tổ chức có tính chuyên nghiệp rất cao do có bộ phận thu mua chuyên trách. Do đó nhận định này là sai." },
+                { q: "Khái niệm “động cơ” được hiểu là:", options: ["Hành vi mang tính định hướng", "Nhu cầu có khả năng thanh toán", "Nhu cầu đã trở nên bức thiết buộc con người phải hành động để thỏa mãn nhu cầu đó", "Tác nhân kích thích của môi trường"], correct: 2, explanation: "Động cơ là nhu cầu đã đạt tới mức độ cường độ đủ mạnh, trở nên bức thiết buộc con người hành động để thỏa mãn." },
+                { q: "Theo định nghĩa, ......... của một con người được thể hiện qua sự quan tâm, hành động, quan điểm về các nhân tố xung quanh.", options: ["Nhân cách", "Tâm lý", "Quan niệm của bản thân", "Lối sống"], correct: 3, explanation: "Lối sống (Lifestyle) được thể hiện qua các hoạt động (Activities), sự quan tâm (Interests) và quan điểm (Opinions)." },
+                { q: "Hai khách hàng có cùng động cơ như nhau nhưng khi vào cùng một cửa hàng thì lại có sự lựa chọn khác nhau về nhãn hiệu sản phẩm, đó là do họ có sự khác nhau về:", options: ["Sự chú ý", "Nhận thức (Tri giác)", "Thái độ và niềm tin", "Không câu nào đúng"], correct: 1, explanation: "Nhận thức (hay tri giác) của mỗi người về các kích thích là khác nhau, dẫn đến những lựa chọn nhãn hiệu khác nhau." },
+                { q: "Đặc thù của việc mua hàng của các cơ quan hành chính nhà nước là:", options: ["Mua theo ngân sách", "Chịu sự kiểm toán, đánh giá của công chúng", "Quá trình mua trải qua nhiều thủ tục phức tạp", "Nhiều đặc thù, trong đó có (A), (B) và (C)"], correct: 3, explanation: "Sử dụng ngân sách nhà nước nên thủ tục phức tạp, cần đấu thầu và chịu sự kiểm toán của công chúng." },
+                { q: "Một khách hàng đã có ý định mua chiếc xe máy A nhưng lại nhận được thông tin từ một người bạn của mình là dịch vụ bảo dưỡng của hãng không được tốt lắm. Thông tin trên là:", options: ["Một loại nhiễu trong thông điệp", "Một yếu tố cản trở quyết định mua hàng", "Một yếu tố cân nhắc trước khi sử dụng", "Thông tin thứ cấp"], correct: 2, explanation: "Lời khuyên của bạn bè là thái độ của người khác, đóng vai trò là một yếu tố cân nhắc, có thể cản trở quyết định mua hàng." },
+                { q: "Tri giác được hiểu là:", options: ["Sự nhận định trong thâm tâm về một cái gì đó", "Sự đánh giá tốt hay xấu của cá thể, được hình thành trên cơ sở những tri thức", "Thay đổi nhất định diễn ra trong hành vi của cá thể", "Một quá trình thông qua đó cá thể tuyển chọn, tổ chức và giải thích thông tin"], correct: 3, explanation: "Tri giác (Perception) là một quá trình thông qua đó cá thể tuyển chọn, tổ chức và giải thích thông tin để tạo ra bức tranh có ý nghĩa." },
+                { q: "Khái niệm \"Con người kinh tế\" (Homo Economicus) đặc trưng bởi khả năng vô hạn để đưa ra quyết định hợp lý được đưa ra bởi ai?", options: ["Philip Kotler (2008)", "Goroos (1990)", "John Stuart Mills (1986)", "Alfred Chandler (1962)"], correct: 2, explanation: "Trích trực tiếp từ ghi chép bài giảng phần \"Một số thuật ngữ liên quan - Con người kinh tế\"." },
+                { q: "Một khách hàng rất thích xe của hãng Honda, do đó khi nghe các đánh giá về xe Honda, người này có xu hướng chỉ ủng hộ điểm tốt và bỏ qua các điểm xấu. Đây là biểu hiện của yếu tố tâm lý nào?", options: ["Sự chú ý có chọn lọc", "Sự bóp méo có chọn lọc", "Ghi nhớ có chọn lọc", "Nhận thức có chọn lọc"], correct: 1, explanation: "Chèn ép những thông tin theo ý nghĩ cá nhân vào một khuôn khổ nhất định gọi là sự bóp méo có chọn lọc (Ví dụ hãng Honda được cô nêu trên lớp)." },
+                { q: "Khi bạn đang lật giở cuốn “thực đơn” của 1 nhà hàng để chọn món ăn cho bữa tối là bạn đang ở bước nào trong quá trình mua?", options: ["Tìm kiếm thông tin", "Phân tích thông tin", "Đánh giá phương án", "Nhận biết nhu cầu"], correct: 2, explanation: "Việc so sánh, cân nhắc giữa các món ăn trong thực đơn để đưa ra quyết định chọn món chính là bước đánh giá các phương án thay thế." },
+                { q: "Mức độ ảnh hưởng của nhóm tham khảo (nhóm xã hội) tới sự lựa chọn sản phẩm rất mạnh đối với loại hàng hóa nào?", options: ["Hàng xa xỉ tiêu dùng nơi công cộng", "Hàng thiết yếu riêng tư", "Hàng xa xỉ tiêu dùng cá nhân", "Ảnh hưởng như nhau"], correct: 0, explanation: "Hàng xa xỉ dùng ở nơi công cộng (như siêu xe, túi xách hiệu) mang tính phô trương cao, do đó người mua chịu áp lực rất lớn từ sự đánh giá, nhìn nhận của những người xung quanh." }
+            ],
+            4: [
+                { q: "Bước đầu tiên trong quá trình nghiên cứu Marketing là gì?", options: ["Chuẩn bị phương tiện máy móc để tiến hành xử lý dữ liệu", "Xác định vấn đề và mục tiêu cần nghiên cứu", "Lập kế hoach nghiên cứu", "Thu thập dữ liệu"], correct: 1, explanation: "Quy trình nghiên cứu Marketing luôn bắt đầu bằng việc Xác định vấn đề và mục tiêu nghiên cứu." },
+                { q: "Quy trình của chuẩn bị và phân tích dữ liệu là:", options: ["Hiệu chỉnh; Mã hóa; Nhập; Phân tích", "Mã hóa; Hiệu chỉnh; Nhập; Phân tích", "Mã hóa; Nhập; Hiệu chỉnh; Phân tích", "Nhập; Mã hóa; Hiệu chỉnh; Phân tích"], correct: 0, explanation: "Dữ liệu thô phải được Hiệu chỉnh (kiểm tra lỗi) -> Mã hóa -> Nhập liệu -> Phân tích." },
+                { q: "Phân tích dữ liệu tìm ra mối quan hệ giữa doanh thu và chi phí marketing là phương pháp:", options: ["Phân tích khám phá", "Phân tích thực nghiệm", "Phân tích tương quan", "Phân tích thăm dò"], correct: 2, explanation: "Phân tích tương quan dùng để đo lường mức độ liên hệ/biến thiên cùng nhau giữa các biến số." },
+                { q: "Dữ liệu thứ cấp là dữ liệu:", options: ["Có tầm quan trọng thứ nhì", "Đã có sẵn từ trước đây", "Được thu thập sau dữ liệu sơ cấp", "(B) và (C)"], correct: 1, explanation: "Dữ liệu thứ cấp (Secondary data) là thông tin đã có sẵn, được thu thập từ trước cho một mục đích khác." },
+                { q: "Dữ liệu sơ cấp có thể thu thập được bằng cách nào trong các cách dưới đây?", options: ["Quan sát", "Thực nghiệm", "Điều tra phỏng vấn", "Tất cả các cách nêu trên"], correct: 3, explanation: "Có 3 phương pháp chính để thu thập dữ liệu sơ cấp: Quan sát, Thực nghiệm và Điều tra phỏng vấn." },
+                { q: "Trong các cách điều tra phỏng vấn sau đây, cách nào cho độ tin cậy cao nhất và thông tin thu được nhiều nhất?", options: ["Phỏng vấn qua điện thoại", "Phỏng vấn bằng thư tín", "Phỏng vấn trực tiếp cá nhân", "Phỏng vấn nhóm"], correct: 2, explanation: "Phỏng vấn trực tiếp cá nhân thu được thông tin sâu và tin cậy nhất vì có thể quan sát thái độ và giải thích câu hỏi." },
+                { q: "Câu nào trong các Câu sau đây đúng nhất khi nói về nghiên cứu Marketing:", options: ["Nghiên cứu Marketing luôn tốn kém vì chi phí tiến hành phỏng vấn rất cao.", "Các doanh nghiệp cần có một bộ phận nghiên cứu Marketing cho riêng mình.", "Nghiên cứu Marketing có phạm vi rộng lớn hơn so với nghiên cứu khách hàng.", "Nhà quản trị Marketing coi nghiên cứu Marketing là định hướng cho mọi quyết định"], correct: 3, explanation: "Các nhà quản trị coi nghiên cứu Marketing là cơ sở dữ liệu khách quan, làm định hướng cho mọi quyết định." },
+                { q: "Hệ thống thông tin Marketing (MIS) bao gồm các hệ thống con nào sau đây?", options: ["Hệ thống báo cáo nội bộ và Hệ thống nghiên cứu marketing", "Hệ thống báo cáo nội bộ, Hệ thống nghiên cứu marketing và Hệ thống thu thập thông tin", "Hệ thống báo cáo nội bộ, Hệ thống nghiên cứu marketing, Hệ thống thu thập thông tin và Hệ thống phân tích thông tin", "Hệ thống tình báo cạnh tranh và Hệ thống nghiên cứu marketing"], correct: 2, explanation: "Theo ghi chép, MIS bao gồm 4 hệ thống con giúp giải quyết nhiều vấn đề khác nhau và tối ưu hơn MR." },
+                { q: "Trong thiết kế bảng câu hỏi nghiên cứu, thang đo Likert, thang đối nghĩa và thang Stapel thuộc loại thang đo nào?", options: ["Thang đo biểu danh (Nominal scale)", "Thang đo thứ tự (Ordinal scale)", "Thang đo khoảng cách/quãng (Interval scale)", "Thang đo tỷ lệ (Ratio scale)"], correct: 2, explanation: "Thang đo khoảng/quãng có gốc 0 không có ý nghĩa, bao gồm thang Likert và Stapel." },
+                { q: "Phương pháp chọn mẫu nào tiếp cận đối tượng bằng cách thông qua người này để chạm đến những người cuối cùng, thường dùng để tiếp cận các đối tượng hiếm có, khó tìm?", options: ["Chọn mẫu ngẫu nhiên hệ thống", "Chọn mẫu định mức", "Chọn mẫu có mục đích", "Chọn mẫu tuyết lăn"], correct: 3, explanation: "Đây là một hình thức chọn mẫu phi xác suất được cô Vân đặc biệt nhấn mạnh trên lớp." },
+                { q: "Trong các phương pháp chọn mẫu phi xác suất, phương pháp lấy mẫu cho đến khi nào đủ số lượng cần thiết thì dừng lại được gọi là:", options: ["Chọn mẫu định mức", "Chọn mẫu thuận tiện", "Chọn mẫu tự lựa chọn", "Mẫu chuyên gia"], correct: 0, explanation: "Kiến thức bổ sung về Kế hoạch chọn mẫu phi xác suất." }
+            ],
+            5: [
+                { q: "Cần phải phân đoạn thị trường là vì:", options: ["Khách hàng thường rất đông, với nhu cầu phong phú, đa dạng, có nhiều điểm khác biệt trong khi năng lực của doanh nghiệp là có hạn", "Marketing phải đạt được mục tiêu khác nhau trên nhiều khu vực thị trường", "Khách hàng là thượng đế và phải thỏa mãn nhu cầu của khách hàng với mọi chi phí", "Cần phải tiến hành marketing sản phẩm trên nhiều khu vực thị trường"], correct: 0, explanation: "Nguồn lực của doanh nghiệp có hạn, không thể phục vụ toàn bộ thị trường đông đảo với nhu cầu quá đa dạng." },
+                { q: "Phân đoạn thị trường – Lựa chọn thị trường mục tiêu – Định vị hàng hóa trên thị trường mục tiêu (STP), là các bước trong tiến trình:", options: ["Marketing đại trà", "Marketing hàng hóa khác nhau", "Marketing mục tiêu", "Tất cả các loại marketing"], correct: 2, explanation: "Mô hình STP (Segmentation - Targeting - Positioning) là tiến trình cơ bản của Marketing mục tiêu." },
+                { q: "Tất cả những tiêu thức sau đây thuộc nhóm 'nhân khẩu học' dùng để phân đoạn thị trường người tiêu dùng, ngoại trừ:", options: ["Tuổi tác", "Thu nhập", "Giới tính", "Lối sống"], correct: 3, explanation: "Lối sống (Lifestyle) thuộc nhóm tiêu thức Tâm lý học (Psychographics), không phải Nhân khẩu học." },
+                { q: "Khái niệm thị trường mục tiêu trong marketing của doanh nghiệp là:", options: ["Những nhóm khách hàng mà doanh nghiệp cần tập trung mọi nỗ lực marketing để thu hút", "Những nhóm khách hàng đã và đang tiêu dùng sản phẩm của doanh nghiệp", "Những nhóm khách hàng đang tiêu dùng sản phẩm của đối thủ cạnh tranh", "Tập hợp tất cả các khách hàng có khả năng thanh toán"], correct: 0, explanation: "Thị trường mục tiêu là những nhóm khách hàng mà doanh nghiệp quyết định lựa chọn để tập trung nỗ lực Marketing thu hút họ." },
+                { q: "Định vị sản phẩm (Product Positioning) được hiểu là:", options: ["Làm cho sản phẩm của doanh nghiệp khác biệt với sản phẩm cạnh tranh", "Đổi mới và nâng cao chất lượng sản phẩm để thu hút khách hàng", "Nỗ lực xác định vị trí sản phẩm trong tiềm thức khách hàng so với sản phẩm cạnh tranh", "Tạo hình ảnh thương hiệu đắt tiền cho sản phẩm"], correct: 2, explanation: "Định vị là nỗ lực thiết kế sản phẩm và hình ảnh nhằm chiếm một vị trí xác định, có giá trị trong tâm trí/tiềm thức khách hàng so với đối thủ." },
+                { q: "Doanh nghiệp thực hiện 1 chương trình marketing hỗn hợp duy nhất cho toàn bộ thị trường là chiến lược:", options: ["Marketing phân biệt", "Marketing không phân biệt", "Marketing tập trung", "Marketing hỗn hợp"], correct: 1, explanation: "Marketing không phân biệt (Đại trà) là chiến lược bỏ qua sự khác biệt, dùng 1 chiến lược duy nhất cho toàn thị trường." },
+                { q: "Một cuộc nghiên cứu khách du lịch tại bãi biển Hạ Long đã chia khách thành 2 nhóm. Nhóm 1 cần đời sống về đêm sang trọng. Nhóm 2 cần 'Nắng và vui đùa'. Hai nhóm này được phân đoạn theo tiêu thức nào?", options: ["Nhân khẩu học", "Giai cấp xã hội", "Địa vị khách du lịch", "Lối sống"], correct: 3, explanation: "Sự ưu tiên các hoạt động giải trí hay nghỉ dưỡng phản ánh phong cách sống cá nhân -> Tiêu thức Lối sống." },
+                { q: "Nội dung nào sau đây của định vị là quan trọng nhất?", options: ["Định vị đặc tính sản phẩm", "Định vị dịch vụ sản phẩm", "Định vị nhân sự cung cấp cho sản phẩm", "Tùy theo loại sản phẩm và lợi thế cạnh tranh của doanh nghiệp"], correct: 3, explanation: "Không có phương thức định vị nào là duy nhất tốt nhất. Định vị phải dựa vào loại sản phẩm và lợi thế cạnh tranh cốt lõi của doanh nghiệp." },
+                { q: "“Chiến lược là việc xác định các mục tiêu cơ bản, dài hạn của một tổ chức và việc áp dụng một chuỗi các hành động cũng như phân bổ các nguồn lực cần thiết để thực hiện các mục tiêu đó”. Đây là khái niệm của ai?", options: ["Philip Kotler", "Michael Porter", "Alfred Chandler (1962)", "John Stuart Mills"], correct: 2, explanation: "Trích đúng định nghĩa chiến lược thị trường trong ghi chép Chương 5." },
+                { q: "Phương án nào thích hợp cho định nghĩa sau đây: “Tập hợp các hoạt động nhằm tạo cho sản phẩm và thương hiệu sản phẩm một vị trí xác định trong tâm trí khách hàng so với mặt hàng cạnh tranh”?", options: ["Quảng cáo sản phẩm", "Quảng bá sản phẩm", "Định vị sản phẩm", "Xúc tiến sản phẩm"], correct: 2, explanation: "Đây chính xác là định nghĩa Bước 3 (Positioning) trong quy trình S-T-P mà cô Vân đã dạy: Nỗ lực đưa hình ảnh sản phẩm vào tiềm thức/tâm trí khách hàng." },
+                { q: "Trong phân đoạn thị trường, yếu tố nào sau đây thường được sử dụng để phân loại khách hàng?", options: ["Độ tuổi, giới tính, thu nhập", "Sản phẩm và dịch vụ", "Kênh phân phối", "Tính cách của nhân viên bán hàng"], correct: 0, explanation: "Đây là các tiêu thức thuộc nhóm 'Nhân khẩu học' dùng để phân đoạn thị trường (Segmentation)." },
+                { q: "Ba bước cơ bản của chiến lược thị trường (STP) theo thứ tự là gì?", options: ["Phân khúc (S) -> Định vị (P) -> Lựa chọn mục tiêu (T)", "Lựa chọn mục tiêu (T) -> Phân khúc (S) -> Định vị (P)", "Phân khúc (S) -> Lựa chọn mục tiêu (T) -> Định vị (P)", "Định vị (P) -> Phân khúc (S) -> Lựa chọn mục tiêu (T)"], correct: 2, explanation: "Đây là tiến trình chuẩn 3 bước: Segmentation (Phân đoạn/Phân khúc) -> Targeting (Chọn thị trường mục tiêu) -> Positioning (Định vị thương hiệu)." },
+                { q: "Tuổi tác, giới tính, thu nhập và quy mô gia đình thuộc tiêu thức phân khúc thị trường nào?", options: ["Địa lý", "Tâm lý học", "Nhân khẩu học", "Hành vi"], correct: 2, explanation: "Nhân khẩu học (Demographic) là tiêu thức phổ biến và dễ đo lường nhất, dùng các biến số về dân số học để phân loại khách hàng." },
+                { q: "Việc Vinamilk thiết kế dòng sữa Dielac Alpha cho trẻ em và CanxiPro cho người già là minh họa cho tiêu thức phân khúc nào?", options: ["Phân khúc theo tâm lý học", "Phân khúc theo hành vi", "Phân khúc theo địa lý", "Phân khúc theo nhân khẩu học"], correct: 3, explanation: "Đây là case study thực tế minh họa cho việc chia thị trường dựa trên độ tuổi và chu kỳ sống của con người (thuộc nhóm nhân khẩu học)." },
+                { q: "Việc tạo điểm khác biệt cho sản phẩm, dịch vụ đi kèm, nhân sự hoặc hình ảnh là các công cụ để thực hiện bước nào?", options: ["Phân đoạn thị trường", "Lựa chọn thị trường mục tiêu", "Định vị thị trường", "Nghiên cứu thị trường"], correct: 2, explanation: "Định vị là nỗ lực tạo ra một hình ảnh, một vị trí riêng biệt. Để làm được điều này, doanh nghiệp phải xây dựng sự khác biệt hóa thông qua sản phẩm, dịch vụ, nhân sự hoặc hình ảnh." }
+            ],
+            6: [
+                { q: "Khái niệm sản phẩm theo nghĩa rộng nhất liên quan đến:", options: ["Bất cứ cái gì có thể marketing", "Bất cứ cái gì mang lại lợi ích cho khách hàng", "Bất cứ cái gì mang lại lợi ích cho khách hàng và có thể marketing", "Bất cứ hàng hóa vật chất nào khách hàng có thể mua"], correct: 2, explanation: "Sản phẩm là bất cứ cái gì mang lại lợi ích cho khách hàng và có thể được đưa ra thị trường để thỏa mãn nhu cầu (có thể marketing)." },
+                { q: "Sắp xếp nào đúng theo tiến trình của Vòng đời sản phẩm (PLC)?", options: ["Giới thiệu, bão hòa, tăng trưởng, suy thoái", "Giới thiệu, tăng trưởng, bão hòa, suy thoái", "Giới thiệu, bão hòa, suy thoái, tăng trưởng", "Tăng trưởng, trưởng thành, bão hòa, suy thoái"], correct: 1, explanation: "4 giai đoạn chuẩn: Giới thiệu (Introduction) -> Tăng trưởng (Growth) -> Bão hòa (Maturity) -> Suy thoái (Decline)." },
+                { q: "Giai đoạn nào trong chu kì sống của sản phẩm có doanh thu và lợi nhuận cao nhất, nhiều đối thủ cạnh tranh nhất nhưng lại có khả năng có chi phí thấp?", options: ["Giới thiệu", "Tăng trưởng", "Bão hoà", "Suy thoái"], correct: 1, explanation: "Giai đoạn tăng trưởng có sự bùng nổ về doanh số, lợi nhuận đạt mức cao, thu hút nhiều đối thủ cạnh tranh tham gia." },
+                { q: "Công cụ marketing hỗn hợp đối với ngành dịch vụ (7P) bao gồm:", options: ["4 P + People + Process + Packing", "4 P + People + Process + Physical evidence", "4 P + People + Process + Post purchasing", "4 P + People + Process + Positioning"], correct: 1, explanation: "Mô hình 7P gồm 4P truyền thống cộng thêm People (Con người), Process (Quy trình) và Physical evidence (Bằng chứng vật chất)." },
+                { q: "Đặc điểm vô hình của dịch vụ có hàm ý gì?", options: ["Không lưu kho được", "Không lưu kho được và không được trưng bày sẵn", "Không lưu kho được và không được cấp bản quyền", "Không lưu kho được; Không được cấp bản quyền và không được trưng bày sẵn"], correct: 3, explanation: "Vì tính vô hình, dịch vụ không thể lưu kho, không được trưng bày sẵn và rất khó cấp bản quyền." },
+                { q: "Việc đặt tên, nhãn hiệu riêng biệt cho từng sản phẩm của doanh nghiệp có ưu điểm:", options: ["Cung cấp thông tự về sự khác biệt của từng loại sản phẩm, không bị ảnh hưởng chéo nếu 1 sản phẩm thất bại", "Giảm chi phí quảng cáo khi tung ra sản phẩm mới", "Khách hàng dễ dàng nhận diện toàn bộ danh mục sản phẩm của công ty", "Tất cả đều đúng"], correct: 0, explanation: "Chiến lược đa nhãn hiệu giúp định vị rõ ràng từng sản phẩm và tránh rủi ro ảnh hưởng chéo nếu một nhãn hiệu bị thất bại." },
+                { q: "Mua vé đi xem trận bóng đá là:", options: ["Mua sự cảm nhận", "Mua sự thực hiện", "Mua sản phẩm vật chất", "Mua dịch vụ"], correct: 3, explanation: "Trận bóng đá là một trải nghiệm, một sự kiện giải trí không mang hình thái vật chất để sở hữu, do đó nó là dịch vụ." },
+                { q: "Khi một nhãn hiệu hàng hóa được luật pháp thừa nhận và bảo hộ thì gọi là:", options: ["Tên nhãn hiệu", "Dấu hiệu của nhãn hiệu", "Thương hiệu (Brand)", "Nhãn hiệu hàng hóa (Trademark)"], correct: 3, explanation: "Nhãn hiệu hàng hóa (Trademark) là phần của nhãn hiệu được pháp luật bảo hộ độc quyền." },
+                { q: "Quá trình làm mới hình ảnh của một thương hiệu/doanh nghiệp dựa trên những hình ảnh và nền tảng có sẵn để xóa bỏ hình ảnh già nua, tiêu cực được gọi là:", options: ["Chiến lược cải biến dòng sản phẩm", "Chiến lược thích ứng sản phẩm", "Chiến lược tái định vị sản phẩm (Repositioning Strategy)", "Chiến lược mở rộng dòng sản phẩm"], correct: 2, explanation: "Cô định nghĩa tái định vị là làm mới hình ảnh dựa trên nền tảng sẵn có." },
+                { q: "Việc thương hiệu giày Biti's tung ra dòng sản phẩm Biti's Hunter kết hợp cùng MV Lạc Trôi (Sơn Tùng M-TP) và Đi Để Trở Về là ví dụ kinh điển cho sự thành công của chiến lược nào?", options: ["Chiến lược đa dạng hóa sản phẩm", "Chiến lược tái định vị thương hiệu", "Chiến lược duy trì hình ảnh", "Chiến lược thu hẹp chủng loại"], correct: 1, explanation: "Ví dụ thực tế cô giảng trên lớp về việc xóa bỏ hình ảnh già nua, mờ nhạt." },
+                { q: "Sự kiện hệ thống cho thuê băng đĩa Blockbuster phá sản trước sự phát triển của Netflix là minh họa cho đặc điểm nào trong giai đoạn Suy thoái (Decline) của chu kỳ sống sản phẩm?", options: ["Khối lượng tiêu thụ giảm do thị hiếu thay đổi", "Thành tựu công nghệ mới làm thay thế công nghệ cũ", "Cạnh tranh gay gắt từ các đối thủ cùng ngành", "Khách hàng có xu hướng bảo vệ môi trường"], correct: 1, explanation: "Đây là case study được giảng viên nhấn mạnh về nguyên nhân dẫn đến suy thoái sản phẩm." },
+                { q: "Khi một sản phẩm đi vào giai đoạn suy thoái trong chu kỳ sống sản phẩm, doanh nghiệp nên làm gì?", options: ["Đánh giá lại chiến lược sản phẩm và xem xét cải tiến hoặc loại bỏ", "Tăng cường chiến dịch quảng cáo", "Mở rộng kênh phân phối", "Tăng giá để bù đắp cho doanh số giảm"], correct: 0, explanation: "Trong giai đoạn suy thoái, doanh nghiệp buộc phải cải biến, tái định vị hoặc loại bỏ. Việc tăng quảng cáo hay mở rộng phân phối lúc này là lãng phí." },
+                { q: "Giá trị cốt lõi mà khách hàng nhận được từ sản phẩm gọi là gì?", options: ["Lợi ích", "Chi phí", "Tính năng", "Thương hiệu"], correct: 0, explanation: "Ở cấp độ cơ bản nhất (Sản phẩm cốt lõi), khách hàng thực chất đang mua lợi ích hoặc giải pháp cho vấn đề của họ (VD: mua mỹ phẩm là mua \"hy vọng đẹp hơn\")." },
+                { q: "Theo phân loại thói quen mua hàng, các sản phẩm như bảo hiểm, dịch vụ mai táng thuộc nhóm sản phẩm nào?", options: ["Sản phẩm đặc thù", "Sản phẩm lựa chọn", "Sản phẩm thụ động", "Sản phẩm hàng ngày"], correct: 2, explanation: "Sản phẩm thụ động là những sản phẩm mà người tiêu dùng không hay biết về nó, hoặc không nghĩ đến việc mua nó cho đến khi thực sự cần thiết." },
+                { q: "Một sản phẩm mới được giới thiệu lần đầu ra thị trường nằm ở giai đoạn nào của vòng đời sản phẩm?", options: ["Tăng trưởng", "Suy thoái", "Giới thiệu", "Trưởng thành"], correct: 2, explanation: "Đây là giai đoạn đầu tiên khi sản phẩm bắt đầu thâm nhập thị trường." },
+                { q: "Trong mô hình 3 cấp độ sản phẩm, yếu tố dịch vụ bảo hành, lắp đặt và giao hàng thuộc cấp độ nào?", options: ["Sản phẩm cốt lõi", "Sản phẩm thực tế", "Sản phẩm gia tăng (sản phẩm bổ sung)", "Sản phẩm tiềm năng"], correct: 2, explanation: "Cấp độ sản phẩm gia tăng (bổ sung) bao gồm các dịch vụ cộng thêm như giao hàng, lắp đặt, bảo hành, sửa chữa." },
+                { q: "Khi sản phẩm bước vào giai đoạn tăng trưởng trong chu kỳ sống, doanh nghiệp nên có chiến lược gì?", options: ["Rút lui khỏi thị trường", "Cắt giảm ngân sách quảng cáo", "Tăng đầu tư marketing để mở rộng thị phần", "Không thay đổi gì"], correct: 2, explanation: "Trong giai đoạn tăng trưởng, để tối đa hóa thị phần, doanh nghiệp cần tiếp tục đầu tư mạnh vào Marketing." },
+                { q: "Theo phân loại sản phẩm tư liệu sản xuất (TLSX), máy móc và nhà cửa được xếp vào nhóm nào?", options: ["Vật tư và chi tiết", "Tài sản cố định", "Vật tư phụ", "Dịch vụ hỗ trợ"], correct: 1, explanation: "Tài sản cố định là những tư liệu tham gia toàn bộ hoặc nhiều lần vào quá trình sản xuất và dịch chuyển dần giá trị của nó vào sản phẩm được tạo ra." },
+                { q: "Các sản phẩm tiêu dùng có tính rủi ro cao, tốn nhiều thời gian nghiên cứu công dụng và tính năng (như máy ảnh, đồng hồ, ô tô) thuộc nhóm hàng hóa nào?", options: ["Sản phẩm hàng ngày", "Sản phẩm lựa chọn", "Sản phẩm đặc thù", "Sản phẩm thụ động"], correct: 2, explanation: "Sản phẩm đặc thù yêu cầu sự tìm hiểu kỹ lưỡng trước khi ra quyết định do giá trị cao và rủi ro đi kèm lớn." },
+                { q: "Xét về mặt cấu trúc, một sản phẩm hoàn chỉnh bao gồm mấy cấp độ?", options: ["1", "2", "3", "4"], correct: 2, explanation: "Theo tài liệu ôn tập, cấu trúc sản phẩm bao gồm chính xác 3 cấp độ: Sản phẩm cốt lõi, sản phẩm thực tế và sản phẩm gia tăng." },
+                { q: "Theo nghĩa rộng, sản phẩm là gì?", options: ["Bất cứ hàng hóa vật chất nào khách hàng có thể mua", "Bất cứ cái gì có thể thỏa mãn nhu cầu hay ước muốn được đưa ra chào bán trên thị trường", "Là những dịch vụ vô hình mang lại lợi ích", "Bất cứ thứ gì có giá trị trao đổi"], correct: 1, explanation: "Sản phẩm không chỉ là vật chất hữu hình mà bao gồm cả dịch vụ vô hình, con người, ý tưởng... miễn là nó thỏa mãn được nhu cầu của khách hàng." },
+                { q: "Bề rộng, bề sâu, mức độ phong phú và sự hài hòa là các chiều kích của khái niệm nào?", options: ["Chủng loại sản phẩm", "Danh mục sản phẩm", "Dòng sản phẩm", "Vòng đời sản phẩm"], correct: 1, explanation: "Danh mục sản phẩm (Product Mix) là tập hợp tất cả các mặt hàng mà doanh nghiệp bán, và nó được quản trị, đo lường dựa trên 4 chiều kích này." }
+            ],
+            7: [
+                { q: "Điều kiện nào sau đây thích hợp nhất cho doanh nghiệp áp dụng chiến lược giá “Hớt váng sữa” (Skimming pricing)?", options: ["Đường cầu thị trường ít co giãn", "Sản phẩm đang ở giai đoạn tăng trưởng", "Doanh nghiệp có năng lực sản xuất lớn", "Doanh nghiệp có sản phẩm độc đáo, mới lạ, được bảo vệ bản quyền"], correct: 3, explanation: "Chiến lược hớt váng (đặt giá cao ban đầu) chỉ hiệu quả khi sản phẩm độc đáo, mới lạ và có lợi thế độc quyền/bảo vệ bản quyền." },
+                { q: "Khi doanh nghiệp muốn có tỷ lệ lợi nhuận nhất định trên vốn đầu tư, cần sử dụng phương pháp định giá nào?", options: ["Xác định giá theo phương pháp hòa vốn", "Xác định giá theo phương pháp lợi nhuận mục tiêu", "Xác định giá từ chi phí trung bình", "Xác định giá dựa vào mức giá hiện hành"], correct: 1, explanation: "Phương pháp định giá theo lợi nhuận mục tiêu (Target return pricing) giúp đảm bảo đạt được tỷ lệ hoàn vốn (ROI) mong muốn." },
+                { q: "Khi tăng giá 5% người ta thấy cầu giảm 2% thì độ co dãn của cầu theo giá là:", options: ["0,4", "2,5", "1%", "10%"], correct: 0, explanation: "Độ co giãn của cầu theo giá (Ed) = | % Thay đổi lượng cầu / % Thay đổi giá | = 2% / 5% = 0.4." },
+                { q: "Định phí (FC) = 1.500 tr.đ, Biến phí (vc) = 9 tr.đ, Sản lượng (Q) = 500 SP, nếu doanh nghiệp mong muốn lợi nhuận là 15% giá thành thì giá sẽ là:", options: ["13,80 tr.đ/SP", "14,00 tr.đ/SP", "14,12 tr.đ/SP", "14,20 tr.đ/SP"], correct: 0, explanation: "Giá thành 1 SP = FC/Q + vc = 1500/500 + 9 = 12 tr.đ. Giá bán = 12 + 15%*12 = 13.80 tr.đ." },
+                { q: "Hãng hàng không X định giá vé hạng Thương gia bay ban ngày là 189 USD, hạng Phổ thông bay đêm là 149 USD. Chiến lược giá phân biệt này căn cứ vào:", options: ["Theo hạng hàng hóa", "Theo thời gian", "Theo loại khách hàng", "Theo hạng hàng hóa và theo thời gian"], correct: 3, explanation: "Thương gia/Phổ thông là phân biệt theo hạng hàng hóa; Ban ngày/ban đêm là phân biệt theo thời gian." },
+                { q: "Các công ty điện thoại áp dụng chính sách giá gồm: cước cố định hàng tháng và cước mỗi cuộc gọi. Đó là việc áp dụng chiến lược giá nào?", options: ["Giá hai phần", "Giá phân biệt", "Giá theo hình ảnh", "Giá chiết khấu"], correct: 0, explanation: "Định giá hai phần (Two-part pricing) gồm một khoản phí cố định (thuê bao) và một khoản phí biến đổi tùy mức sử dụng." },
+                { q: "Doanh nghiệp bán một set các sản phẩm (máy tính, máy in, phần mềm) với mức giá thấp hơn so với mua riêng từng loại là biểu hiện của chiến lược:", options: ["Chiến lược giá Dumpling", "Giá độc quyền", "Chiến lược giá trọn gói (bán kèm)", "Chiến lược giá thâm nhập"], correct: 2, explanation: "Định giá trọn gói (Bundle pricing) gộp nhiều sản phẩm và bán với giá ưu đãi để kích thích mua sỉ." },
+                { q: "Mục tiêu định giá tối đa hoá lợi nhuận hiện thời thì thường tương ứng với kiểu chiến lược giá:", options: ["Thẩm thấu thị trường (Penetration)", "Trung hoà", "Hớt váng phần ngon (Skimming)", "Trọn gói"], correct: 2, explanation: "Để tối đa hóa lợi nhuận ngay lập tức và thu hồi vốn nhanh, doanh nghiệp thường áp dụng chiến lược giá hớt váng phần ngon." },
+                { q: "Việc cùng một loại mì Hảo Hảo nhưng dạng gói được bán với giá 4.000đ/gói, trong khi dạng ly được bán với giá 8.000đ/ly là hình thức định giá nào?", options: ["Định giá theo khách hàng", "Định giá theo địa điểm", "Định giá theo thời điểm", "Định giá theo hình thức sản phẩm"], correct: 3, explanation: "Ví dụ định giá phân biệt được ghi chú trực tiếp từ bài giảng trên lớp." },
+                { q: "Chiến lược hớt váng là gì?", options: ["Là chiến lược định giá cao nhất có thể cho những đoạn thị trường người mua sẵn sàng chấp nhận sản phẩm mới đó", "Là chiến lược định giá cao", "Là chiến lược định giá thấp nhằm theo đuổi mục tiêu đạt thị phần lớn", "Là chiến lược định giá thấp nhằm chiếm lĩnh thị trường"], correct: 0, explanation: "Định giá hớt váng (Skimming) dùng cho sản phẩm mới, độc đáo, doanh nghiệp đặt giá cao ngay từ đầu để thu lợi nhuận tối đa từ nhóm khách hàng tiên phong, sau đó mới giảm dần." },
+                { q: "Chiến lược giá nào sau đây thường được sử dụng khi tung ra một sản phẩm mới với mục tiêu tiếp cận nhanh chóng một lượng lớn khách hàng?", options: ["Chiến lược giá thâm nhập", "Chiến lược giá cao", "Chiến lược giá ngang bằng", "Chiến lược giá theo giá trị"], correct: 0, explanation: "Ngược lại với hớt váng, giá thâm nhập (Penetration) là đặt giá thật thấp để nhanh chóng chiếm lĩnh thị phần rộng lớn." }
+            ],
+            8: [
+                { q: "Kênh phân phối là tập hợp của:", options: ["Các cá nhân", "Các tổ chức", "Các cá nhân và tổ chức độc lập, phụ thuộc lẫn nhau tham gia vào quá trình đưa hàng hóa đến tay người tiêu dùng", "Các doanh nghiệp sản xuất và doanh nghiệp thương mại"], correct: 2, explanation: "Kênh phân phối là mạng lưới các tổ chức/cá nhân độc lập và phụ thuộc lẫn nhau cùng tham gia đưa hàng hóa đến người tiêu dùng." },
+                { q: "Bán lẻ là một trung gian của hệ thống kênh phân phối thực hiện việc bán hàng hóa:", options: ["Cho những doanh nghiệp khác", "Cho một công ty để bán lại chúng", "Cho người tiêu dùng cuối cùng", "Cho những người bán lẻ khác"], correct: 2, explanation: "Đặc trưng cốt lõi của bán lẻ là phục vụ người tiêu dùng cuối cùng (End-user) cho mục đích tiêu dùng cá nhân." },
+                { q: "Các hãng hàng không vừa bán vé tại phòng vé của mình và qua hệ thống đại lý. Trường hợp này gọi là:", options: ["Hệ thống kênh phân phối truyền thống", "Hệ thống kênh phân phối liên kết dọc", "Hệ thống kênh phân phối liên kết ngang", "Hệ thống phân phối đa kênh"], correct: 3, explanation: "Việc sử dụng đồng thời nhiều loại kênh (trực tiếp và gián tiếp) để tiếp cận thị trường gọi là phân phối đa kênh." },
+                { q: "Công ty bia Việt Hà bán sản phẩm thông qua các cửa hàng bán lẻ trên khắp miền Bắc, mục tiêu là có càng nhiều điểm bán càng tốt. Phương thức này gọi là:", options: ["Phân phối có chọn lọc", "Phân phối rộng rãi (đại trà)", "Phân phối độc quyền", "Phân phối theo kênh hai cấp"], correct: 1, explanation: "Phân phối rộng rãi (đại trà) là việc đưa sản phẩm vào tối đa các điểm bán, phù hợp cho hàng tiêu dùng thiết yếu (FMCG)." },
+                { q: "Người bán buôn ứng trước hàng hóa cho người bán lẻ để bán là đã thực hiện chức năng nào sau đây của kênh phân phối?", options: ["Thiết lập các mối quan hệ", "San sẻ rủi ro", "Tài trợ (Tài chính)", "Xúc tiến"], correct: 2, explanation: "Bán chịu hay ứng hàng là hình thức cấp tín dụng thương mại, giúp người bán lẻ giải quyết bài toán vốn (Chức năng Tài trợ)." },
+                { q: "Quyết định nào sau đây KHÔNG thuộc về quyết định phân phối vật chất (Logistics)?", options: ["Quyết định về kho bãi dự trữ hàng", "Quyết định về chủng loại và số lượng sản xuất", "Quyết định về khối lượng hàng dự trữ", "Quyết định về vận tải"], correct: 1, explanation: "Quyết định chủng loại và số lượng sản xuất thuộc thẩm quyền của bộ phận Sản xuất, không thuộc Logistics (kho bãi, vận tải, dự trữ)." },
+                { q: "Trường hợp nào dưới đây đúng với Hệ thống marketing theo chiều dọc (VMS) được quản lý (Administered VMS)?", options: ["Người sản xuất quy mô lớn, có nhãn hiệu mạnh đạt được sự ủng hộ và hợp tác của những người bán lẻ (không qua hợp đồng)", "Người sản xuất làm chủ các trung gian kế tiếp trong kênh phân phối.", "Những thành viên phối hợp với nhau theo hợp đồng.", "Hệ thống độc quyền kinh tiêu của người bán lẻ."], correct: 0, explanation: "VMS được quản lý không dựa trên sở hữu hay hợp đồng mà dựa trên quy mô và quyền lực của một thành viên chi phối (thường là nhà sản xuất lớn)." },
+                { q: "Sản phẩm tiêu dùng thiết yếu (nước ngọt, bột giặt) áp dụng chiến lược phân phối nào?", options: ["Phân phối chọn lọc", "Phân phối độc quyền", "Phân phối rộng rãi (đại trà)", "Phân phối trực tiếp"], correct: 2, explanation: "Vì đây là hàng hóa dùng thường ngày, giá trị thấp, doanh nghiệp cần đưa sản phẩm có mặt ở khắp mọi nơi để người mua dễ dàng tiếp cận nhất." },
+                { q: "Nhượng quyền thương mại (Franchising) như hãng xe Ford hay Burger King thuộc hệ thống kênh nào?", options: ["Hệ thống VMS tập đoàn", "Hệ thống VMS hợp đồng (Contractual VMS)", "Hệ thống VMS được quản lý", "Hệ thống phân phối đa kênh"], correct: 1, explanation: "Trong hệ thống Marketing liên kết dọc (VMS), VMS hợp đồng là sự liên kết giữa các thành viên độc lập thông qua các ràng buộc pháp lý, trong đó nhượng quyền kinh doanh là hình thức phổ biến nhất." },
+                { q: "Trung gian Bán lẻ khác với Bán buôn ở điểm nào?", options: ["Bán lẻ mua hàng với số lượng lớn hơn", "Bán lẻ thực hiện việc bán hàng hóa trực tiếp cho người tiêu dùng cuối cùng", "Bán buôn không bao giờ bán hàng cho tổ chức", "Bán buôn chỉ bán hàng qua mạng"], correct: 1, explanation: "Nhà bán lẻ (như siêu thị, cửa hàng tiện lợi) là điểm chạm cuối cùng của kênh phân phối, họ mua từ nhà sản xuất hoặc nhà bán buôn để bán lại cho người dùng cá nhân." }
+            ],
+            9: [
+                { q: "Chữ “P4” trong marketing-mix là để chỉ:", options: ["Chính sách giá cả (Price)", "Chính sách xúc tiến marketing (Promotion)", "Chính sách phân phối (Place)", "Chính sách sản phẩm (Product)"], correct: 1, explanation: "Marketing Mix 4P gồm: Product, Price, Place, và Promotion (Chính sách xúc tiến marketing/Chiêu thị)." },
+                { q: "Câu nào KHÔNG ĐÚNG khi nói về chiến lược xúc tiến đẩy (Push) và xúc tiến kéo (Pull)?", options: ["Trong xúc tiến đẩy, nhà sản xuất nắm nhu cầu chủ yếu qua người tiêu dùng", "Xúc tiến đẩy nhằm vào các trung gian phân phối", "Xúc tiến kéo nhằm vào người tiêu dùng cuối cùng", "Xúc tiến đẩy khuyến khích mua còn xúc tiến kéo tạo ra sự yêu cầu từ phía khách hàng"], correct: 0, explanation: "Xúc tiến đẩy tập trung vào trung gian phân phối. Xúc tiến kéo mới là chiến lược tập trung kích thích nhu cầu từ người tiêu dùng." },
+                { q: "Trong số các công cụ xúc tiến hỗn hợp, công cụ nào có tác dụng thiết lập các mối quan hệ phong phú, đa dạng và trực tiếp nhất với khách hàng?", options: ["Quảng cáo", "Bán hàng cá nhân", "Xúc tiến bán (Khuyến mãi)", "Quan hệ công chúng (PR)"], correct: 1, explanation: "Bán hàng cá nhân là hình thức giao tiếp trực tiếp (Face-to-face), cho phép tương tác hai chiều và xây dựng quan hệ sâu sắc." },
+                { q: "Phương tiện quảng cáo nào cho phép tiếp cận toàn cầu, tuổi thọ cao, chi phí tiếp cận thấp, kết hợp cả hình ảnh, âm thanh, ngôn ngữ:", options: ["Báo chí", "Internet (Digital Marketing)", "Truyền hình", "Thư quảng cáo trực tiếp"], correct: 1, explanation: "Internet (Digital Marketing) vượt qua rào cản địa lý, chi phí thấp, lưu trữ lâu dài và có tính đa phương tiện mạnh mẽ." },
+                { q: "Quảng cáo và quan hệ với công chúng (PR) phát huy hiệu quả thích hợp nhất với giai đoạn nào trong chu kỳ sống của sản phẩm?", options: ["Giới thiệu (Introduction) và tăng trưởng (Growth)", "Tăng trưởng và bão hòa (Maturity)", "Bão hòa và suy thoái (Decline)", "Suy thoái"], correct: 0, explanation: "Trong giai đoạn Giới thiệu và Tăng trưởng, doanh nghiệp cần tập trung tạo độ nhận biết và giáo dục thị trường, nên Quảng cáo và PR là ưu tiên hàng đầu." },
+                { q: "Quá trình mà các ý tưởng được chuyển thành những hình thức có tính biểu tượng trong mô hình truyền thông được gọi là:", options: ["Mã hoá (Encoding)", "Giải mã (Decoding)", "Nhiễu (Noise)", "Phương tiện truyền thông (Media)"], correct: 0, explanation: "Mã hóa (Encoding) là bước người gửi chuyển đổi thông điệp thành lời nói, hình ảnh, âm thanh... để truyền đi." },
+                { q: "Trong các phương pháp hoạch định ngân sách truyền thông, phương pháp nào khoa học nhất, dựa trên những gì doanh nghiệp muốn đạt được?", options: ["Theo tỷ lệ phần trăm của doanh số bán", "Cân bằng cạnh tranh", "Căn cứ vào mục tiêu và nhiệm vụ", "Chi theo khả năng tài chính hiện có"], correct: 2, explanation: "Phương pháp 'Căn cứ vào mục tiêu và nhiệm vụ' yêu cầu xác định rõ việc cần làm rồi mới tính chi phí, rất logic và khoa học." },
+                { q: "Làm việc với phóng viên để viết một bài báo hay về công ty của bạn là một ví dụ về hoạt động gì?", options: ["Quan hệ công chúng (PR)", "Bán hàng cá nhân", "Quảng cáo", "Khuyến mãi"], correct: 0, explanation: "Hoạt động thông qua báo chí, truyền thông để xây dựng hình ảnh tích cực mà không trực tiếp trả tiền mua không gian quảng cáo chính là Quan hệ công chúng (PR)." },
+                { q: "Chiến lược 'đẩy' (Push) và 'kéo' (Pull) khác nhau ra sao?", options: ["Đẩy tập trung vào trung gian, Kéo tập trung vào người tiêu dùng", "Đẩy tập trung vào quảng cáo, Kéo tập trung vào khuyến mãi", "Đẩy tập trung vào người tiêu dùng, Kéo tập trung vào trung gian", "Đẩy là giảm giá, Kéo là tăng giá"], correct: 0, explanation: "Xúc tiến đẩy là dùng ngân sách khuyến khích các trung gian (đại lý, siêu thị) bán hàng của mình. Ngược lại, xúc tiến kéo là quảng cáo trực tiếp tới người tiêu dùng cuối cùng để họ tự ra cửa hàng yêu cầu mua sản phẩm đó." },
+                { q: "Phương pháp hoạch định ngân sách truyền thông nào khoa học nhất?", options: ["Phương pháp theo tỷ lệ phần trăm doanh số", "Phương pháp cân bằng cạnh tranh", "Phương pháp chi theo khả năng", "Phương pháp căn cứ vào mục tiêu và nhiệm vụ"], correct: 3, explanation: "Thay vì chỉ trích một tỷ lệ % doanh thu một cách cảm tính, doanh nghiệp phải xác định rõ mục tiêu cần đạt, sau đó mới lên danh sách các nhiệm vụ và dự tính chi phí chính xác để hoàn thành mục tiêu đó." }
+            ]
+        };
+
+        /* --- 2.5. MOCK EXAM GENERATOR --- */
+        let mockExams = [];
+        
+        function initMockExams() {
+            const examMatrix = {
+                1: 4,
+                2: 5,
+                3: 5,
+                4: 3,
+                5: 4,
+                6: 5,
+                7: 5,
+                8: 5,
+                9: 4
+            };
+
+            for (let i = 0; i < 5; i++) {
+                let examQuestions = [];
+                for (let chap = 1; chap <= 9; chap++) {
+                    let chapQuestions = [...questionBank[chap]];
+                    // Shuffle chapter questions
+                    for (let j = chapQuestions.length - 1; j > 0; j--) {
+                        const k = Math.floor(Math.random() * (j + 1));
+                        [chapQuestions[j], chapQuestions[k]] = [chapQuestions[k], chapQuestions[j]];
+                    }
+                    // Slice the required amount
+                    examQuestions = examQuestions.concat(chapQuestions.slice(0, examMatrix[chap]));
+                }
+                
+                // Shuffle the combined 40 questions
+                for (let j = examQuestions.length - 1; j > 0; j--) {
+                    const k = Math.floor(Math.random() * (j + 1));
+                    [examQuestions[j], examQuestions[k]] = [examQuestions[k], examQuestions[j]];
+                }
+                
+                mockExams.push(examQuestions);
+            }
+        }
+
+        // JS cho giao diện Sơ đồ tư duy (Native Scroll)
+        function centerMindmap() {
+            const canvas = document.getElementById('canvas');
+            const mindmap = document.getElementById('mindmap');
+            if(mindmap.offsetWidth > canvas.clientWidth) {
+                canvas.scrollTo({ left: (mindmap.offsetWidth - canvas.clientWidth) / 2, top: 0, behavior: 'smooth' });
+            }
+        }
+
+        /* --- 3. UI LOGIC (TABS & MINDMAP) --- */
+        function switchTab(tabId) {
+            const activeClass = 'px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md bg-white dark:bg-gray-800 shadow text-blue-600 dark:text-blue-400 transition-all flex items-center';
+            const inactiveClass = 'px-3 sm:px-4 py-1.5 text-xs sm:text-sm font-semibold rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-all flex items-center';
+            
+            document.getElementById('tab-mindmap').className = tabId === 'mindmap' ? activeClass : inactiveClass;
+            document.getElementById('tab-quiz').className = tabId === 'quiz' ? activeClass : inactiveClass;
+
+            document.getElementById('mindmapTab').style.display = tabId === 'mindmap' ? 'block' : 'none';
+            document.getElementById('quizTab').style.display = tabId === 'quiz' ? 'block' : 'none';
+
+            if (tabId === 'mindmap') {
+                document.body.classList.add('mindmap-active');
+                setTimeout(centerMindmap, 50); 
+            } else {
+                document.body.classList.remove('mindmap-active');
+                showMenu(); 
+            }
+        }
+
+        const detailPanel = document.getElementById('detailPanel');
+        const backdrop = document.getElementById('backdrop');
+
+        function openDetail(chapterId) {
+            const data = chapterData[chapterId];
+            if(!data) return;
+
+            document.getElementById('detailChapter').innerText = data.chapter;
+            document.getElementById('detailTitle').innerText = data.title;
+            document.getElementById('panelHeader').className = `p-6 border-b dark:border-gray-700 flex justify-between items-center text-white ${data.color}`;
+
+            let htmlContent = `
+                <div class="mb-6">
+                    <div class="w-16 h-16 ${data.color} rounded-full flex items-center justify-center text-white text-2xl mb-4 shadow-md">
+                        <i class="fa-solid ${data.icon}"></i>
+                    </div>
+                    <p class="text-gray-700 dark:text-gray-300 italic font-medium">"${data.summary}"</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 dark:text-gray-100 border-b dark:border-gray-700 pb-2 mb-3">Nội dung cốt lõi:</h3>
+                    <ul class="space-y-3">
+            `;
+            data.points.forEach(point => {
+                htmlContent += `<li class="flex items-start gap-2"><i class="fa-solid fa-check text-green-500 mt-1 text-sm"></i><span class="text-gray-700 dark:text-gray-300 text-sm leading-relaxed">${point}</span></li>`;
+            });
+            htmlContent += `</ul></div>
+                <div class="mt-8 pt-4 border-t dark:border-gray-700 flex flex-col gap-3">
+                    <button onclick="window.open('${data.url}', '_blank'); event.stopPropagation();" class="w-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-800 dark:text-white font-bold py-2.5 rounded-lg transition shadow-sm flex items-center justify-center">
+                        <i class="fa-solid fa-book-open mr-2"></i> Xem nội dung bài học
+                    </button>
+                    <button onclick="goToChapterQuiz(${chapterId})" class="w-full bg-blue-100 dark:bg-blue-900/50 hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-700 dark:text-blue-300 font-bold py-2.5 rounded-lg transition flex items-center justify-center">
+                        <i class="fa-solid fa-list-check mr-2"></i> Làm trắc nghiệm ${data.chapter}
                     </button>
                 </div>
             `;
-            grid.appendChild(card);
-        });
+            document.getElementById('detailContent').innerHTML = htmlContent;
 
-        // Toggle Dark Mode
-        const themeToggleBtn = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const htmlElement = document.documentElement;
-
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            htmlElement.classList.add('dark');
-            themeIcon.classList.replace('fa-moon', 'fa-sun');
-        } else {
-            htmlElement.classList.remove('dark');
+            backdrop.classList.remove('hidden');
+            setTimeout(() => backdrop.classList.remove('opacity-0'), 10);
+            detailPanel.classList.remove('translate-x-full');
         }
 
-        themeToggleBtn.addEventListener('click', () => {
-            htmlElement.classList.toggle('dark');
-            if (htmlElement.classList.contains('dark')) {
-                localStorage.setItem('theme', 'dark');
-                themeIcon.classList.replace('fa-moon', 'fa-sun');
-            } else {
-                localStorage.setItem('theme', 'light');
-                themeIcon.classList.replace('fa-sun', 'fa-moon');
-            }
-        });
+        function closeDetail() {
+            detailPanel.classList.add('translate-x-full');
+            backdrop.classList.add('opacity-0');
+            setTimeout(() => backdrop.classList.add('hidden'), 300);
+        }
 
+        function goToChapterQuiz(chapId) {
+            closeDetail();
+            switchTab('quiz');
+            loadChapterQuiz(chapId);
+        }
 
-        // ================= TRẮC NGHIỆM LOGIC =================
-        let questionsForChapter = [];
-        let currentQuestionIndex = 0;
-        let userAnswers = {}; // Lưu đáp án { indexCauHoi: indexDapAn }
+        /* --- 4. QUIZ LOGIC --- */
+        let currentQuizData = [];
+        let currentQuizMode = ''; 
+        let currentQuizLabel = ''; 
+        let selectedChapter = null;
 
-        // Hàm gọi API lấy file JSON tương ứng của từng chương
-        async function startQuiz(chapterId) {
-            try {
-                const response = await fetch(`questions-part${chapterId}.json`);
-                if (!response.ok) throw new Error('File not found');
-                
-                const data = await response.json();
-                
-                // Khởi tạo bài thi
-                questionsForChapter = data.questions;
-                currentQuestionIndex = 0;
-                userAnswers = {};
-                
-                // Hiển thị Title
-                document.getElementById('quiz-title').textContent = `Chương ${chapterId}: ${data.chapterTitle || ''}`;
-                
-                // Hiển thị câu đầu tiên
-                renderQuestion();
-
-                // Mở Modal Quiz
-                document.getElementById('quiz-modal').classList.remove('hidden');
-                document.getElementById('quiz-modal').classList.add('flex');
-
-            } catch (error) {
-                console.error("Lỗi tải JSON:", error);
-                openNoticeModal();
+        function renderChapterButtons() {
+            const chapContainer = document.getElementById('chapterButtonsContainer');
+            chapContainer.innerHTML = '';
+            for (let i = 1; i <= 9; i++) {
+                chapContainer.innerHTML += `
+                    <button onclick="loadChapterQuiz(${i})" class="bg-white dark:bg-gray-800 border dark:border-gray-700 hover:border-blue-500 dark:hover:border-blue-500 hover:shadow-md p-4 rounded-xl text-left transition group">
+                        <div class="font-bold text-blue-600 dark:text-blue-400 mb-1 group-hover:text-blue-700 dark:group-hover:text-blue-300">Chương ${i}</div>
+                        <div class="text-sm text-gray-600 dark:text-gray-300 truncate" title="${chapterData[i].title}">${chapterData[i].title}</div>
+                        <div class="text-xs text-gray-400 dark:text-gray-500 mt-2">${questionBank[i].length} câu hỏi</div>
+                    </button>
+                `;
             }
         }
 
-        // Render giao diện 1 câu hỏi
-        function renderQuestion() {
-            if (!questionsForChapter || questionsForChapter.length === 0) return;
+        function renderMockButtons() {
+            const mockContainer = document.getElementById('mockButtonsContainer');
+            mockContainer.innerHTML = '';
+            // Only render 5 mock exams
+            for (let i = 0; i < mockExams.length; i++) {
+                mockContainer.innerHTML += `
+                    <button onclick="loadMockExam(${i})" class="bg-white dark:bg-gray-800 border border-orange-100 dark:border-gray-700 hover:border-orange-500 dark:hover:border-orange-500 hover:shadow-md p-4 rounded-xl text-center transition group">
+                        <i class="fa-solid fa-file-signature text-orange-400 text-2xl mb-2 group-hover:scale-110 transition-transform"></i>
+                        <div class="font-bold text-gray-800 dark:text-gray-100">Đề số ${i + 1}</div>
+                    </button>
+                `;
+            }
+        }
 
-            const q = questionsForChapter[currentQuestionIndex];
+        function showMenu() {
+            document.getElementById('quizMenu').style.display = 'block';
+            document.getElementById('chapterSelection').style.display = 'none';
+            document.getElementById('mockSelection').style.display = 'none';
+            document.getElementById('historyView').style.display = 'none';
+            document.getElementById('reviewView').style.display = 'none';
+            document.getElementById('quizExecution').style.display = 'none';
+            window.scrollTo(0,0);
+        }
+
+        function showChapterSelection() {
+            document.getElementById('quizMenu').style.display = 'none';
+            document.getElementById('chapterSelection').style.display = 'block';
+        }
+
+        function showMockSelection() {
+            document.getElementById('quizMenu').style.display = 'none';
+            document.getElementById('mockSelection').style.display = 'block';
+        }
+
+        function backToMenu() {
+            showMenu();
+        }
+
+        function loadChapterQuiz(chapId) {
+            currentQuizMode = 'chapter';
+            currentQuizLabel = `Chương ${chapId}`;
+            selectedChapter = chapId;
+            currentQuizData = [...questionBank[chapId]];
             
-            // Cập nhật text câu hỏi
-            document.getElementById('question-text').textContent = `Câu ${currentQuestionIndex + 1}: ${q.question}`;
+            document.getElementById('quizTitle').innerText = `Ôn tập: Chương ${chapId}`;
+            document.getElementById('quizSubtitle').innerText = chapterData[chapId].title;
+            renderQuiz();
+        }
+
+        function loadMockExam(examIndex) {
+            currentQuizMode = 'mock';
+            currentQuizLabel = `Đề số ${examIndex + 1}`;
+            selectedChapter = examIndex; 
             
-            // Render danh sách nút bấm đáp án
-            const container = document.getElementById('options-container');
-            container.innerHTML = ''; // Clear cũ
+            currentQuizData = [...mockExams[examIndex]];
+
+            document.getElementById('quizTitle').innerText = `Thi thử: Đề số ${examIndex + 1}`;
+            document.getElementById('quizSubtitle').innerText = `Tổng hợp 40 câu hỏi theo cấu trúc chuẩn`;
+            renderQuiz();
+        }
+
+        function renderQuiz() {
+            document.getElementById('quizMenu').style.display = 'none';
+            document.getElementById('chapterSelection').style.display = 'none';
+            document.getElementById('mockSelection').style.display = 'none';
+            document.getElementById('quizExecution').style.display = 'block';
             
-            q.options.forEach((opt, index) => {
-                const btn = document.createElement('button');
-                
-                // Đổi màu nếu người dùng đã chọn đáp án này trước đó
-                const isSelected = userAnswers[currentQuestionIndex] === index;
-                
-                btn.className = `w-full text-left p-4 rounded-xl border-2 transition-all duration-200 outline-none 
-                    ${isSelected 
-                        ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 font-medium' 
-                        : 'border-gray-200 dark:border-gray-700 hover:border-primary-300 dark:hover:border-gray-500 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300'}`;
-                
-                btn.textContent = opt;
-                btn.onclick = () => selectOption(index);
-                
-                container.appendChild(btn);
-            });
-
-            // Cập nhật thanh Progress bar
-            const percent = ((currentQuestionIndex + 1) / questionsForChapter.length) * 100;
-            document.getElementById('quiz-progress-bar').style.width = `${percent}%`;
-            document.getElementById('quiz-progress-text').textContent = `${currentQuestionIndex + 1} / ${questionsForChapter.length}`;
-
-            // Ẩn/hiện nút "Quay lại"
-            document.getElementById('btn-prev').classList.toggle('hidden', currentQuestionIndex === 0);
-
-            // Ẩn/hiện nút "Tiếp theo" và "Nộp bài"
-            if (currentQuestionIndex === questionsForChapter.length - 1) {
-                document.getElementById('btn-next').classList.add('hidden');
-                document.getElementById('btn-submit').classList.remove('hidden');
-            } else {
-                document.getElementById('btn-next').classList.remove('hidden');
-                document.getElementById('btn-submit').classList.add('hidden');
-            }
-        }
-
-        function selectOption(optionIndex) {
-            userAnswers[currentQuestionIndex] = optionIndex;
-            renderQuestion();
-        }
-
-        function nextQuestion() {
-            if (currentQuestionIndex < questionsForChapter.length - 1) {
-                currentQuestionIndex++;
-                renderQuestion();
-            }
-        }
-
-        function prevQuestion() {
-            if (currentQuestionIndex > 0) {
-                currentQuestionIndex--;
-                renderQuestion();
-            }
-        }
-
-        // ================= NỘP BÀI VÀ XỬ LÝ KẾT QUẢ/GIẢI THÍCH =================
-        function submitQuiz() {
-            let correctCount = 0;
-            let reviewHTML = '';
+            document.getElementById('questionCount').innerText = currentQuizData.length;
             
-            questionsForChapter.forEach((q, index) => {
-                const isCorrect = userAnswers[index] === q.correctAnswer;
-                if (isCorrect) correctCount++;
+            const container = document.getElementById('questionsContainer');
+            let html = '';
 
-                // Build HTML cho danh sách đáp án của câu hỏi
-                let optionsHTML = '';
-                q.options.forEach((opt, optIndex) => {
-                    let optClass = 'text-gray-600 dark:text-gray-400 border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50';
-                    let icon = '';
-
-                    if (optIndex === q.correctAnswer) {
-                        // Đáp án đúng
-                        optClass = 'border-green-500 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-medium';
-                        icon = '<i class="fa-solid fa-check text-green-500 float-right mt-1"></i>';
-                    } else if (optIndex === userAnswers[index]) {
-                        // Người dùng chọn sai
-                        optClass = 'border-red-500 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 font-medium';
-                        icon = '<i class="fa-solid fa-xmark text-red-500 float-right mt-1"></i>';
-                    }
-
-                    optionsHTML += `
-                        <div class="p-3 rounded-lg border ${optClass} mb-2 text-sm md:text-base">
-                            ${opt} ${icon}
+            currentQuizData.forEach((q, idx) => {
+                html += `
+                    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700" id="qblock-${idx}">
+                        <div class="font-bold text-gray-800 dark:text-gray-100 mb-4 text-base md:text-lg leading-relaxed">
+                            <span class="text-blue-600 dark:text-blue-400 mr-1">Câu ${idx + 1}:</span> ${q.q}
                         </div>
+                        <div class="space-y-3">
+                `;
+                
+                q.options.forEach((opt, optIdx) => {
+                    html += `
+                        <label class="relative flex items-start cursor-pointer group">
+                            <input type="radio" name="q${idx}" value="${optIdx}" class="peer sr-only radio-custom">
+                            <div class="w-full p-3 md:p-4 rounded-lg border-2 border-gray-100 dark:border-gray-700 flex items-start gap-3 transition-all hover:bg-gray-50 dark:hover:bg-gray-700">
+                                <div class="w-5 h-5 mt-0.5 rounded-full border-2 border-gray-300 dark:border-gray-600 flex-shrink-0 flex items-center justify-center radio-circle transition-colors">
+                                    <div class="w-2.5 h-2.5 bg-blue-600 rounded-full scale-0 transition-transform duration-200 ease-out after:content-['']"></div>
+                                </div>
+                                <span class="text-sm md:text-base text-gray-700 dark:text-gray-200 leading-relaxed">${opt}</span>
+                            </div>
+                        </label>
                     `;
                 });
 
-                // Build HTML cho phần giải thích (nếu có)
-                let explanationHTML = '';
-                if (q.explanation) {
-                    explanationHTML = `
-                        <div class="mt-4 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-800 dark:text-blue-300 text-sm md:text-base border border-blue-100 dark:border-blue-800/30">
-                            <span class="font-bold block mb-1"><i class="fa-solid fa-lightbulb text-yellow-500 mr-1"></i> Giải thích:</span> 
-                            ${q.explanation}
+                html += `
                         </div>
-                    `;
-                }
-
-                // Gộp tất cả vào khối Review của câu hỏi này
-                reviewHTML += `
-                    <div class="p-5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-sm">
-                        <div class="flex items-start gap-3 mb-4">
-                            <span class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${isCorrect ? 'bg-green-100 text-green-600 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400'}">
-                                ${index + 1}
-                            </span>
-                            <h4 class="text-base md:text-lg font-semibold text-gray-800 dark:text-gray-200 mt-1">
-                                ${q.question}
-                            </h4>
-                        </div>
-                        <div class="pl-11">
-                            ${optionsHTML}
-                            ${explanationHTML}
+                        <!-- Feedback Box -->
+                        <div id="feedback-${idx}" class="mt-4 hidden p-3 md:p-4 rounded-lg text-sm font-semibold"></div>
+                        
+                        <!-- Explanation Box (Appears after submission) -->
+                        <div id="explanation-${idx}" class="mt-3 hidden p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 mr-2 text-lg"></i> <strong class="text-blue-800 dark:text-blue-300">Giải thích:</strong> 
+                            <span class="ml-1">${q.explanation}</span>
                         </div>
                     </div>
                 `;
             });
 
-            // Ẩn bảng câu hỏi, hiện bảng kết quả
-            closeQuizModal();
+            container.innerHTML = html;
+
+            document.getElementById('submitBtn').classList.remove('hidden');
+            document.getElementById('retryBtn').classList.add('hidden');
+            document.getElementById('resultSummary').classList.add('hidden');
+            window.scrollTo(0,0);
+        }
+
+        function submitQuiz() {
+            let score = 0;
+            let details = []; // Array to store quiz details for review
             
-            // Cập nhật điểm số và render nội dung vào review container
-            document.getElementById('results-score').textContent = `Đúng: ${correctCount} / ${questionsForChapter.length} câu`;
-            document.getElementById('results-review').innerHTML = reviewHTML;
+            currentQuizData.forEach((q, idx) => {
+                const selectedInput = document.querySelector(`input[name="q${idx}"]:checked`);
+                const selectedVal = selectedInput ? parseInt(selectedInput.value) : -1;
+                
+                details.push({
+                    q: q.q,
+                    options: q.options,
+                    correct: q.correct,
+                    selected: selectedVal,
+                    explanation: q.explanation
+                });
+
+                const feedback = document.getElementById(`feedback-${idx}`);
+                const explanationBox = document.getElementById(`explanation-${idx}`);
+                const block = document.getElementById(`qblock-${idx}`);
+                
+                document.querySelectorAll(`input[name="q${idx}"]`).forEach(inp => inp.disabled = true);
+                
+                feedback.classList.remove('hidden');
+                explanationBox.classList.remove('hidden');
+
+                if (selectedInput && parseInt(selectedInput.value) === q.correct) {
+                    score++;
+                    feedback.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i> Chính xác!';
+                    feedback.className = "mt-4 block p-3 rounded-lg text-sm font-semibold bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-200 dark:border-green-800";
+                    block.classList.add('border-green-300', 'dark:border-green-700');
+                } else {
+                    const correctText = q.options[q.correct];
+                    let text = selectedInput 
+                        ? `<i class="fa-solid fa-circle-xmark mr-2"></i> Sai. Đáp án đúng là: <span class="text-gray-900 dark:text-white underline">${correctText}</span>` 
+                        : `<i class="fa-solid fa-triangle-exclamation mr-2"></i> Chưa làm. Đáp án đúng là: <span class="text-gray-900 dark:text-white underline">${correctText}</span>`;
+                    
+                    feedback.innerHTML = text;
+                    feedback.className = selectedInput 
+                        ? "mt-4 block p-3 rounded-lg text-sm font-semibold bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800"
+                        : "mt-4 block p-3 rounded-lg text-sm font-semibold bg-orange-50 dark:bg-orange-900/30 text-orange-700 dark:text-orange-400 border border-orange-200 dark:border-orange-800";
+                    
+                    if(selectedInput) block.classList.add('border-red-300', 'dark:border-red-700');
+                }
+            });
+
+            const percent = Math.round((score / currentQuizData.length) * 100);
+            const summary = document.getElementById('resultSummary');
+            summary.innerHTML = `Điểm của bạn: <span class="${percent >= 50 ? 'text-green-600' : 'text-red-600'} text-xl md:text-2xl">${score}/${currentQuizData.length}</span> (${percent}%)`;
+            summary.classList.remove('hidden');
             
-            // Hiển thị Modal Kết quả
-            const resultsModal = document.getElementById('results-modal');
-            resultsModal.classList.remove('hidden');
-            resultsModal.classList.add('flex');
+            document.getElementById('submitBtn').classList.add('hidden');
+            document.getElementById('retryBtn').classList.remove('hidden');
+
+            saveHistory(currentQuizLabel, score, currentQuizData.length, percent, details);
         }
 
-        // ================= CÁC HÀM ĐÓNG MỞ MODAL =================
-
-        function closeQuizModal() {
-            document.getElementById('quiz-modal').classList.add('hidden');
-            document.getElementById('quiz-modal').classList.remove('flex');
+        function retryCurrentQuiz() {
+            if(currentQuizMode === 'chapter') {
+                loadChapterQuiz(selectedChapter);
+            } else {
+                loadMockExam(selectedChapter); 
+            }
         }
 
-        function closeResultsModal() {
-            document.getElementById('results-modal').classList.add('hidden');
-            document.getElementById('results-modal').classList.remove('flex');
+        /* --- 5. HISTORY LOGIC --- */
+        function saveHistory(mode, score, total, percent, details) {
+            let history = JSON.parse(localStorage.getItem('mkt_quiz_history') || '[]');
+            
+            const newRecord = {
+                date: new Date().toLocaleString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute:'2-digit' }),
+                mode: mode,
+                score: score,
+                total: total,
+                percent: percent,
+                details: details
+            };
+
+            history.unshift(newRecord); 
+            if(history.length > 30) history.pop();
+
+            localStorage.setItem('mkt_quiz_history', JSON.stringify(history));
         }
 
-        function openNoticeModal() {
-            const modal = document.getElementById('notice-modal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
-            setTimeout(() => {
-                modal.classList.remove('opacity-0');
-                modal.querySelector('div').classList.remove('scale-95');
-            }, 10);
+        function showHistory() {
+            document.getElementById('quizMenu').style.display = 'none';
+            document.getElementById('historyView').style.display = 'block';
+            document.getElementById('reviewView').style.display = 'none';
+
+            const history = JSON.parse(localStorage.getItem('mkt_quiz_history') || '[]');
+            const tbody = document.getElementById('historyTableBody');
+            const msg = document.getElementById('emptyHistoryMsg');
+
+            if(history.length === 0) {
+                tbody.innerHTML = '';
+                msg.classList.remove('hidden');
+            } else {
+                msg.classList.add('hidden');
+                let html = '';
+                history.forEach((record, index) => {
+                    const colorClass = record.percent >= 50 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400';
+                    html += `
+                        <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                            <td class="px-4 py-3 whitespace-nowrap text-gray-900 dark:text-gray-200">${record.date}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-blue-600 dark:text-blue-400 font-medium">${record.mode}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center text-gray-900 dark:text-gray-200 font-bold">${record.score}/${record.total}</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-right font-bold ${colorClass}">${record.percent}%</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-center">
+                                <button onclick="viewHistoryRecord(${index})" class="text-sm bg-blue-100 dark:bg-blue-900/40 hover:bg-blue-200 dark:hover:bg-blue-800 text-blue-600 dark:text-blue-400 px-3 py-1.5 rounded-lg transition">Xem lại</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                tbody.innerHTML = html;
+            }
         }
 
-        function closeNoticeModal() {
-            const modal = document.getElementById('notice-modal');
-            modal.classList.add('opacity-0');
-            modal.querySelector('div').classList.add('scale-95');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-                modal.classList.remove('flex');
-            }, 300);
+        function clearHistory() {
+            if(confirm("Bạn có chắc chắn muốn xóa toàn bộ lịch sử làm bài?")) {
+                localStorage.removeItem('mkt_quiz_history');
+                showHistory();
+            }
+        }
+
+        function viewHistoryRecord(index) {
+            const history = JSON.parse(localStorage.getItem('mkt_quiz_history') || '[]');
+            const record = history[index];
+            if (!record || !record.details) return;
+
+            document.getElementById('historyView').style.display = 'none';
+            document.getElementById('reviewView').style.display = 'block';
+
+            document.getElementById('reviewSubtitle').innerText = `${record.mode} - Ngày làm bài: ${record.date}`;
+            const colorClass = record.percent >= 50 ? 'text-green-600 dark:text-green-400 border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-900/30' : 'text-red-600 dark:text-red-400 border-red-200 bg-red-50 dark:border-red-800 dark:bg-red-900/30';
+            document.getElementById('reviewScore').className = `text-xl font-bold px-4 py-2 rounded-lg border ${colorClass}`;
+            document.getElementById('reviewScore').innerText = `${record.score}/${record.total} (${record.percent}%)`;
+
+            let html = '';
+            record.details.forEach((item, idx) => {
+                const isCorrect = item.selected === item.correct;
+                const borderClass = isCorrect ? 'border-green-300 dark:border-green-700' : (item.selected === -1 ? 'border-orange-300 dark:border-orange-700' : 'border-red-300 dark:border-red-700');
+                
+                html += `
+                    <div class="bg-white dark:bg-gray-800 p-4 md:p-6 rounded-xl shadow-sm border ${borderClass}">
+                        <div class="font-bold text-gray-800 dark:text-gray-100 mb-3 text-base md:text-lg">
+                            <span class="text-blue-600 dark:text-blue-400 mr-1">Câu ${idx + 1}:</span> ${item.q}
+                        </div>
+                        <div class="space-y-2 mb-4">
+                `;
+                
+                item.options.forEach((opt, optIdx) => {
+                    let icon = '';
+                    let textClass = 'text-gray-700 dark:text-gray-200';
+                    let bgClass = 'bg-gray-50 dark:bg-gray-700/50';
+                    
+                    if (optIdx === item.correct) {
+                        icon = '<i class="fa-solid fa-check text-green-500 dark:text-green-400 mr-2"></i>';
+                        textClass = 'font-bold text-green-700 dark:text-green-400';
+                        bgClass = 'bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800';
+                    } else if (optIdx === item.selected) {
+                        icon = '<i class="fa-solid fa-xmark text-red-500 dark:text-red-400 mr-2"></i>';
+                        textClass = 'font-semibold text-red-700 dark:text-red-400 line-through';
+                        bgClass = 'bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800';
+                    } else {
+                        icon = '<span class="mr-6"></span>'; // indent for alignment
+                        bgClass = 'border border-gray-100 dark:border-gray-700';
+                    }
+                    
+                    html += `
+                        <div class="p-3 rounded-lg flex items-center ${bgClass}">
+                            ${icon} <span class="${textClass} text-sm md:text-base">${opt}</span>
+                        </div>
+                    `;
+                });
+                
+                html += `</div>`;
+                
+                if (item.explanation) {
+                    html += `
+                        <div class="mt-2 p-4 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-100 dark:border-blue-800 text-gray-700 dark:text-gray-300 text-sm leading-relaxed">
+                            <i class="fa-solid fa-lightbulb text-yellow-500 mr-2 text-lg"></i> <strong class="text-blue-800 dark:text-blue-300">Giải thích:</strong> 
+                            <span class="ml-1">${item.explanation}</span>
+                        </div>
+                    `;
+                }
+                html += `</div>`;
+            });
+            document.getElementById('reviewContent').innerHTML = html;
+            window.scrollTo(0,0);
+        }
+
+        function backToHistory() {
+            document.getElementById('reviewView').style.display = 'none';
+            document.getElementById('historyView').style.display = 'block';
+            window.scrollTo(0,0);
         }
 
     </script>
